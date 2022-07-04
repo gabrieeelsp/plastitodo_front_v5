@@ -10,7 +10,7 @@
                     class="d-flex align-center justify-end pt-1 pb-1"
                     v-if="sale.relationships.comprobante"
                 >
-                    <span>{{ sale.relationships.comprobante.attributes.tipo }} {{ sale.relationships.comprobante.attributes.punto_venta | punto_venta_string }} - {{ sale.relationships.comprobante.attributes.numero | numero_factura_string }}</span>
+                    <span>F {{ sale.relationships.comprobante.attributes.tipo }} {{ sale.relationships.comprobante.attributes.punto_venta | punto_venta_string }} - {{ sale.relationships.comprobante.attributes.numero | numero_factura_string }}</span>
                 </v-col>
                 <v-col cols="12" sm="7"  class="d-flex align-center justify-start pt-1 pb-1">
                     <div v-if="!sale.relationships.comprobante">
@@ -56,17 +56,18 @@
             >
                 Enviar
             </v-btn>
-            <v-btn 
+            <Comprobante 
                 v-else
-                block 
-                small 
-                :loading="is_saving"   
-                @click="generateReport"
-            >
-                Ver
-            </v-btn>
+                :comprobante = "sale.relationships.comprobante"
+                :items = "sale.relationships.saleitems"
+                :comboitems = "sale.relationships.salecomboitems"
+                :total = "Number(sale.attributes.total)"
+                tipo = "sale"
+            />
+            
         </v-card-text>
     </v-card> 
+    
     
 
 </div>  
@@ -76,13 +77,14 @@
 import { mapGetters } from 'vuex'
 import { mapActions } from 'vuex'
 
+import Comprobante from '@/components/admin/sales_manager/sale/comprobantes/Comprobante'
 export default {
     mounted ( ) {
         
             
     },
     components: {
-
+        Comprobante
     },
     computed: {
         ...mapGetters({
@@ -116,9 +118,7 @@ export default {
             this.is_saving = false
         },
 
-        generateReport () { 
-            console.log('generando reporte')
-        } 
+        
 
         
     }

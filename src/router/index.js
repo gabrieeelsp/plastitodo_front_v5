@@ -61,6 +61,11 @@ const routes = [
         name: 'sale_manager',
         component: () => import(/* webpackChunkName: "about" */ '../views/admin/sales/Sales_manager.vue'),
       },
+      {
+        path: 'sales/sale_pdf',
+        name: 'sale_pdf',
+        component: () => import(/* webpackChunkName: "about" */ '../views/admin/sales/Sales_pdf.vue'),
+      },
     ],
     beforeEnter: (to, from, next) => {
       if(!store.getters['auth/authenticated']){

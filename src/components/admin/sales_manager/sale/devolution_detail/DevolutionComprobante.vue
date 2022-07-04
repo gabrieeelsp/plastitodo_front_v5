@@ -10,7 +10,7 @@
                     class="d-flex align-center justify-end pt-1 pb-1"
                     v-if="devolution.relationships.comprobante"
                 >
-                    <span>{{ devolution.relationships.comprobante.attributes.tipo }} {{ devolution.relationships.comprobante.attributes.punto_venta | punto_venta_string }} - {{ devolution.relationships.comprobante.attributes.numero | numero_factura_string }}</span>
+                    <span>NC {{ devolution.relationships.comprobante.attributes.tipo }} {{ devolution.relationships.comprobante.attributes.punto_venta | punto_venta_string }} - {{ devolution.relationships.comprobante.attributes.numero | numero_factura_string }}</span>
                 </v-col>
                 <v-col cols="12" sm="7"  class="d-flex align-center justify-start pt-1 pb-1">
                     <div v-if="!devolution.relationships.comprobante">
@@ -47,15 +47,14 @@
             >
                 Enviar
             </v-btn>
-            <v-btn 
+            <Comprobante 
                 v-else
-                block 
-                small 
-                :loading="is_saving"   
-                @click="generateReport"
-            >
-                Ver
-            </v-btn>
+                :comprobante = "devolution.relationships.comprobante"
+                :items = "devolution.relationships.devolutionitems"
+                :comboitems = "devolution.relationships.devolutioncomboitems"
+                :total = "Number(devolution.attributes.total)"
+                tipo = "devolution"
+            />
             </div>
             
         </v-card-text>
@@ -69,13 +68,15 @@
 import { mapGetters } from 'vuex'
 import { mapActions } from 'vuex'
 
+import Comprobante from '@/components/admin/sales_manager/sale/comprobantes/Comprobante'
+
 export default {
     mounted ( ) {
         
             
     },
     components: {
-
+        Comprobante
     },
     props: {
         devolution: Object

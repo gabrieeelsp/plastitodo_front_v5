@@ -46,7 +46,7 @@
                 </div>
             </v-col>
         </v-row>
-        {{ sale.relationships.payments }}
+        
     </div>
 </template>
 

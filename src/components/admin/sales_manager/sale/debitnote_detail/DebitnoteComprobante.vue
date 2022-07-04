@@ -10,7 +10,7 @@
                     class="d-flex align-center justify-end pt-1 pb-1"
                     v-if="debitnote.relationships.comprobante"
                 >
-                    <span>{{ debitnote.relationships.comprobante.attributes.tipo }} {{ debitnote.relationships.comprobante.attributes.punto_venta | punto_venta_string }} - {{ debitnote.relationships.comprobante.attributes.numero | numero_factura_string }}</span>
+                    <span>ND {{ debitnote.relationships.comprobante.attributes.tipo }} {{ debitnote.relationships.comprobante.attributes.punto_venta | punto_venta_string }} - {{ debitnote.relationships.comprobante.attributes.numero | numero_factura_string }}</span>
                 </v-col>
                 <v-col cols="12" sm="7"  class="d-flex align-center justify-start pt-1 pb-1">
                     <div v-if="!debitnote.relationships.comprobante">
@@ -47,15 +47,13 @@
                 >
                     Enviar
                 </v-btn>
-                <v-btn 
+                <Comprobante 
                     v-else
-                    block 
-                    small 
-                    :loading="is_saving"   
-                    @click="generateReport"
-                >
-                    Ver
-                </v-btn>
+                    :comprobante = "debitnote.relationships.comprobante"
+                    :items = "debitnote.relationships.debitnoteitems"
+                    :total = "Number(debitnote.attributes.total)"
+                    tipo = "debitnote"
+                />
 
             </div>
             
@@ -70,12 +68,14 @@
 import { mapGetters } from 'vuex'
 import { mapActions } from 'vuex'
 
+import Comprobante from '@/components/admin/sales_manager/sale/comprobantes/Comprobante'
+
 export default {
     mounted ( ) {
 
     },
     components: {
-
+        Comprobante
     },
     props: {
         debitnote: Object

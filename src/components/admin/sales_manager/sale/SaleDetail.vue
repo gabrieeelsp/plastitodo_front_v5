@@ -24,7 +24,8 @@
                 </v-row>
                 <v-row>
                     <v-col>
-                        <SaleComprobante />
+                        <SaleComprobante 
+                        />
                     </v-col>
                 </v-row>
                 <v-row>

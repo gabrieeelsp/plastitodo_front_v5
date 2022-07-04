@@ -118,7 +118,7 @@
         />
         
 
-    {{ sale }}
+    
     </div>
 </template>
 
