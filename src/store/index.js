@@ -7,6 +7,7 @@ import sales_manager from './sales_manager'
 import cajas_manager from './cajas_manager'
 import ivaaliquots_manager from './ivaaliquots_manager'
 import modelofacts_manager from './modelofacts_manager'
+import sale_manager from './sale_manager'
 
 Vue.use(Vuex)
 
@@ -26,6 +27,7 @@ export default new Vuex.Store({
     sales_manager,
     cajas_manager,
     ivaaliquots_manager,
-    modelofacts_manager
+    modelofacts_manager,
+    sale_manager
   }
 })

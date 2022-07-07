@@ -143,7 +143,7 @@
                 ></v-pagination>
             </v-col>
         </v-row>
-        {{ sales }}
+        
     </div>
 </template>
 

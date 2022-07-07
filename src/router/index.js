@@ -59,13 +59,13 @@ const routes = [
       {
         path: 'sales/manager',
         name: 'sale_manager',
-        component: () => import(/* webpackChunkName: "about" */ '../views/admin/sales/Sales_manager.vue'),
+        component: () => import(/* webpackChunkName: "sale_manager" */ '../views/admin/sales/Sales_manager.vue'),
       },
       {
-        path: 'sales/sale_pdf',
-        name: 'sale_pdf',
-        component: () => import(/* webpackChunkName: "about" */ '../views/admin/sales/Sales_pdf.vue'),
-      },
+        path: 'sales/sale_register',
+        name: 'sale_register',
+        component: () => import(/* webpackChunkName: "sale_register" */ '../views/admin/sales/Sale_register.vue')
+      }
     ],
     beforeEnter: (to, from, next) => {
       if(!store.getters['auth/authenticated']){
