@@ -43,7 +43,8 @@ export default {
     },
     computed: {
         ...mapGetters({
-            loading: 'sales_manager/loading'
+            loading: 'sales_manager/loading',
+            list_meta: 'sales_manager/list_meta',
         })
     },
     data() {
@@ -67,7 +68,7 @@ export default {
             await this.search_sales()
                 .then((resp) => {                    
                     this.set_sales(resp.data.data)
-                    this.last_page = resp.data.meta.last_page
+                    this.list_meta.last_page = resp.data.meta.last_page
                     
                 })
         },

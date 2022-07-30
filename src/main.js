@@ -6,6 +6,8 @@ import vuetify from './plugins/vuetify'
 import axios from 'axios'
 import Toast from "vue-toastification";
 
+import VueLuxon from "vue-luxon";
+
 import './utils/filters'
 import './utils/helpers'
 
@@ -34,8 +36,35 @@ const options = {
 
 Vue.use(Toast, options);
 
+Vue.use(VueLuxon, {
+  templates: {},
+    input: {
+        zone: "America/Argentina/Buenos_Aires",
+        format: "iso"
+    },
+    output: {
+        zone: "local",
+        format: {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        },
+        locale: null,
+        relative: {
+            round: true,
+            unit: null
+        }
+    }
+});
+
+import Photoswipe from 'vue-pswipe'
+
+Vue.use(Photoswipe)
+
+
 require('@/store/subscriber')
 
+//axios.defaults.baseURL = 'http://192.168.0.109:8000/api/v1'
 axios.defaults.baseURL = 'http://localhost:8000/api/v1'
 
 Vue.config.productionTip = false

@@ -13,6 +13,7 @@
             v-bind="attrs"
             v-on="on"
             @click="onload"
+            :disabled="disabled"
             >           
             <v-icon>
                 mdi-magnify
@@ -27,6 +28,13 @@
                         <span>Producto</span>
                     </v-col>
                     <v-spacer></v-spacer>
+                    <v-col>
+                        <v-checkbox
+                            v-model="show_images"
+                            label="Fotos"
+                        ></v-checkbox> 
+                    </v-col>
+                    
                     <v-col cols="12" sm="6">
                         <v-text-field
                             solo
@@ -60,16 +68,19 @@
                     <template v-slot:default>
                     <thead>
                         <tr>
-                        <th class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
-                            Descripción 
-                        </th>
-                        <th  style="width: 30px;" class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
-                            Precio
-                        </th>
-                        
-                        <th class="pr-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3" style="width: 100px;">
-                            Actions
-                        </th>
+                            <th v-if="show_images" style="width: 110px;" class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                Foto
+                            </th>
+                            <th class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                Descripción 
+                            </th>
+                            <th  style="width: 30px;" class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                Precio
+                            </th>
+                            
+                            <th class="pr-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3" style="width: 100px;">
+                                Actions
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -77,16 +88,61 @@
                             v-for="item in items"
                             :key="item.id"
                         >   
+                            <td v-if="show_images" >
+                                <v-row class="">
+                                    <v-col class="pl-0" >
+                                        <v-card class="">
+                                            <v-img
+                                                v-if="item.image1"
+                                                class="white--text align-end mt-1 mb-1"
+                                                height="100px"
+                                                width="100px"
+                                                :src="url_asset + item.image1"
+                                            >
+                                            </v-img>
+                                            <v-img
+                                                v-else
+                                                class="white--text align-end mt-1 mb-1"
+                                                height="100px"
+                                                width="100px"
+                                                :src="url_asset + 'images/image_default.jpg'"
+                                            >
+                                            </v-img>
+                                            </v-card>
+                                    </v-col>
+                                </v-row>
+                            </td>
+                            
                             <template v-if="item.tipo == 'saleproduct'">
-                                <td class="pl-1">{{ item.name }}</td>
-                                <td v-if="saleActive.client != null && saleActive.client.tipo == 'MAYORISTA'" class="text-right" >{{ globalHelperFixeDecimalMoney(globalHelperCalculaPrecio(item.valor_4, item.valor_2, item.valor_3)) }}</td>
-                                <td v-else class="text-right" >{{ globalHelperFixeDecimalMoney(globalHelperCalculaPrecio(item.valor_4, item.valor_1, item.valor_3)) }}</td>
-                                
+                                <template v-if="saleActive.client != null && saleActive.client.tipo == 'MAYORISTA'">
+                                    <template v-if="Number(item.desc_may) != 0 && (new Date(item.fecha_desc_desde).getTime() <= new Date().getTime()) && (new Date(item.fecha_desc_hasta).getTime() >= new Date().getTime())">
+                                        <td class="pl-1">{{ item.name }} [ Promo ]</td>
+                                        <td class="text-right" >{{ globalHelperFixeDecimalMoney(globalHelerAplicaDescuento(item.precio_may, item.desc_may)) }}</td>
+                                    </template>
+                                    <template v-else>
+                                        <td class="pl-1">{{ item.name }}</td>
+                                        <td class="text-right" >{{ globalHelperFixeDecimalMoney(item.precio_may) }}</td>
+                                    </template>
+                                </template>
+
+                                <template v-else >
+                                    <template v-if="Number(item.desc_min) != 0 && (new Date(item.fecha_desc_desde).getTime() <= new Date().getTime()) && (new Date(item.fecha_desc_hasta).getTime() >= new Date().getTime())">
+                                        <td class="pl-1">{{ item.name }} [ Promo ]</td>
+                                        <td class="text-right" >{{ globalHelperFixeDecimalMoney(globalHelerAplicaDescuento(item.precio_min, item.desc_min)) }}</td>
+                                    </template>
+                                    <template v-else>
+                                        <td class="pl-1">{{ item.name }}</td>
+                                        <td class="text-right" >{{ globalHelperFixeDecimalMoney(item.precio_min) }}</td>
+                                    </template>
+                                </template>
+
                             </template>
+
+                                
                             <template v-if="item.tipo == 'combo'">
                                 <td class="pl-1">{{ item.name }}</td>
-                                <td v-if="saleActive.client != null && saleActive.client.tipo == 'MAYORISTA'" class="text-right" >{{ globalHelperFixeDecimalMoney(item.valor_2) }}</td>
-                                <td v-else class="text-right" >{{ globalHelperFixeDecimalMoney(item.valor_1) }}</td>
+                                <td v-if="saleActive.client != null && saleActive.client.tipo == 'MAYORISTA'" class="text-right" >{{ globalHelperFixeDecimalMoney(item.precio_may) }}</td>
+                                <td v-else class="text-right" >{{ globalHelperFixeDecimalMoney(item.precio_min) }}</td>
                                 
                             </template>
                             
@@ -118,9 +174,13 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
 export default {
 
-
+    props:{
+        disabled: Boolean
+    },
     data () {
         return {
+            show_images: false,
+
             dialog: false,
             items: [],
             loadingTable: false,
@@ -130,6 +190,7 @@ export default {
     computed: {
       ...mapGetters({
         saleActive: 'sale_manager/saleActive',
+        url_asset: 'url_asset',
       })
     },
 
@@ -142,6 +203,7 @@ export default {
                     'q': this.q,
                 }
             }).then((result) => {
+                
                 this.items = result.data.data
 
                 //console.log(this.items)

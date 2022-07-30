@@ -14,33 +14,15 @@
                 </v-col>
                 <v-col cols="12" sm="7"  class="d-flex align-center justify-start pt-1 pb-1">
                     <div v-if="!sale.relationships.comprobante">
-                        <v-select
-                            v-if="!(sale.relationships.client && sale.relationships.client.relationships.modelofact)"
-                            dense
-                            :items="modelofacts_select"
-                            item-text="name"
-                            item-value="id"
-                            v-model="modelofact_id"
-                        >
-
-                        </v-select>
+                        
 
                         <v-select
-                            v-else
+                            
                             dense
-                            :items="[
-                                {
-                                    name: '',
-                                    id: 0
-                                },
-                                {
-                                    name: sale.relationships.client.relationships.modelofact.attributes.name,
-                                    id: sale.relationships.client.relationships.modelofact.id
-                                }
-                            ]"
+                            :items="ivaconditions_select"
                             item-text="name"
                             item-value="id"
-                            v-model="modelofact_id"
+                            v-model="ivacondition_id"
                         >
 
                         </v-select>
@@ -52,22 +34,31 @@
                 block 
                 small 
                 :loading="is_saving"   
-                @click="generarComprobante"        
+                @click="generarComprobante"     
+                :disabled="ivacondition_id == 0"   
             >
                 Enviar
             </v-btn>
+            <template v-else>
             <Comprobante 
-                v-else
                 :comprobante = "sale.relationships.comprobante"
                 :items = "sale.relationships.saleitems"
                 :comboitems = "sale.relationships.salecomboitems"
                 :total = "Number(sale.attributes.total)"
                 tipo = "sale"
             />
+            <Comprobante_80 
+            class="mt-2"
+                :comprobante = "sale.relationships.comprobante"
+                :items = "sale.relationships.saleitems"
+                :comboitems = "sale.relationships.salecomboitems"
+                :total = "Number(sale.attributes.total)"
+                tipo = "sale"
+            />
+            </template>
             
         </v-card-text>
     </v-card> 
-    
     
 
 </div>  
@@ -78,24 +69,56 @@ import { mapGetters } from 'vuex'
 import { mapActions } from 'vuex'
 
 import Comprobante from '@/components/admin/sales_manager/sale/comprobantes/Comprobante'
+import Comprobante_80 from '@/components/admin/sales_manager/sale/comprobantes/Comprobante_80'
 export default {
     mounted ( ) {
         
             
     },
     components: {
-        Comprobante
+        Comprobante,
+        Comprobante_80
     },
     computed: {
         ...mapGetters({
             modelofacts_select: 'modelofacts_manager/modelofacts_select',
+            ivaconditions: 'ivaconditions_manager/ivaconditions',
             sale: 'sales_manager/sale'
-        })
+        }),
+        ivaconditions_select () {
+            let ivaconditions = [{
+                id: 0,
+                name: ''
+            }]
+
+            for ( let ivacondition_item of this.ivaconditions ) {
+                if ( ivacondition_item.id == 3 ) {
+                    ivaconditions.push({
+                        id: ivacondition_item.id,
+                        name: ivacondition_item.attributes.name
+                    })
+                    break
+                }
+            }
+            if ( this.sale.relationships.client && this.sale.relationships.client.relationships.ivacondition.id != 3 ) {
+                for ( let ivacondition_item of this.ivaconditions ) {
+                    if ( ivacondition_item.id == this.sale.relationships.client.relationships.ivacondition.id ) {
+                        ivaconditions.push({
+                            id: ivacondition_item.id,
+                            name: ivacondition_item.attributes.name
+                        })
+                        break
+                    }
+                }
+            }
+
+            return ivaconditions
+        }
     },
     data () {
         return {
             is_saving: false,
-            modelofact_id: null
+            ivacondition_id: 0
         }        
     },
     methods: {
@@ -106,7 +129,7 @@ export default {
         
         async generarComprobante ( ) {
             this.is_saving = true
-            await this.generate_comprobante ( this.modelofact_id )
+            await this.generate_comprobante ( this.ivacondition_id )
                 .then((resp) => {
                     //console.log(resp.data.data)
                     this.set_comprobante(resp.data.data)

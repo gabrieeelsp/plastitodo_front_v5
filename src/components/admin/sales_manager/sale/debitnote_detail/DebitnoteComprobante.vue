@@ -24,13 +24,13 @@
                                     id: 0
                                 },
                                 {
-                                    name: sale.relationships.comprobante.relationships.modelofact.name,
-                                    id: sale.relationships.comprobante.relationships.modelofact.id
+                                    name: sale.relationships.comprobante.attributes.ivacondition_name_client,
+                                    id: 1
                                 }
                             ]"
                             item-text="name"
                             item-value="id"
-                            v-model="modelofact_id"
+                            v-model="ivacondition_id"
                         >
 
                         </v-select>
@@ -43,7 +43,8 @@
                     block 
                     small 
                     :loading="is_saving"   
-                    @click="generarComprobante"        
+                    @click="generarComprobante"    
+                    :disabled="ivacondition_id == 0"    
                 >
                     Enviar
                 </v-btn>
@@ -82,14 +83,13 @@ export default {
     },
     computed: {
         ...mapGetters({
-            modelofacts_select: 'modelofacts_manager/modelofacts_select',
             sale: 'sales_manager/sale',
         })
     },
     data () {
         return {
             is_saving: false,
-            modelofact_id: null
+            ivacondition_id: 0
         }        
     },
     methods: {

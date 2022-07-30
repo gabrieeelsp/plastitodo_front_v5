@@ -8,6 +8,16 @@ export default {
     getters: {
         ivaaliquots (state) {
             return state.ivaaliquots
+        },
+        ivaaliquots_select ( state ) {
+            let items = []
+            for (let item of state.ivaaliquots ) {
+                items.push({
+                    name: item.attributes.name,
+                    id: item.id
+                    })
+            }
+            return items
         }
     },
     mutations: {

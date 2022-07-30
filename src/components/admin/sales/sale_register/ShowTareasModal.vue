@@ -3,7 +3,7 @@
 
     <v-dialog
       v-model="intDialogVisible"
-      max-width="400"
+      max-width="500"
     >
       <v-card>
         <v-card-title class="text-h5">
@@ -21,15 +21,69 @@
                 indeterminate
                 color="amber"
               ></v-progress-circular>
-              <v-icon large
-                v-if="!is_registrandoVenta"
-                color="green"
-               >
-                mdi-check
-              </v-icon>
+              <template v-if="!is_registrandoVenta">
+                <v-icon large
+                  v-if="!error_saving_message"
+                  color="green"
+                >
+                  mdi-check
+                </v-icon>
+              
+                <v-icon large
+                  v-if="error_saving_message"
+                  color="red"
+                >
+                  mdi-alert-circle-outline
+                </v-icon>
+              </template>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12" class="d-flex justify-space-between align-center">
+              <span>Emitiendo Factura</span>
+              <v-progress-circular
+                v-if="is_facturando"
+                indeterminate
+                color="amber"
+              ></v-progress-circular>
+              <template v-if="!is_facturando">
+                <v-icon large
+                  v-if="!error_facturando_message"
+                  color="green"
+                >
+                  mdi-check
+                </v-icon>
+              
+                <v-icon large
+                  v-if="error_facturando_message"
+                  color="red"
+                >
+                  mdi-alert-circle-outline
+                </v-icon>
+              </template>
             </v-col>
           </v-row>
           <v-divider></v-divider>
+          <v-alert
+          class="mt-2"
+            v-if="error_saving_message"
+            text
+            prominent
+            type="error"
+            icon="mdi-cloud-alert"
+          >
+            {{ error_saving_message }}
+          </v-alert>
+          <v-alert
+          class="mt-2"
+            v-if="error_facturando_message"
+            text
+            prominent
+            type="error"
+            icon="mdi-cloud-alert"
+          >
+            {{ error_facturando_message }}
+          </v-alert>
           
         </v-card-text>
       </v-card>
@@ -51,7 +105,10 @@ export default {
     props: {
         dialogVisible: Boolean,
         guardando_venta: Boolean,
-        is_registrandoVenta: Boolean
+        is_registrandoVenta: Boolean,
+        error_saving_message: String,
+        is_facturando: Boolean,
+        error_facturando_message: String
     
     },
     computed: {

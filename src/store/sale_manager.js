@@ -4,7 +4,7 @@ export default {
     namespaced: true,
     state: {
         sales: [],
-        saleActive: null
+        saleActive: null,
     },
     getters: {
         sales (state) {
@@ -61,6 +61,35 @@ export default {
                 }
             }
             return false
+        },
+        ivaconditions_select ( state, _, rootState ) {
+            let ivaconditions = [{
+                id: 0,
+                name: ''
+            }]
+
+            for ( let ivacondition_item of rootState.ivaconditions_manager.ivaconditions ) {
+                if ( ivacondition_item.id == 3 ) {
+                    ivaconditions.push({
+                        id: ivacondition_item.id,
+                        name: ivacondition_item.attributes.name
+                    })
+                    break
+                }
+            }
+            if ( state.saleActive.client && state.saleActive.client.ivacondition.id != 3 ) {
+                for ( let ivacondition_item of rootState.ivaconditions_manager.ivaconditions ) {
+                    if ( ivacondition_item.id == state.saleActive.client.ivacondition.id ) {
+                        ivaconditions.push({
+                            id: ivacondition_item.id,
+                            name: ivacondition_item.attributes.name
+                        })
+                        break
+                    }
+                }
+            }
+
+            return ivaconditions
         }
 
     },
@@ -74,11 +103,17 @@ export default {
         SET_SALE_ACTIVE( state, sale ) {
             state.saleActive = sale
         },
+        SET_SALE_ACTIVE_SAVED( state, sale_saved ) {
+            state.saleActive_saved = sale_saved
+        },
         SET_MODELOFACT( state, payload ) {
             state.saleActive.modelofact_id = payload
         },
         SET_CLIENT_SALE_ACTIVE(state, client) {
             state.saleActive.client = client
+            if ( client.is_fact_default ) {
+                state.saleActive.ivacondition_id = client.ivacondition.id
+            }
         },
 
         ADD_ITEM(state, item) {
@@ -118,6 +153,13 @@ export default {
         },
     },
     actions: {
+        async generate_comprobante ( { getters }, ivacondition_id ) {
+
+            return axios.post('comprobantes/facts', {
+                'sale_id': getters.saleActive.id,
+                'ivacondition_id': ivacondition_id
+            })
+        },
         set_sale_active( { commit, state }, sale_id) {
             for (const x of state.sales) {
                 if ( x.id == sale_id ) {
@@ -132,7 +174,10 @@ export default {
                 comboitems: [],
                 payments: [],
                 client: null,
-                modelofact_id: 0
+                ivacondition_id: 0,
+                is_incluir_datos: false,
+                is_saved: false,
+                sale_saved: null
             }
             commit('ADD_SALE', sale)
             commit('SET_SALE_ACTIVE', sale)
@@ -155,6 +200,13 @@ export default {
                 commit ( 'SET_MODELOFACT', 0 )
             }
         },
+        auto_set_is_incluir_datos_sale_active ( {getters}) {
+			if ( getters.saleActive.ivacondition_id != 3 && getters.saleActive.ivacondition_id != 0 ) {
+				getters.saleActive.is_incluir_datos = true		
+			}else {
+                getters.saleActive.is_incluir_datos = false		
+            }
+		},
         add_item( { commit }, item) {
             commit('ADD_ITEM', item)
         },
@@ -251,6 +303,12 @@ export default {
             if( state.saleActive.client != null ) {
                 json_sale['client_id'] = state.saleActive.client.id
             }
+
+            if( state.saleActive.ivacondition_id != 0 ) {
+                json_sale['ivacondition_id'] = state.saleActive.ivacondition_id
+            }
+
+            //console.log(state.saleActive)
 
             
             return axios.post('/sales', json_sale);

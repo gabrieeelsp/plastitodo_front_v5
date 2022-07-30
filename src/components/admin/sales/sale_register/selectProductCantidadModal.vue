@@ -21,13 +21,20 @@
                         <v-col class="pt-0">
                             <v-card class="">
                                 <v-img
-                                    contain
+                                    v-if="item.image1"                                    
                                     class="white--text align-end"
                                     height="200px"
-                                    src="https://picsum.photos/510/300?random"
+                                    :src="url_asset + item.image1"
                                 >
                                 </v-img>
-                                </v-card>
+                                <v-img
+                                    v-else                                    
+                                    class="white--text align-end"
+                                    height="200px"
+                                    :src="url_asset + 'images/image_default.jpg'"
+                                >
+                                </v-img>
+                            </v-card>
                         </v-col>
                     </v-row>
                     
@@ -112,6 +119,9 @@ import axios from 'axios'
     },
     data () {
       return {
+
+        url_asset: "http://localhost:8000/",
+
         cantidad: null,
         valid: true,
         cantidadRules: [
@@ -131,20 +141,32 @@ import axios from 'axios'
         }),
         precio: function (){
             if ( this.item.tipo == 'saleproduct') {
+                if ( this.is_promo ) {
+                    if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
+                        return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(this.item.precio_may, this.item.desc_may))
+                    }
+                    return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(this.item.precio_min, this.item.desc_min))    
+                    }
                 if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
-                    return this.globalHelperFixeDecimalMoney(this.globalHelperCalculaPrecio(this.item.valor_4, this.item.valor_2, this.item.valor_3))
+                    return this.globalHelperFixeDecimalMoney(this.item.precio_may)
                 }
-                return this.globalHelperFixeDecimalMoney(this.globalHelperCalculaPrecio(this.item.valor_4, this.item.valor_1, this.item.valor_3))
+                return this.globalHelperFixeDecimalMoney(this.item.precio_min)
             }
             if ( this.item.tipo == 'combo') {
                 if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
-                    return this.globalHelperFixeDecimalMoney(this.item.valor_2)
+                    return this.globalHelperFixeDecimalMoney(this.item.precio_may)
                 }
-                return this.globalHelperFixeDecimalMoney(this.item.valor_1)
+                return this.globalHelperFixeDecimalMoney(this.item.precio_min)
             }   
             return 0
             
 
+        },
+        is_promo: function () {
+            if ( this.item.fecha_desc_desde && (new Date(this.item.fecha_desc_desde).getTime() <= new Date().getTime()) && (new Date(this.item.fecha_desc_hasta).getTime() >= new Date().getTime()) ) {
+                return true;
+            }
+            return false;
         },
         intDialogVisible: {
             get: function () {
@@ -172,20 +194,30 @@ import axios from 'axios'
 
             if ( this.valid ) {
                 if ( this.item.tipo == 'saleproduct' ) {
+                    let name = this.item.name
+                    if ( this.is_promo ) {
+                        if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
+                            name = name + ' [Promo - ' + this.item.desc_may + ' %]'
+                        }
+                        name = name + ' [Promo - ' + Number(this.item.desc_min).toFixed(0) + ' %]'
+                    }
+
                     this.$emit('addItem', {
                         saleProductId: this.item.id,
-                        name: this.item.name,
+                        name: name,
                         precio: this.precio,
                         stock: 0, //this.stock,
                         cantidad: this.cantidad,
-                        img: "https://picsum.photos/510/300?random",
+                        image1: this.url_asset + this.item.image1,
+                        image2: this.url_asset + this.item.image2,
+                        image3: this.url_asset + this.item.image3,
                         is_editing_cantidad: false,
                         is_editing_precio: false,
-                        is_stock_unitario_variable: Math.ceil(this.item.valor_6, 0),
-                        stock_aproximado_unidad: this.item.valor_7,
+                        is_stock_unitario_variable: Math.ceil(this.item.is_stock_unitario_variable, 0),
+                        stock_aproximado_unidad: this.item.stock_aproximado_unidad,
                         cantidad_total: null,
                         is_editing_cantidad_total: false,
-                        relacion_venta_stock: this.item.valor_3
+                        relacion_venta_stock: this.item.relacion_venta_stock
 
                     })
                 }
@@ -203,12 +235,14 @@ import axios from 'axios'
                                     cantidad = this.cantidad * itemCombo.attributes.cantidad
                                 }
                                 for ( let saleproduct of itemCombo.relationships.saleproducts ) {
-                                    if ( saleproduct.pivot.is_enable ) {
+                                    if ( saleproduct.attributes.is_enable ) {
                                         let var_sale = {
                                             saleproductId: saleproduct.id,
-                                            name: saleproduct.name,
+                                            name: saleproduct.attributes.name,
                                             cantidad: Number(cantidad),
-                                            img: "https://picsum.photos/510/300?random",
+                                            image1: this.url_asset + this.item.image1,
+                                            image2: this.url_asset + this.item.image2,
+                                            image3: this.url_asset + this.item.image3,
                                             is_editing_cantidad: false,
                                         }
                                         saleproducts.push(var_sale)

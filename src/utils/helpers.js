@@ -9,6 +9,11 @@ Vue.mixin({
             return ( unit * relacion ).toFixed(10)
         },
 
+        globalHelerAplicaDescuento(valor, descuento) {
+            let num = ( (100 - descuento) / 100 ).toFixed(10)
+            return ( valor * num ).toFixed(10)
+        },
+
         globalHelperCalculaStock(stock, relacion) {
             let a = stock / relacion 
             return Number(a).toFixed(4)
@@ -23,6 +28,9 @@ Vue.mixin({
             return Number(valor).toFixed(2)
         },
         globalHelperFixeDecimalCantidad(valor) {
+            return Number(valor).toFixed(2)
+        },
+        globalHelperFixeDecimalPorcentaje(valor) {
             return Number(valor).toFixed(2)
         },
 
@@ -77,6 +85,19 @@ Vue.mixin({
                 total = total - Number(item.attributes.valor)
             }
             return total.toFixed(10)
-        }
+        },
+
+
+
+        globalHelperCalculaCosto(costo, relacion_venta_stock) {
+            return Number(costo * relacion_venta_stock).toFixed(10)            
+        },
+
+        globalHelperCalculaPorcentaje(costo, precio) {
+            let a = Number(precio / costo)
+            a = a - 1
+            return Number( a * 100 ).toFixed(10)            
+        },
+
     },
 })

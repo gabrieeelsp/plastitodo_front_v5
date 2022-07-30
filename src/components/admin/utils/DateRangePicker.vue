@@ -1,5 +1,6 @@
 <template>
         <v-menu
+        
             ref="menu"
             v-model="menu"
             min-width="auto"
@@ -19,7 +20,7 @@
                     clearable
                     @click:clear="cancel"
                     readonly  
-                    hide-details="true"
+                    hide-details=""
                     
                 >
 

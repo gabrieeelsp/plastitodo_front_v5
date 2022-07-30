@@ -16,15 +16,11 @@
         block 
         small 
         @click="generateReport"
+        :loading="is_generandoReporte"
     >
         Ver
     </v-btn>
 </div>
-
-
-    
-    
-    
 </template>
 
 <script>
@@ -89,6 +85,8 @@ export default {
     },
     data() {
         return {
+            is_generandoReporte: false,
+
             fontFamily: 'times',
             cant_lineas_page: 10,
             line_height: 5,
@@ -105,6 +103,7 @@ export default {
     },
     methods: {
         generateReport () { 
+            this.is_generandoReporte = true
             if ( this.tipo == 'sale') { this.ObtenerSaleItems() }
             if ( this.tipo == 'devolution') { this.ObtenerDevolutionItems() }
             if ( this.tipo == 'creditnote') { this.ObtenerCreditnoteItems() }
@@ -122,6 +121,7 @@ export default {
                 page_number = page_number + 1
                 
             }
+            this.is_generandoReporte = false
             doc.output('dataurlnewwindow');
         },
         emitir_comprobante(doc , titulo ) {
@@ -212,7 +212,7 @@ export default {
             doc.setFont(this.fontFamily, 'bold')
             doc.setFontSize(10)
             doc.text('Sub Total: ', 180, rect_y + 5, { align: 'right' })
-            doc.text(this.getSubTotal().toString(), 200, rect_y + 5, { align: 'right' })
+            doc.text(this.fixeDecimalMoney(this.getSubTotal().toString()), 200, rect_y + 5, { align: 'right' })
             let h = rect_y + 10
             if ( this.discriminar_iva ) {
                 doc.setFontSize(9)
@@ -276,16 +276,16 @@ export default {
             doc.setFont(this.fontFamily, 'bold')            
             doc.text(80, 60, 'Apellido y Nombre / Razón Social: ')
             doc.setFont(this.fontFamily, 'normal')
-            if ( this.comprobante.attributes.nombre_client ) {
-                doc.text(130, 60, this.comprobante.attributes.nombre_client)
+            if ( this.comprobante.attributes.nombre_fact_client ) {
+                doc.text(130, 60, this.comprobante.attributes.nombre_fact_client)
             }
             
 
             doc.setFont(this.fontFamily, 'bold')            
             doc.text(113, 65, 'Domicilio: ')
             doc.setFont(this.fontFamily, 'normal')
-            if ( this.comprobante.attributes.domicilio_client ) {
-                doc.text(130, 65, this.comprobante.attributes.domicilio_client)
+            if ( this.comprobante.attributes.direccion_fact_client ) {
+                doc.text(130, 65, this.comprobante.attributes.direccion_fact_client)
             }
 
             doc.setFillColor('#F1EFEF')

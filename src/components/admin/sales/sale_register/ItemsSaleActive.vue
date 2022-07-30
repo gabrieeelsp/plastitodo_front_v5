@@ -42,6 +42,7 @@
             v-for="item in saleActive.items"
             :key="item.id"
             >
+
             <td>{{ item.name }}</td>
 
             
@@ -50,7 +51,7 @@
                 >{{ globalHelperFixeDecimalMoney(item.precio) }}</td>
             <td 
                 style="" 
-                v-if="item.is_editing_cantidad"
+                v-if="item.is_editing_cantidad && !saleActive.is_saved"
                 class=""
                 >
                 <InputEditValue 
@@ -79,7 +80,7 @@
             </td>
             <td 
             
-                v-else-if="item.is_stock_unitario_variable && item.is_editing_cantidad_total"
+                v-else-if="item.is_stock_unitario_variable && item.is_editing_cantidad_total && !saleActive.is_saved"
                 class="text-right"
                 >
                 <InputEditValue 
@@ -108,6 +109,7 @@
             <td v-else class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(item.precio, item.cantidad)) }}</td>
             <td>
                 <v-btn
+                :disabled="saleActive.is_saved"
                     small
                     icon
                     color="red"
@@ -128,7 +130,7 @@
             <tr class="grey lighten-3"  >
                 <td><span :class="comboitem.is_complete() ? '' : 'red--text'">[Combo] {{ comboitem.name }}</span></td>
                 <td class="text-right" style="width: 100px;">{{ globalHelperFixeDecimalMoney(comboitem.precio) }}</td>
-                <td v-if="comboitem.is_editing_cantidad" style="width: 100px;">
+                <td v-if="comboitem.is_editing_cantidad && !saleActive.is_saved" style="width: 100px;">
                     <InputEditValue 
                         :item="{
                             id: comboitem.comboId,
@@ -146,7 +148,7 @@
                 <td v-if="is_saleActiveStockUnitarioVariable" style="width: 100px;" class="text-right" >----------------</td>
                 <td class="text-right" style="width: 100px;">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(comboitem.precio, comboitem.cantidad)) }}</td>
                 <td style="width: 90px;" >
-                    <v-btn small icon color="red"
+                    <v-btn small icon color="red" :disabled="saleActive.is_saved"
                         @click="remove_combo_item(comboitem.comboId)"
                     >
                         <v-icon>mdi-delete-outline</v-icon>
@@ -172,7 +174,7 @@
                             ></td>
                         <td style="width: 100px;"></td>
                         <td style="width: 90px;">
-                            <v-btn small icon color="green"
+                            <v-btn small icon color="green" :disabled="saleActive.is_saved"
                                 @click="item.is_editing_cantidades = !item.is_editing_cantidades"
                             >
                                 <v-icon>mdi-application-edit-outline</v-icon>
@@ -193,7 +195,7 @@
                     <tr v-if="saleproduct.cantidad != 0" >
                         <td><span class="ml-6">* {{ saleproduct.name }}</span></td>
                         <td style="width: 100px;"></td>
-                        <td v-if="saleproduct.is_editing_cantidad" style="width: 100px;">
+                        <td v-if="saleproduct.is_editing_cantidad  && !saleActive.is_saved" style="width: 100px;">
                             <InputEditValue 
                                 :item="{
                                     id: comboitem.comboId + '-' + item.comboitemId + '-' + saleproduct.saleproductId,
@@ -215,7 +217,7 @@
                 </template>
             </v-simple-table>
             <v-expand-transition>
-            <div v-if="item.is_editing_cantidades">
+            <div v-if="item.is_editing_cantidades  && !saleActive.is_saved">
                 <v-simple-table v-for="saleproduct in item.saleproducts" :key="saleproduct.id">
                     <template v-slot:default>
                     <tbody>
@@ -249,6 +251,7 @@
             
         </div>
     </div>
+    
 </div>
     
     
@@ -273,6 +276,8 @@ export default {
     },
 
     data: () => ({
+        url_asset: "http://localhost:8000/",
+        show_images: true,
         item_editing: null,
     }),
     methods: {

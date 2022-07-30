@@ -1,11 +1,11 @@
 <template>
     <div>
-        <div v-if="!show_init_loading">
+        <div v-if="!show_init_admin">
 
-        
         <v-navigation-drawer v-model="drawer" app>
-            <span>menu</span>          
+            <Menu />  
         </v-navigation-drawer>
+        
 
         <v-app-bar app>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
@@ -34,7 +34,7 @@
         <div class="text-center">
     
     <v-dialog
-      v-model="show_init_loading"
+      v-model="show_init_admin"
       hide-overlay
       persistent
       width="300"
@@ -62,22 +62,28 @@
 </template>
 
 <script>
+import Menu from '@/components/admin/utils/Menu.vue'
 import MenuUser from '@/components/admin/utils/MenuUser'
 import MenuSucursal from '@/components/admin/utils/MenuSucursal'
 
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
-    mounted() {
+    computed: {
+        ...mapGetters({
+            show_init_admin: 'show_init_admin'
+        })
+    },
+    created() {
         this.init()
+
     },
     data: () => ({
         drawer: null,
-        show_admin: false,
-        show_init_loading: false,
     }),
     components: {
         MenuUser,
-        MenuSucursal
+        MenuSucursal,
+        Menu
     },
 
     methods: {
@@ -93,9 +99,23 @@ export default {
 
             buscar_caja: 'cajas_manager/buscar_caja',
             set_caja: 'cajas_manager/set_caja',
+
+            buscar_ivaconditions: 'ivaconditions_manager/buscar_ivaconditions',
+            set_ivaconditions: 'ivaconditions_manager/set_ivaconditions',
+
+            buscar_doctypes: 'doctypes_manager/buscar_doctypes',
+            set_doctypes: 'doctypes_manager/set_doctypes',
+
+            buscar_sucursals: 'sucursals_manager/buscar_sucursals',
+            set_sucursals: 'sucursals_manager/set_sucursals',
+
+            buscar_empresa: 'buscar_empresa',
+            set_empresa: 'set_empresa',
+
+            set_show_init_admin: 'set_show_init_admin',
         }),
         async init () {
-            this.show_init_loading = true
+            this.set_show_init_admin (true)
 
             await this.buscar_paymentMethods()
                 .then((resp) => {
@@ -121,6 +141,30 @@ export default {
                     console.log(error)
                 })
 
+            await this.buscar_ivaconditions()
+                .then((resp) => {
+                    this.set_ivaconditions(resp.data.data)
+
+                }).catch((error) => {
+                    console.log(error)
+                })
+                
+            await this.buscar_doctypes()
+                .then((resp) => {
+                    this.set_doctypes(resp.data.data)
+
+                }).catch((error) => {
+                    console.log(error)
+                })
+
+            await this.buscar_sucursals()
+                .then((resp) => {
+                    this.set_sucursals(resp.data.data)
+
+                }).catch((error) => {
+                    console.log(error)
+                })
+
             await this.buscar_caja()
                 .then((resp) => {
                     this.set_caja(resp.data.data)
@@ -128,7 +172,14 @@ export default {
                     console.log(error)
                 })
 
-            this.show_init_loading = false
+            await this.buscar_empresa()
+                .then((resp) => {
+                    this.set_empresa(resp.data.data)
+                }).catch((error) => {
+                    console.log(error)
+                })
+
+            this.set_show_init_admin (false)
             
             
         }

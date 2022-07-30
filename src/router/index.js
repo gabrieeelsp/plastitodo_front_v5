@@ -65,7 +65,73 @@ const routes = [
         path: 'sales/sale_register',
         name: 'sale_register',
         component: () => import(/* webpackChunkName: "sale_register" */ '../views/admin/sales/Sale_register.vue')
-      }
+      },
+      {
+        path: 'clients',
+        name: 'clients',
+        component: () => import(/* webpackChunkName: "clients" */ '../views/admin/clients/Clients.vue')
+      },
+      {
+        path: 'clients/:id',
+        name: 'client',
+        component: () => import(/* webpackChunkName: "client" */ '../views/admin/clients/Client.vue')
+      },
+      {
+        path: 'suppliers',
+        name: 'suppliers',
+        component: () => import(/* webpackChunkName: "suppliers" */ '../views/admin/suppliers/Suppliers.vue')
+      },
+      {
+        path: 'suppliers/:id',
+        name: 'supplier',
+        component: () => import(/* webpackChunkName: "supplier" */ '../views/admin/suppliers/Supplier.vue')
+      },
+      {
+        path: 'stocksucursals',
+        name: 'stocksucursals',
+        component: () => import(/* webpackChunkName: "stocksucursals" */ '../views/admin/stocksucursals/Stocksucursals.vue')
+      },
+      {
+        path: 'purchaseorders',
+        name: 'purchaseorders',
+        component: () => import(/* webpackChunkName: "purchaseorders" */ '../views/admin/purchaseorders/Purchaseorders.vue')
+      },
+      {
+        path: 'purchaseorders/:id',
+        name: 'purchaseorder',
+        component: () => import(/* webpackChunkName: "purchaseorder" */ '../views/admin/purchaseorders/Purchaseorder.vue')
+      },
+      {
+        path: 'stockproducts',
+        name: 'stockproducts',
+        component: () => import(/* webpackChunkName: "stockproducts" */ '../views/admin/stockproducts/Stockproducts.vue')
+      },
+      {
+        path: 'stockproducts/create',
+        name: 'stockproduct_create',
+        component: () => import(/* webpackChunkName: "stockproduct_create" */ '../views/admin/stockproducts/StockproductNew.vue')
+      },
+      {
+        path: 'stockproducts/:id(\\d+)',
+        name: 'stockproduct',
+        component: () => import(/* webpackChunkName: "stockproduct" */ '../views/admin/stockproducts/Stockproduct.vue')
+      },
+      {
+        path: 'saleproducts',
+        name: 'saleproducts',
+        component: () => import(/* webpackChunkName: "saleproducts" */ '../views/admin/saleproducts/Saleproducts.vue')
+      },
+      {
+        path: 'saleproducts/:id(\\d+)',
+        name: 'saleproduct',
+        component: () => import(/* webpackChunkName: "saleproduct" */ '../views/admin/saleproducts/Saleproduct.vue')
+      },
+      {
+        path: 'combos',
+        name: 'combos',
+        component: () => import(/* webpackChunkName: "combos" */ '../views/admin/combos/Combos.vue')
+      },
+      
     ],
     beforeEnter: (to, from, next) => {
       if(!store.getters['auth/authenticated']){

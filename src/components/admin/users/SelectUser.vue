@@ -13,6 +13,7 @@
       clearable
       :label="label"
       auto-select-first
+      hide-details=""
     ></v-autocomplete>
     </div>
 </template>

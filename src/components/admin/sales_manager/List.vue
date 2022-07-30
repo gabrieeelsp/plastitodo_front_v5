@@ -95,7 +95,7 @@
                         <td v-else>---</td>
                         <td>{{ sale.relationships.user.attributes.name }}</td>
                         <td>{{ sale.relationships.sucursal.attributes.name }}</td>
-                        <td class="text-right">{{ sale.attributes.created_at }}</td>
+                        <td class="text-right">{{ sale.attributes.created_at | luxon  }}</td>
                         <td>
                             <span v-if="sale.relationships.comprobante">{{ sale.relationships.comprobante.attributes.tipo }} {{ sale.relationships.comprobante.attributes.punto_venta | punto_venta_string }} - {{ sale.relationships.comprobante.attributes.numero | numero_factura_string }}</span>
                         </td>
@@ -119,8 +119,8 @@
                 <span class=" font-weight-bold text-caption grey--text font-weight-light">Items per page:</span>
                 <div style="width: 75px; ">                                
                     <v-select
-                        :items="select_limit_items"
-                        v-model="limitSelected"
+                        :items="list_meta.select_limit_items"
+                        v-model="list_meta.limit"
                         label="Standard"
                         hide-details=""
                         single-line
@@ -133,11 +133,11 @@
             </v-col>
             <v-col cols="12" md="4" class="d-flex align-center justify-center justify-md-end  pt-1 pb-1">
                 <v-pagination
-                    v-model="page"
-                    :length="last_page"
+                    v-model="list_meta.page"
+                    :length="list_meta.last_page"
                     :total-visible="5"
                     @input="setPage"
-                    :disabled="last_page <2"
+                    :disabled="list_meta.last_page <2"
                     prev-icon="mdi-menu-left"
                     next-icon="mdi-menu-right"
                 ></v-pagination>
@@ -166,10 +166,7 @@ export default {
             date_to: null,
             user_id: null,
 
-            select_limit_items: [5, 10, 15, 20],
-            limitSelected: 5,
-            last_page: 1,
-            page: 1,
+            
         }
     },
 
@@ -180,6 +177,8 @@ export default {
             user: 'sales_manager/user',
             date_from_default: 'sales_manager/date_from',
             date_to_default: 'sales_manager/date_to',
+
+            list_meta: 'sales_manager/list_meta',
         })
     },
     components: {
@@ -219,11 +218,11 @@ export default {
             
         },
         setLimit() {
-            this.set_list_meta_limt(this.limitSelected)
+            //this.set_list_meta_limt(this.limitSelected)
             this.$emit('getItems')
         },
         setPage() {
-            this.set_list_meta_page(this.page)
+            //this.set_list_meta_page(this.page)
             this.$emit('getItems')
         },
         setUser(user) {

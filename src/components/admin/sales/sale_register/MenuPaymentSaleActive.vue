@@ -8,6 +8,7 @@
 				<v-col cols="12"  class="d-flex justify-center align-center">
 					<span class="title">Pagos</span>
 					<v-btn
+						:disabled="saleActive.is_saved"
 						icon
 						color="green"
 						class="ml-2"
@@ -35,13 +36,12 @@
             </v-col>
             <v-col cols="10" sm="5"  class="d-flex justify-end pt-1 pb-1">
 				<span
-					v-if="payment.is_editing_valor"	
+					v-if="payment.is_editing_valor && !saleActive.is_saved"	
 				>
 					<InputEditValue 
 						:item="{
-							saleProductId: payment.id,
-							name: payment.name,
-							cantidad: payment.valor
+							id: payment.id,
+							value: payment.valor
 						}"
 
 						@close="payment.is_editing_valor = false"
@@ -55,6 +55,7 @@
             </v-col>
             <v-col cols="2" sm="2" class="pt-1 pb-1">
                 <v-btn
+				:disabled="saleActive.is_saved"
 					icon
 					@click="remove_payment(payment.id)"
 					x-small
@@ -120,7 +121,7 @@ export default {
 		set_valor(itemEdited){            
             for ( let item of this.saleActive.payments) {
                 if ( item.id == itemEdited.id) {
-                    item.valor = Number(itemEdited.cantidad)
+                    item.valor = Number(itemEdited.value)
                     item.is_editing_valor = false
                     break
                 }

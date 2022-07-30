@@ -6,8 +6,10 @@ export default {
         loading: false,
         sales: null,
         list_meta: {
+            select_limit_items: [5, 10, 15, 20],
             page: 1,
             limit: 10,
+            last_page: 1,
         },
         client: null,
         user: null,
@@ -737,11 +739,11 @@ export default {
             commit('ADD_DEBITNOTE', payload)
         },
 
-        async generate_comprobante ( { getters }, modelofact_id ) {
+        async generate_comprobante ( { getters }, ivacondition_id ) {
 
             return axios.post('comprobantes/facts', {
                 'sale_id': getters.sale.id,
-                'modelofact_id': modelofact_id
+                'ivacondition_id': ivacondition_id
             })
         },
         async generate_comprobante_nc (_, creditnote_id ) {

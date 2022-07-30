@@ -6,36 +6,32 @@
 				<v-col cols="12" sm="3"  class="pt-2 pb-0 d-flex justify-sm-end">
 					<span class="font-weight-bold black--text">Cliente</span>
 				</v-col>
-				<v-col cols="12" sm="9"  class=" pt-0 pb-0">
-					<v-text-field 
-						v-if="saleActive.client"
-						dense
-						v-model="saleActive.client.name"
-						readonly
-					>						
-					</v-text-field>
+				<v-col cols="12" sm="9"  class="pb-0 d-flex align-center" :class="!saleActive.client ? 'pt-0' :'pt-2'">
+					<template v-if="saleActive.client">
+						<template v-if="saleActive.client.tipo_persona == 'FISICA'">
+							<span >{{ saleActive.client.name }} {{ saleActive.client.surname }}</span>
+						</template>
+						<template v-else>
+							<span class="mt-2 mb-2" >{{ saleActive.client.name }}</span>
+						</template>
+
+					</template>
+					
 					<SelectClient  
 						v-else
+						:disabled="cantItemsSaleActive != 0"
 						@setClient="setClient" 
 					/>
 				</v-col>
+			</v-row>
+			<v-row class="mt-5">
 				<v-col cols="12" sm="3"  class="pt-2 pb-0 d-flex justify-sm-end">
 					<span class="font-weight-bold black--text">Tipo</span>
 				</v-col>
-				<v-col cols="12" sm="9"  class=" pt-0 pb-0">
-					<v-text-field 
-						v-if="saleActive.client"
-						dense
-						v-model="saleActive.client.tipo"
-						readonly
-					>						
-					</v-text-field>
-					<v-text-field 
-						v-else
-						dense
-						readonly
-					>						
-					</v-text-field>
+				<v-col cols="12" sm="9"  class=" pt-0 pb-0 d-flex align-center">
+					<span v-if="saleActive.client" class="mt-2 mb-2" >{{ saleActive.client.tipo}}</span>
+					<span v-else class="mt-2 mb-2" >----</span>
+					
 					<span ></span>
 				</v-col>
 
@@ -57,12 +53,14 @@ export default {
 	},
 	computed: {
 		...mapGetters({
+			cantItemsSaleActive: 'sale_manager/cantItemsSaleActive',
 			saleActive: 'sale_manager/saleActive'
 		})
     },
 	methods: {
 		...mapActions({
-            set_client_sale_active: 'sale_manager/set_client_sale_active'
+            set_client_sale_active: 'sale_manager/set_client_sale_active',
+			auto_set_is_incluir_datos_sale_active: 'sale_manager/auto_set_is_incluir_datos_sale_active',
         }),
 		
 		async setClient(client) {
@@ -75,28 +73,20 @@ export default {
 						'surname': result.data.data.attributes.surname,
                         'tipo': result.data.data.attributes.tipo,
 						'fact_default': result.data.data.attributes.fact_default,
+						'tipo_persona': result.data.data.attributes.tipo_persona,
+						'is_fact_default': result.data.data.attributes.is_fact_default,
 						
                     }
 
-					if ( result.data.data.relationships.ivacondition ) {
-						client['ivacondition'] = {
-							id: result.data.data.relationships.ivacondition.id,
-							name: result.data.data.relationships.ivacondition.attributes.name
-						}
-					}else {
-						client['ivacondition'] = null
-					}
-
-					if ( result.data.data.relationships.modelofact ) {
-						client['modelofact'] = {
-							id: result.data.data.relationships.modelofact.id,
-							name: result.data.data.relationships.modelofact.attributes.name
-						}
-					}else {
-						client['modelofact'] = null
-					}
+					
+					client['ivacondition'] = {
+						id: result.data.data.relationships.ivacondition.id,
+						name: result.data.data.relationships.ivacondition.attributes.name
+					}					
                     
                     this.set_client_sale_active( client)
+					this.auto_set_is_incluir_datos_sale_active()
+
                 }).catch((error) => {
 					console.log(error)
                     console.log("error al seleccionar un cliente")
