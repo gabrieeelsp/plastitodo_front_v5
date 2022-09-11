@@ -62,21 +62,24 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn
-            color="green darken-1"
-            text
-            @click="intDialogVisible = false"
-          >
-            Disagree
-          </v-btn>
+          <v-spacer></v-spacer>
 
-          <v-btn
-            color="green darken-1"
-            text
-            type="submit"
-          >
-            Agree
-          </v-btn>
+            <v-btn
+                color="warning"
+                small
+                @click="intDialogVisible = false"
+            >
+                Cancelar
+            </v-btn>
+
+            <v-btn
+                color="success"
+                @click="accept"
+                type="submit"
+                small
+            >
+                Aceptar
+            </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

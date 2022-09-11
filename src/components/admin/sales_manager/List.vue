@@ -95,7 +95,7 @@
                         <td v-else>---</td>
                         <td>{{ sale.relationships.user.attributes.name }}</td>
                         <td>{{ sale.relationships.sucursal.attributes.name }}</td>
-                        <td class="text-right">{{ sale.attributes.created_at | luxon  }}</td>
+                        <td class="text-right">{{ sale.attributes.created_at | luxon("dd-MM-yyyy HH:mm") }}</td>
                         <td>
                             <span v-if="sale.relationships.comprobante">{{ sale.relationships.comprobante.attributes.tipo }} {{ sale.relationships.comprobante.attributes.punto_venta | punto_venta_string }} - {{ sale.relationships.comprobante.attributes.numero | numero_factura_string }}</span>
                         </td>

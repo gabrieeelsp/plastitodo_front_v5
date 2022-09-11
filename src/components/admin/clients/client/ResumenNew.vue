@@ -1,0 +1,176 @@
+<template>
+    <div v-if="item_cache_new">
+        <v-form @submit.prevent="submit" ref="form" v-model="valid"     >
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Tipo Persona</span>
+                </v-col>
+                <v-col cols="12" sm="3"  class=" pt-0 pb-0">
+                    <v-select
+                        dense
+                        :menu-props="{ offsetY: true }"
+                        :items="items_tipo_persona"
+                        v-model="item_cache_new.tipo_persona"
+                    ></v-select>
+                </v-col>
+
+            </v-row>
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Nombre</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="item_cache_new.name"
+                        :rules="nameRules"
+                        :error-messages="errorNameMessages"
+                        @keydown="errorNameMessages = ''"
+                       
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row v-if="item_cache_new.tipo_persona == 'FISICA'">
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Apellido</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="item_cache_new.surname"
+                       
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Teléfono</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="item_cache_new.telefono"
+                       
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Dirección</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="item_cache_new.direccion"
+                       
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Tipo</span>
+                </v-col>
+                <v-col cols="12" sm="3"  class=" pt-0 pb-0">
+                    <v-select
+                        dense
+                        :menu-props="{ offsetY: true }"
+                        :items="items_tipo"
+                        v-model="item_cache_new.tipo"
+                    ></v-select>
+                </v-col>
+
+            </v-row>
+            
+
+            <v-row>
+                <v-spacer></v-spacer>
+                <v-col class="d-flex" cols="8">
+                    <v-btn
+                        :loading="is_saving" 
+                        type="submit"
+                        color="success"
+                    >Guardar</v-btn>
+                    <v-btn class="ml-2"
+                        @click="volver"
+                        color="warning"
+                    >Cancelar</v-btn>
+                    
+                </v-col>
+            </v-row>
+
+
+        </v-form>
+    </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+export default {
+    
+    computed: {
+        ...mapGetters({
+            item_cache_new: 'clients_manager/item_cache_new',
+        })
+    },
+    data () {
+        return {
+            valid: true,
+            is_saving: false,
+            nameRules: [
+                v => ( v && v.length > 0 ) || "Valor requerido",
+            ],
+            errorNameMessages: '',
+
+            items_tipo: ['MINORISTA', 'MAYORISTA'],
+
+            items_tipo_persona: ['FISICA', 'JURIDICA'],
+        }
+    },
+    methods: {
+        ...mapActions({            
+            store_item_new: 'clients_manager/store_item_new',
+            set_reload_items: 'clients_manager/set_reload_items',
+        }),
+        
+        validate () {
+            this.$refs.form.validate()
+        },
+
+        async submit () {
+            this.validate()
+            if ( this.valid ) {
+                this.is_saving = true
+                await this.store_item_new()
+                    .then((resp) => {
+                        this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
+                        this.set_reload_items ( true )
+                        this.$router.push({
+                            name: 'client',
+                            params:  {
+                                id: resp.data.data.id
+                            }
+                        })
+                    })
+                    .catch((error) => {
+                        this.$toast.error('Se ha producido un error.', { timeout: 3000 });
+                        console.log(error)
+                    })
+                    .finally(() => {
+                        this.is_saving = false
+                    })
+            }   
+        },
+        volver() {
+            this.$emit('volver')
+        }
+    }
+}
+</script>
+
+<style>
+    .select_ivaaliquot {
+        width: 100px;
+
+    }
+</style>

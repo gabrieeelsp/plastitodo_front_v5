@@ -64,17 +64,17 @@
                                 <th class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                     Producto 
                                 </th>
-                                <th 
+                                <th v-if="item.attributes.estado != 'RECIBIDO'" 
                                     style="width: 100px;"
                                     class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                     Precio
                                 </th>
-                                <th
+                                <th v-if="item.attributes.estado != 'RECIBIDO'"
                                     style="width: 100px;"
                                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                     Stock Min
                                 </th>
-                                <th
+                                <th v-if="item.attributes.estado != 'RECIBIDO'"
                                     style="width: 100px;"
                                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                     Stock
@@ -84,20 +84,27 @@
                                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                     Cantidad
                                 </th>
-                                <th 
+                                <th v-if="item.attributes.estado != 'RECIBIDO'"
                                     style="width: 100px;"
                                     class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                     SubTotal
                                 </th>
                                 <th 
-                                    style="width: 90px;"
+                                    style="width: 60px;"
                                     class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                     Actions
+                                </th>
+                                <th 
+                                    style="width: 28px;"
+                                    class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                    
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="purchaseproduct in items_visibles" :key="purchaseproduct.id" >
+                            <tr v-for="purchaseproduct in items_visibles" :key="purchaseproduct.id" 
+                                :class="purchaseproduct.is_confirmado ? 'light-green lighten-4' : ''"
+                            >
                                 <td v-if="show_images" >
                                     <v-row class="">
                                         <v-col class="pl-0" >
@@ -136,18 +143,22 @@
                                     <span v-if="purchaseproduct.relationships.purchaseproduct.relationships.stockproduct.attributes.is_stock_unitario_variable"> [ {{ globalHelperFixeDecimalCantidad(purchaseproduct.relationships.purchaseproduct.relationships.stockproduct.attributes.stock_aproximado_unidad) }} ]</span>
                                 </td>
                                 <td 
+                                    v-if="item.attributes.estado != 'RECIBIDO'"
                                     class="text-right"
                                     >{{ globalHelperFixeDecimalMoney(getPrecio(purchaseproduct)) }}</td>
                                 <td 
+                                    v-if="item.attributes.estado != 'RECIBIDO'"
                                     class="text-right"
                                     >{{ globalHelperFixeDecimalCantidad(getStock_minimo(purchaseproduct)) }}</td>
                                 <td 
+                                    v-if="item.attributes.estado != 'RECIBIDO'"
                                     class="text-right"
                                     >{{ globalHelperFixeDecimalCantidad(getStock(purchaseproduct)) }}</td>
                                 <td 
                                     class="text-right"
                                     >{{ globalHelperFixeDecimalCantidad(purchaseproduct.attributes.cantidad) }}</td>
                                 <td 
+                                    v-if="item.attributes.estado != 'RECIBIDO'"
                                     class="text-right"
                                     >{{ globalHelperFixeDecimalMoney(getSubtotal(purchaseproduct)) }}</td>
                                 
@@ -155,8 +166,17 @@
                                     <PurchaseorderitemEdit
                                         :purchaseorderitem="purchaseproduct"
                                         @setCantidad="setCantidad"
+                                        :disabled="item.attributes.estado == 'RECIBIDO'"
                                     />
 
+                                </td>
+                                <td>
+                                    <v-checkbox
+                                        class="mt-0 pr-0"
+                                        hide-details=""
+                                        
+                                        v-model="purchaseproduct.is_confirmado"
+                                    ></v-checkbox>
                                 </td>
 
                             </tr>
@@ -165,6 +185,7 @@
                 </v-simple-table>
             </v-col>
         </v-row>
+
         <v-row>
             <v-spacer></v-spacer>
             <v-col cols="12" md="4" class="d-flex align-center justify-center justify-md-end   pt-1 pb-1">
@@ -206,6 +227,9 @@ import PurchaseorderitemEdit from '@/components/admin/purchaseorders/purchaseord
 export default {
     mounted () {
         this.orderItems();
+        for ( let purchaseorderitem of this.item.relationships.purchaseorderitems ) {
+            this.$set(purchaseorderitem, 'is_confirmado', false)
+        }
     },
 
 	computed: {

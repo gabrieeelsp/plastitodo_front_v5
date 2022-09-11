@@ -117,6 +117,7 @@ export default {
         }),
         setItem (item) {
             this.set_item(item)
+            
             this.$router.replace({
                 name: 'purchaseorder',
                 params: {

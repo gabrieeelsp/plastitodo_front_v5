@@ -33,8 +33,7 @@ export default {
     created () {
         if ( this.items == null ) {
             this.getItems()
-        }
-        
+        }        
     },
     components: {
         List,

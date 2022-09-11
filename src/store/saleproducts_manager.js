@@ -9,7 +9,7 @@ export default {
         item_cache_new: null,
 
         ids_select: {
-
+            tags: []
         },
         filters: {
             q: '',
@@ -80,16 +80,23 @@ export default {
         set_items({ commit }, payload) {
             commit('SET_ITEMS', payload)
         },
-        set_item({ commit }, payload) {
+        set_item({ commit, state }, payload) {
             commit('SET_ITEM', payload)
             commit('SET_ITEM_CACHE', JSON.parse(JSON.stringify(payload)))    
+
+            state.ids_select.tags = []
+            if ( state.item ){
+                for ( let tag of state.item.relationships.tags ) {
+                    state.ids_select.tags.push({id: tag.id, name: tag.attributes.name, color: tag.attributes.color})
+                }
+            }
         },
         set_item_cache({ commit }, payload) {
             commit('SET_ITEM_CACHE', payload)
         },
 
 
-        update_item_resumen( { getters }, payload) {
+        update_item_resumen( { getters, state }, payload) {
 
             let attributes = {
                 //name: getters.item_cache.attributes.name,
@@ -98,11 +105,19 @@ export default {
                 barcode: payload.barcode
             }
 
+            let tags_json = []
+            for ( let tag of state.ids_select.tags ) {
+                tags_json.push({id: tag.id})
+            }
+
             return axios.put(`saleproducts/${getters.item.id}`, {
                 data: {
                     id: getters.item.id,
                     type: 'saleproducts',
                     attributes: attributes,
+                    relationships: {
+                        tags: tags_json
+                    }
                 }
             })
         },

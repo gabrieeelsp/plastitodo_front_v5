@@ -77,17 +77,19 @@
                         <v-row>
                             <v-col class="d-flex justify-end">
                                 <v-btn
-                                    color="green darken-1"
+                                    color="warning"
                                     text
+                                    small
                                     @click="intDialogVisible = false"
                                 >
                                     Cancelar
                                 </v-btn>
 
                                 <v-btn
-                                    color="green darken-1"
-                                    text
+                                    color="success"
+                                    small
                                     type="submit"
+                                    @click="accept"
                                 >
                                     Aceptar
                                 </v-btn>
@@ -119,9 +121,6 @@ import axios from 'axios'
     },
     data () {
       return {
-
-        url_asset: "http://localhost:8000/",
-
         cantidad: null,
         valid: true,
         cantidadRules: [
@@ -138,6 +137,7 @@ import axios from 'axios'
     computed: {
         ...mapGetters({
             saleActive: 'sale_manager/saleActive',
+            url_asset: 'url_asset',
         }),
         precio: function (){
             if ( this.item.tipo == 'saleproduct') {
@@ -194,6 +194,7 @@ import axios from 'axios'
 
             if ( this.valid ) {
                 if ( this.item.tipo == 'saleproduct' ) {
+                    
                     let name = this.item.name
                     if ( this.is_promo ) {
                         if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
@@ -275,7 +276,7 @@ import axios from 'axios'
                                 precio: this.precio,
                                 stock: 0, //this.stock,
                                 cantidad: this.cantidad,
-                                img: "https://picsum.photos/510/300?random",
+                                image1: this.url_asset + this.item.image1,
                                 is_editing_cantidad: false,
                                 comboItems: comboItems,
                                 is_complete () {

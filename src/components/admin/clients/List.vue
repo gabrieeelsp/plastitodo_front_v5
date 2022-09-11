@@ -49,7 +49,7 @@
                 ></v-text-field>
             </v-col>
             
-            <v-col cols="12" sm="2" class="d-flex align-center">
+            <v-col cols="12" sm="1" class="d-flex align-center">
                 <v-btn small
                     @click="$emit('getItems')"
                 >Search</v-btn>

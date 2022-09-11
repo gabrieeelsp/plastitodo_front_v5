@@ -72,6 +72,68 @@
             </v-row>
 
             <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Crédito</span>
+                </v-col>
+                <v-col cols="12" sm="2"  class=" pt-0 pb-0 d-flex">
+                    <v-text-field 
+                        reverse
+                        dense
+                        v-model="item_cache.attributes.credito_disponible"
+                        :rules="creditoRules"
+                        :error-messages="errorCreditoMessages"
+                        @keydown="errorCreditoMessages = ''"
+                       
+                    ></v-text-field>
+                </v-col>
+
+            </v-row>
+
+            <v-row>
+                <v-col cols="12" sm="4"  class="d-flex justify-sm-end align-center">
+                    <span class="font-weight-bold black--text">Tags</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class="d-flex justify-start align-center">
+                    <div>
+                    <v-chip
+                        v-for="tag in ids_select.tags" :key="tag.id"
+                        class="mr-2"
+                        close
+                        :color="tag.color"
+                        text-color="white"
+                        small
+                        @click:close="removeTag(tag.id)"
+                        >
+                        {{ tag.name }}
+                    </v-chip>
+                    </div>
+                    <SelectTagModal
+                        disable="false"
+                        :btn_data="{name: null, icon: 'mdi-plus'}"
+
+                        @set="addTag"
+                    />
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Comnentarios</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-textarea
+                        v-model="item_cache.attributes.coments_client"
+                        counter="200"
+                        :rules="commentsRules"
+                        :error-messages="errorCommentsMessages"
+                        @keydown="errorCommentsMessages = ''"
+
+                        outlined
+                    ></v-textarea>
+                </v-col>
+            </v-row>
+
+            <v-row>
                 <v-spacer></v-spacer>
                 <v-col class="d-flex" cols="8">
                     <v-btn
@@ -92,19 +154,27 @@
 
 
         </v-form>
+        
     </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import SelectTagModal from '@/components/admin/tags/selectTagModal'
+
 export default {
     mounted() {
     },
     computed: {
         ...mapGetters({
             item_cache: 'clients_manager/item_cache',
-            item: 'clients_manager/item'
+            item: 'clients_manager/item',
+            ids_select: 'clients_manager/ids_select'
         })
+    },
+    components: {
+        SelectTagModal,
+        
     },
     data () {
         return {
@@ -115,10 +185,21 @@ export default {
             ],
             errorNameMessages: '',
 
+            commentsRules: [
+                v => ( v.length < 200 ) ||"Exede el máximo permitido",
+            ],
+            errorCommentsMessages: '',
+
             surnameRules: [
                 v => ( v && v.length > 0 ) || "Valor requerido",
             ],
             errorSurnameMessages: '',
+
+            creditoRules: [
+                v => ( v && v.length > 0 ) || "Valor requerido",
+                v => ( v && Number(v) > 0 ) || "El valor debe ser mayor a 0",
+            ],
+            errorCreditoMessages: '',
 
             items_tipo: ['MINORISTA', 'MAYORISTA'],
         }
@@ -135,6 +216,14 @@ export default {
             this.item_cache.attributes.telefono = this.item.attributes.telefono
             this.item_cache.attributes.direccion = this.item.attributes.direccion
             this.item_cache.attributes.tipo = this.item.attributes.tipo
+            this.item_cache.attributes.coments_client = this.item.attributes.coments_client
+
+            this.item_cache.attributes.credito_disponible = this.item.attributes.credito_disponible
+
+            this.ids_select.tags = []
+            for ( let tag of this.item.relationships.tags ) {
+                this.ids_select.tags.push({id: tag.id, name: tag.attributes.name, color: tag.attributes.color})
+            }
         },
         validate () {
             this.$refs.form.validate()
@@ -154,6 +243,9 @@ export default {
                         this.item.attributes.telefono = this.item_cache.attributes.telefono
                         this.item.attributes.direccion = this.item_cache.attributes.direccion
                         this.item.attributes.tipo = this.item_cache.attributes.tipo
+                        this.item.attributes.credito_disponible = this.item_cache.attributes.credito_disponible
+
+                        this.item.attributes.coments_client = this.item_cache.attributes.coments_client
                     })
                     .catch((error) => {
                         this.$toast.error('Se ha producido un error.', { timeout: 3000 });
@@ -166,6 +258,23 @@ export default {
         },
         volver() {
             this.$emit('volver')
+        },
+        removeTag(id) {
+            this.ids_select.tags = this.ids_select.tags.filter((i) => {
+                return i.id != id
+            })
+        },
+        addTag(tag_nuevo) {
+            let add = true
+            for ( let tag of this.ids_select.tags ) {
+                if (tag.id == tag_nuevo.id ) {
+                    add = false
+                    break
+                }
+            }
+            if ( add ) {
+                this.ids_select.tags.push({id: tag_nuevo.id, name: tag_nuevo.name, color: tag_nuevo.color})
+            }
         }
     }
 }

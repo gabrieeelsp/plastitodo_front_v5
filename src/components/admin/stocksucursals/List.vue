@@ -73,7 +73,7 @@
                         <td class="text-right" >{{ globalHelperFixeDecimalCantidad(getStock(item)) }}</td>
                         <td class="text-right" v-for="sucursal in sucursals" :key="sucursal.id" >
                             <template v-if="getStockSucursal(item, sucursal.id) != null" >
-                                <v-span :class="is_stock_low(item, sucursal.id) ? 'red--text': ''">{{ globalHelperFixeDecimalCantidad(getStockSucursal(item, sucursal.id).attributes.stock) }}</v-span>
+                                <span :class="is_stock_low(item, sucursal.id) ? 'red--text': ''">{{ globalHelperFixeDecimalCantidad(getStockSucursal(item, sucursal.id).attributes.stock) }}</span>
                             </template>
                             <template v-else>
                                 <span class="red--text">{{ globalHelperFixeDecimalCantidad(0) }}</span>

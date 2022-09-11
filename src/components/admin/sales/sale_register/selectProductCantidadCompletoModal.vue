@@ -2,8 +2,8 @@
   
 
     <v-dialog
-      v-model="intDialogVisible"
-      max-width="700"
+        v-model="intDialogVisible"
+        max-width="700"
     >
       <v-card>
         <v-card-title class="text-h5">
@@ -79,17 +79,19 @@
                         <v-row>
                             <v-col class="d-flex justify-end">
                                 <v-btn
-                                    color="green darken-1"
+                                    color="warning"
                                     text
+                                    small
                                     @click="intDialogVisible = false"
                                 >
                                     Cancelar
                                 </v-btn>
 
                                 <v-btn
-                                    color="green darken-1"
-                                    text
+                                    color="success"
+                                    small
                                     type="submit"
+                                    @click="accept"
                                 >
                                     Aceptar
                                 </v-btn>
@@ -121,7 +123,6 @@ import { mapGetters } from 'vuex'
     },
     data () {
       return {
-        url_asset: "http://localhost:8000/",
 
         cantidad: null,
         valid: true,
@@ -139,6 +140,7 @@ import { mapGetters } from 'vuex'
     computed: {
         ...mapGetters({
             saleActive: 'sale_manager/saleActive',
+            url_asset: 'url_asset',
         }),
         precio: function (){
 

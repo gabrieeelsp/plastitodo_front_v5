@@ -109,6 +109,12 @@ export default {
             buscar_sucursals: 'sucursals_manager/buscar_sucursals',
             set_sucursals: 'sucursals_manager/set_sucursals',
 
+            buscar_valors: 'valors_manager/buscar_valors',
+            set_valors: 'valors_manager/set_valors',
+
+            buscar_deliveryshifts: 'deliveryshifts_manager/buscar_deliveryshifts',
+            set_deliveryshifts: 'deliveryshifts_manager/set_deliveryshifts',
+
             buscar_empresa: 'buscar_empresa',
             set_empresa: 'set_empresa',
 
@@ -160,6 +166,22 @@ export default {
             await this.buscar_sucursals()
                 .then((resp) => {
                     this.set_sucursals(resp.data.data)
+
+                }).catch((error) => {
+                    console.log(error)
+                })
+
+            await this.buscar_valors()
+                .then((resp) => {
+                    this.set_valors(resp.data.data)
+
+                }).catch((error) => {
+                    console.log(error)
+                })
+            
+            await this.buscar_deliveryshifts()
+                .then((resp) => {
+                    this.set_deliveryshifts(resp.data.data)
 
                 }).catch((error) => {
                     console.log(error)

@@ -7,6 +7,7 @@ export default {
         item: null,
         item_cache: null,
         item_cache_new: null,
+        reload_items: false,
         subitem: null,
         subitem_cache: null,
         subitem_cache_new: null,
@@ -55,6 +56,9 @@ export default {
         subitem_cache_new (state) {
             return state.subitem_cache_new
         },
+        reload_items ( state ) {
+            return state.reload_items
+        },
     },
     mutations: {
         SET_ITEMS (state, payload) {
@@ -78,8 +82,14 @@ export default {
         SET_SUBITEM_CACHE_NEW (state, payload) {
             state.subitem_cache_new = payload
         },
+        SET_RELOAD_ITEMS (state, payload) {
+            state.reload_items = payload
+        }
     },
     actions: {
+        set_reload_items({commit}, payload) {
+            commit('SET_RELOAD_ITEMS', payload)
+        },
         set_subitem({ commit }, payload) {
             commit('SET_SUBITEM', payload)
             commit('SET_SUBITEM_CACHE', JSON.parse(JSON.stringify(payload)))          
@@ -155,6 +165,10 @@ export default {
                 type: 'suppliers',
                 attributes: {
                     name: state.item_cache_new.name,
+                    direccion: state.item_cache_new.direccion,
+                    telefono: state.item_cache_new.telefono,
+                    telefono_movil: state.item_cache_new.telefono_movil,
+                    email: state.item_cache_new.email,
                 },
             }
 
@@ -189,10 +203,17 @@ export default {
 
 
         update_item_resumen( { getters }) {
-
+            
             let attributes = {
                 name: getters.item_cache.attributes.name,
+                direccion: getters.item_cache.attributes.direccion,
+                telefono: getters.item_cache.attributes.telefono,
+                telefono_movil: getters.item_cache.attributes.telefono_movil,
+                email: getters.item_cache.attributes.email,
+
+                comments: getters.item_cache.attributes.comments,
             }
+
 
             return axios.put(`suppliers/${getters.item.id}`, {
                 data: {

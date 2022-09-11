@@ -7,6 +7,7 @@ export default {
         item: null,
         item_cache: null,
         item_cache_new: null,
+        reload_items: false,
         subitem: null,
         subitem_cache: null,
         subitem_cache_new: null,
@@ -15,6 +16,7 @@ export default {
         },
         filters: {
             q: '',
+            is_enable: null,
         },
         list_meta: {
             select_limit_items: [5, 10, 15, 20],
@@ -54,6 +56,9 @@ export default {
         subitem_cache_new (state) {
             return state.subitem_cache_new
         },
+        reload_items ( state ) {
+            return state.reload_items
+        },
     },
     mutations: {
         SET_ITEMS (state, payload) {
@@ -77,12 +82,15 @@ export default {
         SET_SUBITEM_CACHE_NEW (state, payload) {
             state.subitem_cache_new = payload
         },
+        SET_RELOAD_ITEMS (state, payload) {
+            state.reload_items = payload
+        }
     },
     actions: {
-        set_subitem({ commit }, payload) {
-            commit('SET_SUBITEM', payload)
-            commit('SET_SUBITEM_CACHE', JSON.parse(JSON.stringify(payload)))            
+        set_reload_items({commit}, payload) {
+            commit('SET_RELOAD_ITEMS', payload)
         },
+
 
         update_item_values( { getters } ) {
 
@@ -100,89 +108,22 @@ export default {
             })
         },
 
-
-        update_subitem( { getters }) {
-
-            let attributes = {
-                name: getters.subitem_cache.attributes.name,
-                relacion_venta_stock: getters.subitem_cache.attributes.relacion_venta_stock,
-                is_enable: getters.subitem_cache.attributes.is_enable,
-
-                porc_min: getters.subitem_cache.attributes.porc_min,
-                porc_may: getters.subitem_cache.attributes.porc_may,
-            }
-
-            return axios.put(`combos/${getters.subitem.id}`, {
-                data: {
-                    id: getters.subitem.id,
-                    type: 'combos',
-                    attributes: attributes,
-                }
-            })
-        },
-        store_subitem_new( { state } ) {
-            let data = {
-                type: 'combos',
-                attributes: {
-                    name: state.subitem_cache_new.name,
-                    relacion_venta_stock: state.subitem_cache_new.relacion_venta_stock,
-                    is_enable: state.subitem_cache_new.is_enable,
-                },
-                relationships: {
-                    stockproduct: {
-                        data: {
-                            id: state.item.id
-                        }
-                    }
-                } 
-            }
-
-            return axios.post('combos', {                
-                data: data 
-            })
-        },
-
-        new_subitem ({commit}) {
-            commit('SET_SUBITEM_CACHE_NEW', {
-                id: null,
-                nombre:  '',
-                relacion_venta_stock: '',
-                is_enable: false
-            })
-        },
-
         new_item ({commit}) {
             commit('SET_ITEM_CACHE_NEW', {
                 id: null,
                 nombre:  '',
-                costo: '',
-                ivaaliquot_id: 0,
-                is_stock_unitario_variable: false,
-                stock_aproximado_unidad: ''
             })
         },
         store_item_new( { state } ) {
             let data = {
-                type: 'stockproducts',
+                type: 'combos',
                 attributes: {
                     name: state.item_cache_new.name,
-                    costo: state.item_cache_new.costo,
-                    is_stock_unitario_variable: state.item_cache_new.is_stock_unitario_variable,
                 },
-                relationships: {
-                    ivaaliquot: {
-                        data: {
-                            id: state.item_cache_new.ivaaliquot_id
-                        }
-                    }
-                } 
             }
 
-            if ( state.item_cache_new.is_stock_unitario_variable ) {
-                data['attributes']['stock_aproximado_unidad'] = state.item_cache_new.stock_aproximado_unidad
-            }
 
-            return axios.post('stockproducts', {                
+            return axios.post('combos', {                
                 data: data 
             })
         },
@@ -192,12 +133,13 @@ export default {
                     limit: state.list_meta.limit,
                     page: state.list_meta.page,
                     q: state.filters.q,
+                    is_enable: state.filters.is_enable,
                 }
             })
         },
 
         buscar_item(_, id) {
-            return axios.get(`/stockproducts/${id}`)
+            return axios.get(`/combos/${id}`)
         },
 
         set_items({ commit }, payload) {
@@ -205,7 +147,7 @@ export default {
         },
         set_item({ commit }, payload) {
             commit('SET_ITEM', payload)
-            commit('SET_ITEM_CACHE', JSON.parse(JSON.stringify(payload)))            
+            commit('SET_ITEM_CACHE', JSON.parse(JSON.stringify(payload)))    
         },
         set_item_cache({ commit }, payload) {
             commit('SET_ITEM_CACHE', payload)
@@ -213,33 +155,58 @@ export default {
 
 
         update_item_resumen( { getters }) {
-
             let attributes = {
                 name: getters.item_cache.attributes.name,
-                costo: getters.item_cache.attributes.costo,
-                is_stock_unitario_variable: getters.item_cache.attributes.is_stock_unitario_variable,
+                is_enable: getters.item_cache.attributes.is_enable,
             }
 
-            if ( getters.item_cache.attributes.is_stock_unitario_variable ) {
-                attributes['stock_aproximado_unidad'] = getters.item_cache.attributes.stock_aproximado_unidad
-            }
-
-            return axios.put(`stockproducts/${getters.item.id}`, {
+            return axios.put(`combos/${getters.item.id}`, {
                 data: {
                     id: getters.item.id,
-                    type: 'stockproducts',
+                    type: 'combos',
                     attributes: attributes,
-                    relationships: {
-                        ivaaliquot: {
-                            id: getters.item_cache.relationships.ivaaliquot.id,
-                        },
-                    }
                 }
             })
         },
+     
+        update_item_configuration( { getters }) {
+            let attributes = {
+                desc_min: getters.item_cache.attributes.desc_min,
+                desc_may: getters.item_cache.attributes.desc_may,
+                precision_min: getters.item_cache.attributes.precision_min,
+                precision_may: getters.item_cache.attributes.precision_may,
+            }
 
-        
-
+            let comboitems = []
+            for ( let comboitem of getters.item_cache.relationships.comboitems ) {
+                let saleproducts = []
+                for ( let saleproduct of comboitem.relationships.saleproducts ) {
+                    saleproducts.push({
+                        id: saleproduct.id,
+                        is_enable: saleproduct.attributes.is_enable
+                    })
+                }
+                comboitems.push({
+                    id: comboitem.id,
+                    name: comboitem.attributes.name,
+                    cantidad: comboitem.attributes.cantidad,
+                    relationships: {
+                        saleproducts: saleproducts
+                    }
+                })
+            }
+            return axios.put(`combos/${getters.item.id}/update_configuration`, {
+                data: {
+                    id: getters.item.id,
+                    type: 'combos',
+                    attributes: attributes,
+                    relationships: {
+                        comboitems: comboitems,
+                    },
+                }
+            })
+        },
+     
         
 
         

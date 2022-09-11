@@ -38,7 +38,7 @@ import selectProductCantidadCompletoModal from '@/components/admin/sales/sale_re
 
 import axios from 'axios'
 
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
     mounted() {
         this.onload()
@@ -61,6 +61,11 @@ export default {
             selectProductCantidadModalCompletoVisible: false,
         }
     },
+    computed: {
+        ...mapGetters({
+            saleActive: 'sale_manager/saleActive',
+        })
+    },
     methods: {
         ...mapActions({
             add_item: 'sale_manager/add_item',
@@ -77,19 +82,45 @@ export default {
             // other code
         },
 
+        sale_has_saleproduct ( saleproduct_id  ) {
+            for ( let item of this.saleActive.items ) {
+                if ( item.saleProductId == saleproduct_id ) {
+                    return true
+                }
+            }
+            return false
+        },
+
         addItem (item) {
             this.selectProductCantidadModalVisible = false
             this.selectProductCantidadModalCompletoVisible = false
             this.itemSelected = null
             this.barcode = ''
-            this.add_item(item)
+            if ( !this.sale_has_saleproduct(item.saleProductId) ) {
+                this.add_item(item)
+            }else {
+                this.$toast.error('El producto seleccionado ya se encuentra en la venta actual.', { timeout: 3000 });
+            }
             this.setFocusBarcode()
+        },
+
+        sale_has_combo ( combo_id  ) {
+            for ( let comboitem of this.saleActive.comboitems ) {
+                if ( comboitem.comboId == combo_id ) {
+                    return true
+                }
+            }
+            return false
         },
 
         addComboItem (item) {
             this.selectProductCantidadModalVisible = false
             this.itemSelected = null
-            this.add_combo_item(item)
+            if ( !this.sale_has_combo(item.comboId) ) {
+                this.add_combo_item(item)
+            }else {
+                this.$toast.error('El Combo seleccionado ya se encuentra en la venta actual.', { timeout: 3000 });
+            }
             this.setFocusBarcode()
         },
 
@@ -105,6 +136,8 @@ export default {
             
             // other code
         },
+
+
 
         buscar_item () {
             if ( this.barcode != '' ) {

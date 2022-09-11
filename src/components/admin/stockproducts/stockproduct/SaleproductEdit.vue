@@ -3,7 +3,7 @@
     
     <v-dialog
       v-model="dialog"
-      width="680"
+      width="800"
       
     >
     
@@ -30,10 +30,10 @@
         <v-card-text class="pt-3">
             
             <v-row>
-                <v-col cols="12" sm="3"  class="pt-2 pb-0 d-flex justify-sm-end">
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
                     <span class="font-weight-bold black--text">Nombre</span>
                 </v-col>
-                <v-col cols="12" sm="9"  class=" pt-0 pb-0">
+                <v-col cols="12" sm="8"  class=" pt-0 pb-0">
                     <v-text-field 
                         dense
                         v-model="subitem_cache.attributes.name"
@@ -45,7 +45,7 @@
                 </v-col>
             </v-row>
             <v-row>
-                <v-col cols="12" sm="5"  class="pt-2 pb-0 d-flex justify-sm-end">
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
                     <span class="font-weight-bold black--text">Rel/Venta</span>
                 </v-col>
                 <v-col cols="12" sm="4"  class=" pt-0 pb-0 d-flex">
@@ -63,7 +63,7 @@
             </v-row>
 
             <v-row>
-                <v-col cols="12" sm="5"  class="pt-2 pb-0 d-flex justify-sm-end">
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
                     <span class="font-weight-bold black--text">Porc Minorista</span>
                 </v-col>
                 <v-col cols="12" sm="4"  class=" pt-0 pb-0 d-flex">
@@ -80,7 +80,7 @@
 
             </v-row>
             <v-row>
-                <v-col cols="12" sm="5"  class="pt-2 pb-0 d-flex justify-sm-end">
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
                     <span class="font-weight-bold black--text">Porc Mayorista</span>
                 </v-col>
                 <v-col cols="12" sm="4"  class=" pt-0 pb-0 d-flex">
@@ -97,9 +97,22 @@
 
             </v-row>
 
-
             <v-row>
-                <v-col cols="12" sm="5"  class="pt-0 pb-0 d-flex justify-sm-end">
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Grupo</span>
+                </v-col>
+                <v-col cols="12" sm="7"  class=" pt-0 pb-0 d-flex">
+                    <SelectSaleproductgroup
+						:disabled="false"
+						@setSaleproductgroup="setSaleproductgroup"
+
+                        :saleproductgroup="subitem_cache.relationships.saleproductgroup"
+					/>
+                    
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-0 pb-0 d-flex justify-sm-end">
                     
                 </v-col>
                 <v-col cols="12" sm="4"  class=" pt-0 pb-0">
@@ -112,7 +125,37 @@
                         ></v-checkbox>
                 </v-col>
             </v-row>
-                
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-0 pb-0 d-flex justify-sm-end">
+                    
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-checkbox
+                        class="mt-1 mb-1"
+                        v-model="subitem_cache.attributes.is_enable_web"
+                        label="Habilitado WEB"
+                        color="green"
+                        hide-details
+                        ></v-checkbox>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Descripción</span>
+                </v-col>
+                <v-col cols="12" sm="7"  class=" pt-0 pb-0">
+                    <v-textarea
+                        v-model="subitem_cache.attributes.comments"
+                        counter="200"
+                        :rules="commentsRules"
+                        :error-messages="errorCommentsMessages"
+                        @keydown="errorCommentsMessages = ''"
+
+                        outlined
+                    ></v-textarea>
+                </v-col>
+            </v-row>
             
         </v-card-text>
 
@@ -130,15 +173,20 @@
         </v-card-actions>
       </v-card>
       </v-form>
+
     </v-dialog>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import SelectSaleproductgroup from '@/components/admin/saleproductgroups/SelectSaleproductgroup'
 export default {
     created () {
-    
+        
+    },
+    components: {
+        SelectSaleproductgroup,
     },
 
     props: {
@@ -173,12 +221,19 @@ export default {
                 v => ( v && Number(v) > 0 ) || "El valor debe ser mayor a 0",
             ],
             errorPorc_mayMessages: '',
+
+            commentsRules: [
+                v => ( v.length < 200 ) ||"Exede el máximo permitido",
+            ],
+            errorCommentsMessages: '',
         }
     },
     computed: {
         ...mapGetters({
             subitem: 'stockproducts_manager/subitem',
             subitem_cache: 'stockproducts_manager/subitem_cache',
+
+            subitem_ids_select: 'stockproducts_manager/subitem_ids_select',
         })
     },
     methods: {
@@ -203,6 +258,12 @@ export default {
                         this.subitem.attributes.name = this.subitem_cache.attributes.name
                         this.subitem.attributes.is_enable = this.subitem_cache.attributes.is_enable
 
+                        this.subitem.attributes.is_enable_web = resp.data.data.attributes.is_enable_web
+
+                        this.subitem.relationships.saleproductgroup = resp.data.data.relationships.saleproductgroup
+
+                        this.subitem.attributes.comments = resp.data.data.attributes.comments
+
                         this.dialog = false
                         
                     })
@@ -218,6 +279,14 @@ export default {
 
         onload () {
             this.set_subitem(this.saleproduct)
+        },
+
+        setSaleproductgroup (saleproductgroup) { console.log( saleproductgroup)
+            if ( saleproductgroup ) {
+                this.subitem_ids_select.saleproductgroup_id = saleproductgroup.id            
+            }else {
+                this.subitem_ids_select.saleproductgroup_id = 0
+            }
         }
     }
 

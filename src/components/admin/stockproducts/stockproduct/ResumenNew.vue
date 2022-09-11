@@ -142,6 +142,7 @@ export default {
         ...mapActions({
             
             store_item_new: 'stockproducts_manager/store_item_new',
+            set_reload_items: 'stockproducts_manager/set_reload_items',
         }),
         
         validate () {
@@ -155,7 +156,7 @@ export default {
                 await this.store_item_new()
                     .then((resp) => {
                         this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
-                        
+                        this.set_reload_items ( true )
                         this.$router.push({
                             name: 'stockproduct',
                             params:  {

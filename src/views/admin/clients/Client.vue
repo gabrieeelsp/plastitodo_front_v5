@@ -1,7 +1,7 @@
 <template>
   <div class="pa-sm-3" v-if="item" >
         <v-row>
-            <v-col cols="12" md="12">
+            <v-col cols="12" md="9">
                 <v-card class="">
                     <v-card-title class="d-flex justify-space-between align-center">
                         <template v-if="item.attributes.tipo_persona == 'FISICA'" >                
@@ -35,6 +35,16 @@
                     </v-card-text>
                 </v-card>
             </v-col>
+            <v-col cols="12" md="3">
+                <v-row>
+                    <v-col>
+                        <SaldoClient
+                            :client="item"
+                         />
+                    </v-col>
+                </v-row>
+                
+            </v-col>
             
         </v-row>
         
@@ -46,6 +56,8 @@ import { mapActions, mapGetters } from 'vuex'
 import Resumen from '@/components/admin/clients/client/Resumen'
 import Facturacion from '@/components/admin/clients/client/Facturacion'
 import Movimientos from '@/components/admin/clients/client/Movimientos'
+
+import SaldoClient from '@/components/admin/clients/client/SaldoClient'
 export default {
     created() {
         if ( this.item == null ) {
@@ -66,7 +78,9 @@ export default {
     components: {
         Resumen,
         Facturacion,
-        Movimientos
+        Movimientos,
+
+        SaldoClient,
     },
     computed: {
         ...mapGetters({

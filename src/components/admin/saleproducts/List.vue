@@ -9,12 +9,12 @@
                 dense
                     v-model="filters.q"
                     label="Nombre"    
-                    @keyup.enter="$emit('getItems')"    
+                    @keyup.enter="buscar_q"    
                     hide-details=""                            
                 ></v-text-field>
             </v-col>
             
-            <v-col cols="12" sm="2" class="d-flex align-center">
+            <v-col cols="12" sm="1" class="d-flex align-center">
                 <v-btn small
                     @click="$emit('getItems')"
                 >Search</v-btn>
@@ -179,6 +179,10 @@ export default {
             //this.set_list_meta_page(this.page)
             this.$emit('getItems')
         },
+        buscar_q() {
+            this.list_meta.page = 1
+            this.$emit('getItems')
+        }
         
     }
 }

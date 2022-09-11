@@ -4,9 +4,10 @@
       max-width="700"
     >
       <v-card v-if="subitem_cache_new">
-        <v-card-title class="text-h5">
+        <v-card-title class="text-h6 grey lighten-2" >
             <span>{{ stockproduct.attributes.name }}</span>          
         </v-card-title>
+
         <v-form @submit.prevent="submit" ref="form" v-model="valid" >
         <v-card-text>
             
@@ -66,35 +67,19 @@
                     hide-details
                     ></v-checkbox>
             </v-col>
-        </v-row>
-            
-            <v-row>
-                <v-col class="d-flex justify-end">
-                    <v-btn
-                        color="green darken-1"
-                        text
-                        @click="intDialogVisible = false"
-                    >
-                        Cancelar
-                    </v-btn>
-
-                    <v-btn
-                        color="green darken-1"
-                        text
-                        type="submit"
-                    >
-                        Aceptar
-                    </v-btn>
-                </v-col>
-            </v-row>
-                    
+        </v-row>                    
                 
         </v-card-text>
-
+        <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-
-
+          <v-btn
+            color="success"
+            :loading="is_saving"
+            type="submit"
+          >
+            Guardar
+          </v-btn>
         </v-card-actions>
         </v-form>
       </v-card>

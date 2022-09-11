@@ -17,6 +17,16 @@ import combos_manager from './combos_manager'
 import suppliers_manager from './suppliers_manager'
 import purchaseorders_manager from './purchaseorders_manager'
 import stocksucursals_manager from './stocksucursals_manager'
+import stockproductgroups_manager from './stockproductgroups_manager'
+import saleproductgroups_manager from './saleproductgroups_manager'
+import stockmovements_manager from './stockmovements_manager'
+import tags_manager from './tags_manager'
+import users_manager from './users_manager'
+import valors_manager from './valors_manager'
+import familias_manager from './familias_manager'
+import deliveryshifts_manager from './deliveryshifts_manager'
+import order_manager from './order_manager'
+import orders_manager from './orders_manager'
 
 Vue.use(Vuex)
 
@@ -27,6 +37,7 @@ export default new Vuex.Store({
         init_error: null,
         show_init_admin: null,
         url_asset: "http://localhost:8000/",
+        //url_asset: "https://plastitodo.online:8443/",
 
         empresa: null,
     },
@@ -90,5 +101,15 @@ export default new Vuex.Store({
         suppliers_manager,
         purchaseorders_manager,
         stocksucursals_manager,
+        stockproductgroups_manager,
+        saleproductgroups_manager,
+        stockmovements_manager,
+        tags_manager,
+        users_manager,
+        valors_manager,
+        familias_manager,
+        deliveryshifts_manager,
+        order_manager,
+        orders_manager,
     }
 })

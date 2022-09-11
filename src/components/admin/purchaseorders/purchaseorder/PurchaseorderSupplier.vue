@@ -9,7 +9,22 @@
                     <span>{{ supplier.attributes.name }}</span>
                 </v-col>
             </v-row>
-            
+            <v-row>
+                <v-col cols="12" sm="3"  class="d-flex justify-start pt-1 pb-1">
+                    <span>Direccion:</span>
+                </v-col>
+                <v-col cols="12" sm="9"  class="d-flex justify-start pt-1 pb-1">
+                    <span>{{ supplier.attributes.direccion }}</span>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" sm="3"  class="d-flex justify-start pt-1 pb-1">
+                    <span>Teléfono:</span>
+                </v-col>
+                <v-col cols="12" sm="9"  class="d-flex justify-start pt-1 pb-1">
+                    <span>{{ supplier.attributes.telefono }}</span>
+                </v-col>
+            </v-row>
             
         </v-card-text>
     </v-card>   

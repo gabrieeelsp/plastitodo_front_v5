@@ -91,22 +91,21 @@ export default {
             if ( this.tipo == 'debitnote') { this.ObtenerDebitnoteItems() }
 
 
-            console.log('total' + this.total)
 
             // enviar por axios
             await axios.post('http://localhost:8011/print_comprobante', this.emitir_comprobante())
                 .then((resp) => {
                     console.log(resp)
                 })
-                .catch((error) => {
-                    console.log(error)
+                .catch(() => {
+                    this.$toast.error('Se ha producido un error.', { timeout: 3000 });
                 })
 
             this.is_generandoReporte = false
             
         },
         emitir_comprobante() {  
-            console.log(this.comprobante)
+            //console.log(this.comprobante)
             let json_items = []
             for ( let item of this.comprobanteItems ) {
                 json_items.push({

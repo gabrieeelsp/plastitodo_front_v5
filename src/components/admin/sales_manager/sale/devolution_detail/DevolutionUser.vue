@@ -22,7 +22,7 @@
                     <span>Fecha:</span>
                 </v-col>
                 <v-col cols="12" sm="9"  class="d-flex justify-start pt-1 pb-1">
-                    <span>{{ devolution.attributes.created_at }}</span>
+                    <span>{{ devolution.attributes.created_at | luxon("dd-MM-yyyy HH:mm")  }}</span>
                 </v-col>
             </v-row>
         </v-card-text>

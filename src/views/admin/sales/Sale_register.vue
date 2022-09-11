@@ -82,13 +82,13 @@
                     <v-col cols="12">
                         <ModeloFactSaleActive
                             v-if="!saleActive.is_saved"
-                         />
-                         <SaleComprobante
+                        />
+                        <SaleComprobante
                             v-else
                             :sale="sale_saved"
                             :is_facturando="is_facturando"
                             :ivacondition_id_prop="this.saleActive.ivacondition_id"
-                         />
+                        />
                     </v-col>
                     <v-col cols="12">
                         <TotalSale />

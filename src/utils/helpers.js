@@ -40,7 +40,7 @@ Vue.mixin({
 
         globalHelperCalculaSubTotalStockUnitario(precio, cantidad, stock_aproximado_unitario, cantidad_total) {
             
-            if ( cantidad_total ) {
+            if ( Number(cantidad_total) != 0 ) {
                 return Number(precio * cantidad_total).toFixed(10) 
                 
             }
@@ -98,6 +98,15 @@ Vue.mixin({
             a = a - 1
             return Number( a * 100 ).toFixed(10)            
         },
+
+        globalHelperFixNumeroDocuento (num){
+            let numero_format =  Intl.NumberFormat("en-US", {
+                useGrouping: false,
+                minimumIntegerDigits: 4
+            })
+            return numero_format.format(num)
+
+        }
 
     },
 })

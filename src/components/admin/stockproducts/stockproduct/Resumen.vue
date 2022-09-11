@@ -86,6 +86,21 @@
             </v-row>
 
             <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Grupo</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0 d-flex">
+                    <SelectStockproductgroup
+						:disabled="false"
+						@setStockproductgroup="setStockproductgroup"
+
+                        :stockproductgroup="item.relationships.stockproductgroup"
+					/>
+                    
+                </v-col>
+            </v-row>
+
+            <v-row>
                 <v-spacer></v-spacer>
                 <v-col class="d-flex" cols="8">
                     <v-btn
@@ -106,18 +121,23 @@
 
 
         </v-form>
+
     </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import SelectStockproductgroup from '@/components/admin/stockproductgroups/SelectStockproductgroup'
 export default {
     mounted() {
+    },components: {
+        SelectStockproductgroup
     },
     computed: {
         ...mapGetters({
             item_cache: 'stockproducts_manager/item_cache',
             item: 'stockproducts_manager/item',
+            item_ids_select: 'stockproducts_manager/item_ids_select',
             ivaaliquots_select: 'ivaaliquots_manager/ivaaliquots_select',
         })
     },
@@ -153,6 +173,8 @@ export default {
             this.item_cache.relationships.ivaaliquot = this.item.relationships.ivaaliquot
             this.item_cache.attributes.is_stock_unitario_variable = this.item.attributes.is_stock_unitario_variable
             this.item_cache.attributes.stock_aproximado_unidad = this.item.attributes.stock_aproximado_unidad
+
+            //this.item_cache.relationships.stockproductgroup = this.item.relationships.stockproductgroup
         },
         validate () {
             this.$refs.form.validate()
@@ -172,6 +194,8 @@ export default {
                         this.item.attributes.is_stock_unitario_variable = this.item_cache.attributes.is_stock_unitario_variable
                         this.item.attributes.stock_aproximado_unidad = resp.data.data.attributes.stock_aproximado_unidad,
                         this.item_cache.attributes.stock_aproximado_unidad = resp.data.data.attributes.stock_aproximado_unidad
+
+                        this.item.relationships.stockproductgroup = resp.data.data.relationships.stockproductgroup
                     })
                     .catch((error) => {
                         this.$toast.error('Se ha producido un error.', { timeout: 3000 });
@@ -184,6 +208,14 @@ export default {
         },
         volver() {
             this.$emit('volver')
+        },
+
+        setStockproductgroup (stockproductgroup) {
+            if ( stockproductgroup ) {
+                this.item_ids_select.stockproductgroup_id = stockproductgroup.id            
+            }else {
+                this.item_ids_select.stockproductgroup_id = 0
+            }
         }
     }
 }

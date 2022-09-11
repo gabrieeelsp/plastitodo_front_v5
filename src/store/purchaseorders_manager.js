@@ -6,8 +6,8 @@ export default {
         items: null,
         item: null,
 
-        ids_select: {
-
+        item_ids_select: {
+            sucursal_id: null,
         },
         filters: {
             q: '',
@@ -32,6 +32,9 @@ export default {
         },
         filters (state) {
             return state.filters
+        },
+        item_ids_select (state) {
+            return state.item_ids_select
         },
     },
     mutations: {
@@ -68,7 +71,7 @@ export default {
             })
         },
 
-        save_item( {getters} ) {
+        save_item( {getters}, is_confirmar ) {
             let json_items = []
 
             for ( var item of getters.item.relationships.purchaseorderitems ) {
@@ -80,7 +83,13 @@ export default {
                 }
                 
             }
-
+            let json_sucursal = null
+            if ( getters.item.relationships.sucursal ) {
+                json_sucursal = {
+                    id: getters.item.relationships.sucursal.id
+                }
+            }
+            
             return axios.put(`purchaseorders/${getters.item.id}`, {
                 data: {
                     id: getters.item.id,
@@ -88,6 +97,10 @@ export default {
                     attributes: null,
                     relationships: {
                         purchaseorderitems: json_items,
+                        sucursal: json_sucursal
+                    },
+                    meta: {
+                        is_confirmar: is_confirmar
                     }
                 }
             })
@@ -106,12 +119,20 @@ export default {
             return axios.get(`/purchaseorders/${id}`)
         },
 
-        set_items({ commit }, payload) {
-
+        set_items({ commit, getters }, payload) {
             commit('SET_ITEMS', payload)
+            if ( getters.item ) {
+                getters.items.filter((i) => {
+                    if ( i.id == getters.item.id ) {
+                        return true
+                    }
+                    return false
+                })[0].relationships.purchaseorderitems = getters.item.relationships.purchaseorderitems
+            }
         },
         set_item({ commit }, payload) {
-            commit('SET_ITEM', payload)     
+            commit('SET_ITEM', payload)   
+
         },
 
         add_item( { commit }, payload ) {

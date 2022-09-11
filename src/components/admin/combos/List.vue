@@ -3,7 +3,21 @@
         <v-row class="">
             <v-spacer></v-spacer>
             
-            
+            <v-col cols="12" sm="2" class="d-flex align-center">
+                <v-select
+                    dense
+                    :items="[{name: 'Si', value: true}, {name: 'No', value: false}]"
+                    item-text="name"
+                    item-value="value"
+                    v-model="filters.is_enable"
+                    :menu-props="{ offsetY: true }"
+                    hide-details=""
+                    label="Publicado"
+                    clearable
+                    @input="list_meta.page = 1"  
+                >
+                </v-select>
+            </v-col>
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-text-field
                 dense
@@ -38,6 +52,11 @@
                             <th 
                                 class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                 Nombre
+                            </th>
+                            <th   
+                            style="width: 100px;"                              
+                                class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                Publicado
                             </th>
                             <th 
                                 style="width: 100px;"   
@@ -75,6 +94,8 @@
                         <td>{{ item.id }}</td>
                         <td >{{ item.attributes.name }}</td>
                         
+                        <td class="text-right" v-if="item.attributes.is_enable"><v-chip x-small class="ma-2" color="success" >Enable</v-chip></td>
+                        <td class="text-right" v-else><v-chip x-small class="ma-2" color="warning" >Disable</v-chip></td>
                         
                         <td class="text-right">{{ globalHelperFixeDecimalMoney(item.attributes.precio_min) }}</td>
                         
@@ -155,7 +176,7 @@ export default {
         setItem (item) {
             this.set_item(item)
             this.$router.replace({
-                name: 'combos',
+                name: 'combo',
                 params: {
                     id: item.id
                 }

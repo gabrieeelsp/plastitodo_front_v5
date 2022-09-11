@@ -4,14 +4,18 @@ export default {
     namespaced: true,
     state: {
         items: null,
+        reload_items: false,
         item: null,
         item_cache: null,
         item_cache_new: null,
         subitem: null,
         subitem_cache: null,
         subitem_cache_new: null,
-        ids_select: {
-
+        item_ids_select: {
+            stockproductgroup_id: null
+        },
+        subitem_ids_select: {
+            saleproductgroup_id: null
         },
         filters: {
             q: '',
@@ -34,14 +38,20 @@ export default {
         item (state) {
             return state.item
         },
+        reload_items ( state ) {
+            return state.reload_items
+        },
         item_cache (state) {
             return state.item_cache
         },
         item_cache_new (state) {
             return state.item_cache_new
         },
-        ids_select (state) {
-            return state.ids_select
+        item_ids_select (state) {
+            return state.item_ids_select
+        },
+        subitem_ids_select (state) {
+            return state.subitem_ids_select
         },
         filters (state) {
             return state.filters
@@ -78,6 +88,9 @@ export default {
         SET_SUBITEM_CACHE_NEW (state, payload) {
             state.subitem_cache_new = payload
         },
+        SET_RELOAD_ITEMS (state, payload) {
+            state.reload_items = payload
+        }
     },
     actions: {
         set_subitem({ commit }, payload) {
@@ -87,14 +100,22 @@ export default {
 
         update_subitem( { getters }, tipo ) {
 
+            let is_enable_web = getters.subitem_cache.attributes.is_enable_web
+            if ( !getters.subitem_cache.attributes.is_enable ) {
+                is_enable_web = false
+            }
+
             if ( tipo == 'saleproduct' ){
                 let attributes = {
                     name: getters.subitem_cache.attributes.name,
                     relacion_venta_stock: getters.subitem_cache.attributes.relacion_venta_stock,
                     is_enable: getters.subitem_cache.attributes.is_enable,
+                    is_enable_web: is_enable_web,
     
                     porc_min: getters.subitem_cache.attributes.porc_min,
                     porc_may: getters.subitem_cache.attributes.porc_may,
+
+                    comments: getters.subitem_cache.attributes.comments,
                 }
     
                 return axios.put(`saleproducts/${getters.subitem.id}`, {
@@ -102,6 +123,11 @@ export default {
                         id: getters.subitem.id,
                         type: 'saleproducts',
                         attributes: attributes,
+                        relationships: {
+                            saleproductgroup: {
+                                id: getters.subitem_ids_select.saleproductgroup_id,
+                            }
+                        }
                     }
                 })
             }else if ( tipo == 'purchaseproduct' ) {
@@ -148,6 +174,27 @@ export default {
                 }
     
                 return axios.post('purchaseproducts', {                
+                    data: data 
+                })
+            }else if ( tipo == 'saleproduct' ) {
+                let data = {
+                    type: 'saleproducts',
+                    attributes: {
+                        name: state.subitem_cache_new.name,
+                        relacion_venta_stock: state.subitem_cache_new.relacion_venta_stock,
+                        is_enable: state.subitem_cache_new.is_enable,
+                    },
+                    relationships: {
+                        stockproduct: {
+                            data: {
+                                id: state.item.id
+                            }
+                        },
+
+                    } 
+                }
+    
+                return axios.post('saleproducts', {                
                     data: data 
                 })
             }
@@ -209,6 +256,10 @@ export default {
             })
         },
 
+        set_reload_items({commit}, payload) {
+            commit('SET_RELOAD_ITEMS', payload)
+        },
+
         buscar_item(_, id) {
             return axios.get(`/stockproducts/${id}`)
         },
@@ -246,6 +297,9 @@ export default {
                         ivaaliquot: {
                             id: getters.item_cache.relationships.ivaaliquot.id,
                         },
+                        stockproductgroup: {
+                            id: getters.item_ids_select.stockproductgroup_id,
+                        }
                     }
                 }
             })

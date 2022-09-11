@@ -43,7 +43,11 @@ export default {
 
     methods: {
         ...mapActions({
-            set_sucursal: 'sucursals_manager/set_sucursal'
+            set_sucursal: 'sucursals_manager/set_sucursal',
+            buscar_caja: 'cajas_manager/buscar_caja',
+            set_caja: 'cajas_manager/set_caja',
+
+            set_sales: 'sale_manager/set_sales',
         }),
         async getItems() {
             this.loading = true
@@ -59,11 +63,21 @@ export default {
                 })
         },
 
-        setSucursal (data) {
+        async setSucursal (data) {
             this.set_sucursal({
                 'id': data.id,
                 'name': data.attributes.name
             })
+
+            await this.buscar_caja()
+                .then((resp) => {
+                    this.set_caja(resp.data.data)
+                }).catch((error) => {
+                    console.log(error)
+                    this.set_caja(null)
+                })
+
+            this.set_sales([])
 
             this.$router.replace({
                 name: 'dashboard'

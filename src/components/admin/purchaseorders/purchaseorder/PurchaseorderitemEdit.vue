@@ -6,13 +6,14 @@
         >
         <template v-slot:activator="{ on, attrs }">
             <v-btn
-            color="red lighten-2"
+            color="blue lighten-2"
             dark
             v-bind="attrs"
             v-on="on"
             icon
             small
             @click="onload"
+            :disabled="disabled"
             >
             <v-icon>mdi-application-edit-outline</v-icon>
             </v-btn>
@@ -98,6 +99,7 @@
 export default {
     props: {
         purchaseorderitem: Object,
+        disabled: Boolean
     },
     data () {
         return {

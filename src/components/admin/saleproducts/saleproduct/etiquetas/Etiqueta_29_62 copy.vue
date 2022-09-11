@@ -38,15 +38,21 @@ export default {
     },
     methods: {
         imprimir () {
-            var doc = new jsPDF('l', 'mm', [90, 29])
+            var doc = new jsPDF('l', 'mm', [62, 29])
             var width = doc.internal.pageSize.getWidth()
 
             this.img = document.querySelector('img#barcode')
-            //doc.addImage(this.img.src, 'png', 10 ,5, 70, 13)
-            doc.addImage(this.img.src, 'png', 5 ,4, 50, 13)
 
-            doc.setFontSize(7);
-            doc.text(this.saleproduct.attributes.name, (width - 30 )/2, 23, { align: 'center' })
+            doc.addImage(this.img.src, 'png', 6 ,3, 50, 11)
+
+            doc.setFontSize(9);
+            doc.text(this.saleproduct.attributes.barcode, (width)/2, 18, { align: 'center', maxWidth: width - 5 } )
+
+            doc.setFontSize(8);
+            doc.text(this.saleproduct.attributes.name, (width)/2, 22, { align: 'center', maxWidth: width - 5 } )
+
+            doc.setFontSize(8);
+            doc.text('Venc: 08/2023', width - 5, 27, { align: 'right' } )
 
             doc.output('dataurlnewwindow');
         }

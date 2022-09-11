@@ -16,6 +16,71 @@
                     ></v-text-field>
                 </v-col>
             </v-row>
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Dirección</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="item_cache.attributes.direccion"
+                       
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Telefono</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="item_cache.attributes.telefono"
+                       
+                    ></v-text-field>
+                </v-col>
+            </v-row>  
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Whatsapp</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="item_cache.attributes.telefono_movil"
+                       
+                    ></v-text-field>
+                </v-col>
+            </v-row>  
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Email</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="item_cache.attributes.email"
+                       
+                    ></v-text-field>
+                </v-col>
+            </v-row> 
+
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Descripción</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-textarea
+                        v-model="item_cache.attributes.comments"
+                        counter="200"
+                        :rules="commentsRules"
+                        :error-messages="errorCommentsMessages"
+                        @keydown="errorCommentsMessages = ''"
+
+                        outlined
+                    ></v-textarea>
+                </v-col>
+            </v-row>
 
             <v-row>
                 <v-spacer></v-spacer>
@@ -61,6 +126,11 @@ export default {
             ],
             errorNameMessages: '',
 
+            commentsRules: [
+                v => ( v.length < 200 ) ||"Exede el máximo permitido",
+            ],
+            errorCommentsMessages: '',
+
         }
     },
     methods: {
@@ -69,6 +139,11 @@ export default {
         }),
         reset () {
             this.item_cache.attributes.name = this.item.attributes.name
+            this.item_cache.attributes.direccion = this.item.attributes.direccion
+            this.item_cache.attributes.telefono = this.item.attributes.telefono
+            this.item_cache.attributes.telefono_movil = this.item.attributes.telefono_movil
+            this.item_cache.attributes.email = this.item.attributes.email
+            this.item_cache.attributes.comments = this.item.attributes.comments
 
         },
         validate () {
@@ -83,6 +158,11 @@ export default {
                     .then(() => {
                         this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
                         this.item.attributes.name = this.item_cache.attributes.name
+                        this.item.attributes.direccion = this.item_cache.attributes.direccion
+                        this.item.attributes.telefono = this.item_cache.attributes.telefono
+                        this.item.attributes.telefono_movil = this.item_cache.attributes.telefono_movil
+                        this.item.attributes.email = this.item_cache.attributes.email
+                        this.item.attributes.comments = this.item_cache.attributes.comments
 
                     })
                     .catch((error) => {

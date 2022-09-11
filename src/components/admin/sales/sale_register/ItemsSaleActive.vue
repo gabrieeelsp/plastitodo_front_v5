@@ -30,9 +30,14 @@
                 SubTotal
             </th>
             <th 
-                style="width: 90px;"
+                style="width: 40px;"
                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
-                Actions
+                
+            </th>
+            <th 
+                style="width: 28px;"
+                class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                
             </th>
             
             </tr>
@@ -41,6 +46,7 @@
             <tr
             v-for="item in saleActive.items"
             :key="item.id"
+            :class="item.is_confirmado ? 'light-green lighten-4' : ''"
             >
 
             <td>{{ item.name }}</td>
@@ -107,7 +113,7 @@
             <td v-if="item.is_stock_unitario_variable" class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.cantidad_total)) }}</td>
 
             <td v-else class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(item.precio, item.cantidad)) }}</td>
-            <td>
+            <td class="pl-1 pr-1">
                 <v-btn
                 :disabled="saleActive.is_saved"
                     small
@@ -118,6 +124,14 @@
                     <v-icon>mdi-delete-outline</v-icon>
                 </v-btn>
             </td>
+            <td class="pl-1 pr-1">
+                <v-checkbox
+                    class="mt-0 pr-0"
+                    hide-details=""
+                    
+                    v-model="item.is_confirmado"
+                ></v-checkbox>
+            </td>
             </tr>
         </tbody>
         </template>
@@ -127,8 +141,8 @@
         <v-simple-table >
         <template v-slot:default>
         <tbody>
-            <tr class="grey lighten-3"  >
-                <td><span :class="comboitem.is_complete() ? '' : 'red--text'">[Combo] {{ comboitem.name }}</span></td>
+            <tr class="blue lighten-4"  >
+                <td><span class="font-weight-medium" :class="comboitem.is_complete() ? '' : 'red--text'">[Combo] {{ comboitem.name }}</span></td>
                 <td class="text-right" style="width: 100px;">{{ globalHelperFixeDecimalMoney(comboitem.precio) }}</td>
                 <td v-if="comboitem.is_editing_cantidad && !saleActive.is_saved" style="width: 100px;">
                     <InputEditValue 
@@ -147,7 +161,7 @@
                     >{{ globalHelperFixeDecimalCantidad(comboitem.cantidad) }}</td>
                 <td v-if="is_saleActiveStockUnitarioVariable" style="width: 100px;" class="text-right" >----------------</td>
                 <td class="text-right" style="width: 100px;">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(comboitem.precio, comboitem.cantidad)) }}</td>
-                <td style="width: 90px;" >
+                <td style="width: 80px;" class="pl-1" >
                     <v-btn small icon color="red" :disabled="saleActive.is_saved"
                         @click="remove_combo_item(comboitem.comboId)"
                     >
@@ -162,10 +176,10 @@
     
     
         <div v-for="item in comboitem.comboItems" :key="item.id" >
-            <v-simple-table v-if="item.saleproducts.length > 1" style="border-top: 1px solid #cfcdcc" >
+            <v-simple-table v-if="item.saleproducts.length > 0" style="border-top: 1px solid #cfcdcc" >
                 <template v-slot:default>
                 <tbody>
-                    <tr >
+                    <tr class="font-weight-medium" >
                         <td><span class="ml-3" :class="item.is_complete() ? '' : 'red--text'"> {{ item.name }} [ {{ globalHelperFixeDecimalCantidad(item.cantidad * item.cantidad_combos) }} ]</span></td>
                         <td style="width: 100px;"></td>
                         
@@ -177,7 +191,7 @@
                             <v-btn small icon color="green" :disabled="saleActive.is_saved"
                                 @click="item.is_editing_cantidades = !item.is_editing_cantidades"
                             >
-                                <v-icon>mdi-application-edit-outline</v-icon>
+                                <v-icon>mdi-swap-vertical</v-icon>
                             </v-btn>
                         </td>
                         
@@ -188,7 +202,7 @@
 
                     
 
-            <v-simple-table v-for="saleproduct in item.saleproducts" :key="saleproduct.id">
+            <v-simple-table dense v-for="saleproduct in item.saleproducts" :key="saleproduct.id">
                 <template v-slot:default>
                 <tbody>
 
@@ -218,7 +232,7 @@
             </v-simple-table>
             <v-expand-transition>
             <div v-if="item.is_editing_cantidades  && !saleActive.is_saved">
-                <v-simple-table v-for="saleproduct in item.saleproducts" :key="saleproduct.id">
+                <v-simple-table dense v-for="saleproduct in item.saleproducts" :key="saleproduct.id">
                     <template v-slot:default>
                     <tbody>
 
@@ -263,7 +277,11 @@ import { mapActions } from 'vuex'
 import InputEditValue from '@/components/admin/utils/InputEditValue'
 export default {
 
-
+    mounted () {
+        for ( let item of this.saleActive.items ) {
+            this.$set(item, 'is_confirmado', false)
+        }
+    },
     computed: {
         ...mapGetters({
             saleActive: 'sale_manager/saleActive',
@@ -276,7 +294,6 @@ export default {
     },
 
     data: () => ({
-        url_asset: "http://localhost:8000/",
         show_images: true,
         item_editing: null,
     }),

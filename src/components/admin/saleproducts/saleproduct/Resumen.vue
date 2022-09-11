@@ -97,12 +97,39 @@
                     
                 </v-col>
                 <v-col cols="12" sm="2"  class=" pt-0 pb-0 d-flex">
-                    <Etiqueta_29_90
+                    <Etiqueta_29_62
                         :saleproduct="item"
                     />
                 </v-col>
 
             </v-row>   
+
+            <v-row>
+                <v-col cols="12" sm="4"  class="d-flex justify-sm-end align-center">
+                    <span class="font-weight-bold black--text">Tags</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class="d-flex justify-start align-center">
+                    <div>
+                    <v-chip
+                        v-for="tag in ids_select.tags" :key="tag.id"
+                        class="mr-2"
+                        close
+                        :color="tag.color"
+                        text-color="white"
+                        small
+                        @click:close="removeTag(tag.id)"
+                        >
+                        {{ tag.name }}
+                    </v-chip>
+                    </div>
+                    <SelectTagModal
+                        disable="false"
+                        :btn_data="{name: null, icon: 'mdi-plus'}"
+
+                        @set="addTag"
+                    />
+                </v-col>
+            </v-row>
 
 
             <v-row>
@@ -126,13 +153,15 @@
 
 
         </v-form>
+            
     </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import VueBarcode from 'vue-barcode';
-import Etiqueta_29_90 from '@/components/admin/saleproducts/saleproduct/etiquetas/Etiqueta_29_90'
+import Etiqueta_29_62 from '@/components/admin/saleproducts/saleproduct/etiquetas/Etiqueta_29_62'
+import SelectTagModal from '@/components/admin/tags/selectTagModal'
 
 export default {
     mounted() {
@@ -140,12 +169,14 @@ export default {
     },
     components: {
         VueBarcode,
-        Etiqueta_29_90
+        Etiqueta_29_62,
+        SelectTagModal
     },
     computed: {
         ...mapGetters({
             item_cache: 'saleproducts_manager/item_cache',
             item: 'saleproducts_manager/item',
+            ids_select: 'saleproducts_manager/ids_select'
         }),
         costo: function ( ) {
             return Number(this.item_cache.relationships.stockproduct.attributes.costo * this.item_cache.attributes.relacion_venta_stock).toFixed(10) 
@@ -198,6 +229,11 @@ export default {
             this.item_cache.attributes.porc_may = this.item.attributes.porc_may
             this.item_cache.attributes.barcode = this.item.attributes.barcode
 
+            this.ids_select.tags = []
+            for ( let tag of this.item.relationships.tags ) {
+                this.ids_select.tags.push({id: tag.id, name: tag.attributes.name, color: tag.attributes.color})
+            }
+
         },
         validate () {
             this.$refs.form.validate()
@@ -233,6 +269,23 @@ export default {
         volver() {
             this.$emit('volver')
         },
+        removeTag(id) {
+            this.ids_select.tags = this.ids_select.tags.filter((i) => {
+                return i.id != id
+            })
+        },
+        addTag(tag_nuevo) {
+            let add = true
+            for ( let tag of this.ids_select.tags ) {
+                if (tag.id == tag_nuevo.id ) {
+                    add = false
+                    break
+                }
+            }
+            if ( add ) {
+                this.ids_select.tags.push({id: tag_nuevo.id, name: tag_nuevo.name, color: tag_nuevo.color})
+            }
+        }
     }
 }
 </script>

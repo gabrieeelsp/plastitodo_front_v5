@@ -27,7 +27,7 @@
                 ></v-text-field>
             </v-col>
             
-            <v-col cols="12" sm="2" class="d-flex align-center">
+            <v-col cols="12" sm="1" class="d-flex align-center">
                 <v-btn small
                     @click="$emit('getItems')"
                 >Search</v-btn>
@@ -162,6 +162,7 @@ export default {
         },
 
         setLimit() {
+            this.list_meta.page = 1
             //this.set_list_meta_limt(this.limitSelected)
             this.$emit('getItems')
         },

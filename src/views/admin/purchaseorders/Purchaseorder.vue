@@ -31,16 +31,31 @@
                                     @click="delete_purchaseorder"
                                     color="warning"
                                     text
+                                    :disabled="item.attributes.estado == 'RECIBIDO'"
                                 >
                                     Eliminar
                                 </v-btn>
                                 <v-btn                                    
-                                    @click="save_purchaseorder"
+                                    @click="save_purchaseorder(false)"
                                     color="success"
                                     :loading="is_registrandoOrder"
+                                    :disabled="item.attributes.estado == 'RECIBIDO'"
                                 >
                                     
                                     Guardar
+                                    <v-icon right>
+                                        mdi-content-save-outline
+                                    </v-icon>
+                                </v-btn>
+                                <v-btn                                    
+                                    @click="save_purchaseorder(true)"
+                                    color="success"
+                                    :loading="is_registrandoOrder"
+                                    class="ml-1"
+                                    :disabled="!item.relationships.sucursal || item.attributes.estado == 'RECIBIDO'"
+                                >
+                                    
+                                    Guardar y Finalizar
                                     <v-icon right>
                                         mdi-content-save-outline
                                     </v-icon>
@@ -62,6 +77,14 @@
                     <v-col>
                         <PurchaseorderUser
                             :user="item.relationships.user"
+                            :purchaseorder="item"
+                         />
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <PurchaseorderSucursal
+                            :supplier="item.relationships.supplier"
                          />
                     </v-col>
                 </v-row>
@@ -69,6 +92,7 @@
                 <v-row>
                     <v-col>
                         <PurchaseorderTotal 
+                        v-if="item.relationships.purchaseorderitems"
                             :purchaseorder="item"
                         />
                     </v-col>
@@ -87,6 +111,7 @@ import PurchaseorderSupplier from '@/components/admin/purchaseorders/purchaseord
 import PurchaseorderUser from '@/components/admin/purchaseorders/purchaseorder/PurchaseorderUser'
 import PurchaseorderTotal from '@/components/admin/purchaseorders/purchaseorder/PurchaseorderTotal'
 import PurchaseorderPDF from '@/components/admin/purchaseorders/purchaseorder/pdf/PurchaseorderPDF'
+import PurchaseorderSucursal from '@/components/admin/purchaseorders/purchaseorder/PurchaseorderSucursal'
 export default {
     created() {
         if ( !this.item || !this.item.relationships.purchaseorderitems ) {
@@ -103,7 +128,8 @@ export default {
         PurchaseorderPDF,
         PurchaseorderUser,
         PurchaseorderSupplier,
-        PurchaseorderTotal
+        PurchaseorderTotal,
+        PurchaseorderSucursal
     },
     computed: {
         ...mapGetters({
@@ -140,10 +166,12 @@ export default {
                 })
         },
 
-        save_purchaseorder () {
-            this.save_item()
-                .then(() => {
+        save_purchaseorder (is_confirmar) {
+            this.save_item(is_confirmar)
+                .then((resp) => {
                     this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
+                    this.item.attributes.estado = resp.data.data.attributes.estado
+                    this.item.relationships.purchaseorderitems = resp.data.data.relationships.purchaseorderitems
                 })
                 .catch((error) => {
                     console.log(error)

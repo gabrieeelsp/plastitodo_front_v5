@@ -90,7 +90,7 @@ export default {
             }
 
             return ivaconditions
-        }
+        },
 
     },
     mutations: {
@@ -151,8 +151,17 @@ export default {
                 return e.id !== id
             })
         },
+
+
+        SET_SALES(state, payload) {
+            state.sales = payload
+        },
     },
     actions: {
+        set_sales ( {commit }, payload ) {
+            commit('SET_SALES', payload)
+            commit('SET_SALE_ACTIVE', null)
+        },
         async generate_comprobante ( { getters }, ivacondition_id ) {
 
             return axios.post('comprobantes/facts', {

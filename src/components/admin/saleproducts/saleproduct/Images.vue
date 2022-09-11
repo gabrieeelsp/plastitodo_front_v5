@@ -162,8 +162,8 @@ export default {
         
         getImageItemStyle(src) {
             return {
-                width: "150px",
-                height: "150px",
+                width: "200px",
+                height: "225px",
                 backgroundImage: `url(${src})`,
                 backgroundPosition: "center",
                 backgroundSize: "cover",

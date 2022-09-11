@@ -57,7 +57,7 @@ export default {
         },
         emitir_comprobante(doc ) {
 
-            let cant_lineas = this.purchaseorder.relationships.purchaseorderitems.lenght
+            let cant_lineas = this.purchaseorder.relationships.purchaseorderitems.length
 
             this.cant_paginas = Math.ceil( cant_lineas / this.cant_lineas_page )
 
@@ -116,10 +116,10 @@ export default {
                 minimumIntegerDigits: 4
             })
             doc.setFontSize(25)
-            doc.text((this.empresa.attributes.name).toUpperCase(), 10, 15)
+            doc.text((this.empresa.attributes.name).toUpperCase(), 8, 15)
             doc.setFontSize(10)
-            doc.text('Dirección: ' + this.empresa.attributes.domicilio_comercial, 12, 25)
-            doc.text('CUIT: ' + this.empresa.attributes.cuit, 12, 30)
+            doc.text('Dirección: ' + this.empresa.attributes.domicilio_comercial, 10, 25)
+            doc.text('CUIT: ' + this.empresa.attributes.cuit, 10, 30)
 
 
 
@@ -140,7 +140,7 @@ export default {
             doc.text('Fecha: ' + this.$luxon(this.purchaseorder.attributes.created_at, { output: "dd-MM-yyyy" }), 107 , 30)
 
             doc.setFillColor('#919191');          
-            doc.rect(10, 40, 85, 7, 'F')
+            doc.rect(8, 40, 85, 7, 'F')
             doc.setFontSize(13)
             doc.setFillColor(null);
             doc.setTextColor('#ffffff');
@@ -148,10 +148,10 @@ export default {
             doc.setTextColor(null);
 
             doc.setFontSize(10)
-            doc.text('Nombre: ' + this.purchaseorder.relationships.supplier.attributes.name, 12, 54)
-            doc.text('Dirección: ' + this.purchaseorder.relationships.supplier.attributes.direccion, 12, 59)
-            doc.text('Teléfono: ' + this.purchaseorder.relationships.supplier.attributes.telefono, 12, 64)
-            doc.text('Email: ' + this.purchaseorder.relationships.supplier.attributes.email, 12, 69)
+            doc.text('Nombre: ' + this.purchaseorder.relationships.supplier.attributes.name, 10, 54)
+            doc.text('Dirección: ' + this.purchaseorder.relationships.supplier.attributes.direccion, 10, 59)
+            doc.text('Teléfono: ' + this.purchaseorder.relationships.supplier.attributes.telefono, 10, 64)
+            doc.text('Email: ' + this.purchaseorder.relationships.supplier.attributes.email, 10, 69)
 
 
             doc.setFillColor('#919191');            
@@ -162,6 +162,17 @@ export default {
             doc.text('DIRECCIÓN DE ENTREGA', 125, 45)
             doc.setTextColor(null);
 
+            doc.setFontSize(10)
+            if ( this.purchaseorder.relationships.sucursal ) {
+                doc.text('Sucursal: ' + this.purchaseorder.relationships.sucursal.attributes.name, 107, 54)
+                doc.text('Dirección: ' + this.purchaseorder.relationships.sucursal.attributes.direccion, 107, 59)
+                doc.text('Teléfono: ' + this.purchaseorder.relationships.sucursal.attributes.telefono, 107, 64)
+            }else {
+                doc.text('Sucursal: ' , 107, 54)
+                doc.text('Dirección: ' , 107, 59)
+                doc.text('Teléfono: ' , 107, 64)
+            }
+            
 
 
 

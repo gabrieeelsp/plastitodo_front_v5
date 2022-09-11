@@ -14,7 +14,7 @@ export default{
       return state.user
     },
     is_empleado(state) {
-      return state.user.role != 3
+      return state.user.role != null
   }
   },
   mutations: {

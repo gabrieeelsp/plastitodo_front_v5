@@ -28,7 +28,7 @@ import { mapActions, mapGetters } from 'vuex'
 import List from '@/components/admin/stockproducts/List'
 export default {
     created () {
-        if ( this.items == null ) {
+        if ( this.items == null || this.reload_items ) {
             this.getItems()
         }
         
@@ -45,19 +45,26 @@ export default {
         ...mapGetters({
             items: 'stockproducts_manager/items',
             list_meta: 'stockproducts_manager/list_meta',
+            reload_items: 'stockproducts_manager/reload_items',
         })
     },
     methods: {
         ...mapActions({
             buscar_items: 'stockproducts_manager/buscar_items',
             set_items: 'stockproducts_manager/set_items',
+
+            set_item: 'stockproducts_manager/set_item',
+            set_reload_items: 'stockproducts_manager/set_reload_items',
         }),
         getItems ( ) {
             this.loading = true
             this.buscar_items()
                 .then((resp) => {                    
                     this.set_items(resp.data.data)
+                    this.set_item(null)
                     this.list_meta.last_page = resp.data.meta.last_page
+
+                    this.set_reload_items(false)
                 })
                 .catch((error) => {
                     console.log(error)
