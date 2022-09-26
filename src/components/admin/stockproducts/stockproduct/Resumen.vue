@@ -33,6 +33,10 @@
                     ></v-text-field>
                 </v-col>
 
+                <v-col cols="12" sm="2"  class="pt-2 pb-0 d-flex justify-sm-start">
+                    <span class="">{{ item.attributes.time_set_costo | luxon('dd-MM-yyyy') }}</span>
+                </v-col>
+
             </v-row>
             <v-row>
                 <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
@@ -194,6 +198,8 @@ export default {
                         this.item.attributes.is_stock_unitario_variable = this.item_cache.attributes.is_stock_unitario_variable
                         this.item.attributes.stock_aproximado_unidad = resp.data.data.attributes.stock_aproximado_unidad,
                         this.item_cache.attributes.stock_aproximado_unidad = resp.data.data.attributes.stock_aproximado_unidad
+                        this.item_cache.attributes.time_set_costo = resp.data.data.attributes.time_set_costo
+                        this.item.attributes.time_set_costo = resp.data.data.attributes.time_set_costo
 
                         this.item.relationships.stockproductgroup = resp.data.data.relationships.stockproductgroup
                     })

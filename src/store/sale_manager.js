@@ -27,11 +27,25 @@ export default {
             }
             return true
         },
+        is_saleActive_complete_total ( state ) {
+            for ( let item of state.saleActive.items ) {
+                if ( item.is_stock_unitario_variable && ( Number(item.cantidad_total) == 0 ) ) {
+                    return false
+                }
+            }
+            return true
+        },
         totalSaleActive (state) {
             let total = 0
             for ( let item of state.saleActive.items) {
-                if( item.is_stock_unitario_kilo ) {
-                    total = total + (item.precio * item.cantidad_total)
+                if( item.is_stock_unitario_variable ) {
+                    if ( Number(item.cantidad_total) != 0 ) {
+                        total = total + (item.precio * item.cantidad_total)
+                    }else {
+                        //console.log(item.stock_aproximado_unidad)
+                        total = total + (item.precio * item.cantidad * Number(item.stock_aproximado_unidad))
+                    }
+                    //total = total + (item.precio * item.cantidad_total)
                 }else {
                     total = total + (item.precio * item.cantidad)
                 }                

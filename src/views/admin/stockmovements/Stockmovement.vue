@@ -100,7 +100,9 @@
                 </v-row>
                 <v-row>
                     <v-col>
-                        
+                        <StockmovementComments
+                            :stockmovement="item"
+                        />
                     </v-col>
                 </v-row>
 
@@ -113,7 +115,7 @@
             </v-col>
 
         </v-row>
-
+        {{ item }}
     </div>
 </template>
 <script>
@@ -122,6 +124,7 @@ import ItemsStockmovement from '@/components/admin/stockmovements/stockmovement/
 import SelectProduct from '@/components/admin/stockmovements/stockmovement/SelectProduct'
 import StockmovementEstado from '@/components/admin/stockmovements/stockmovement/StockmovementEstado'
 import StockmovementSucursal from '@/components/admin/stockmovements/stockmovement/StockmovementSucursal'
+import StockmovementComments from '@/components/admin/stockmovements/stockmovement/StockmovementComments.vue'
 export default {
     created() {
         if ( !this.item || !this.item.relationships.stockmovementitems ) {
@@ -137,7 +140,8 @@ export default {
         ItemsStockmovement,
         SelectProduct,
         StockmovementEstado,
-        StockmovementSucursal
+        StockmovementSucursal,
+        StockmovementComments,
     },
     computed: {
         ...mapGetters({

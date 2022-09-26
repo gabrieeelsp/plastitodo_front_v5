@@ -8,7 +8,7 @@
                 ></v-checkbox> 
             </v-col>
             <v-spacer></v-spacer>
-            <v-col cols="12" sm="2" class="d-flex align-center">
+            <v-col cols="12" sm="2" class="d-flex align-center" v-if="item.attributes.estado == 'EDITANDO'" >
                 <v-select
                     dense
                     :items="[{name: 'Si', value: true}, {name: 'No', value: false}]"
@@ -23,7 +23,7 @@
                 >
                 </v-select>
             </v-col>
-            <v-col cols="12" sm="2" class="d-flex align-center">
+            <v-col cols="12" sm="2" class="d-flex align-center" v-if="item.attributes.estado == 'EDITANDO'" >
                 <v-select
                     dense
                     :items="[{name: 'Si', value: true}, {name: 'No', value: false}]"
@@ -79,6 +79,11 @@
                                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                     Stock
                                 </th>
+                                <th v-if="item.attributes.estado != 'RECIBIDO'"
+                                    style="width: 100px;"
+                                class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                    Pedido
+                                </th>
                                 <th
                                     style="width: 100px;"
                                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
@@ -90,13 +95,13 @@
                                     SubTotal
                                 </th>
                                 <th 
-                                    style="width: 60px;"
-                                    class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
-                                    Actions
+                                    style="width: 28px;"
+                                    class="text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                    
                                 </th>
                                 <th 
                                     style="width: 28px;"
-                                    class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                    class="text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                     
                                 </th>
                             </tr>
@@ -154,6 +159,9 @@
                                     v-if="item.attributes.estado != 'RECIBIDO'"
                                     class="text-right"
                                     >{{ globalHelperFixeDecimalCantidad(getStock(purchaseproduct)) }}</td>
+                                <td v-if="item.attributes.estado != 'RECIBIDO'" 
+                                    class="text-right"
+                                    >{{ globalHelperFixeDecimalCantidad(getStock_pedido(purchaseproduct)) }}</td>
                                 <td 
                                     class="text-right"
                                     >{{ globalHelperFixeDecimalCantidad(purchaseproduct.attributes.cantidad) }}</td>
@@ -162,7 +170,7 @@
                                     class="text-right"
                                     >{{ globalHelperFixeDecimalMoney(getSubtotal(purchaseproduct)) }}</td>
                                 
-                                <td>
+                                <td class=" pl-0 pr-0">
                                     <PurchaseorderitemEdit
                                         :purchaseorderitem="purchaseproduct"
                                         @setCantidad="setCantidad"
@@ -170,7 +178,7 @@
                                     />
 
                                 </td>
-                                <td>
+                                <td class="pl-0 pr-0">
                                     <v-checkbox
                                         class="mt-0 pr-0"
                                         hide-details=""
@@ -272,10 +280,10 @@ export default {
                     return true
                 }
                 if ( this.filters.is_stock_low ){
-                    if ( this.getStock(i) < this.getStock_minimo(i) ) { return true } else { return false }
+                    if ( this.getStock(i) - this.getStock_pedido(i) < this.getStock_minimo(i) ) { return true } else { return false }
                 }
                 if ( !this.filters.is_stock_low ){
-                    if ( this.getStock(i) >= this.getStock_minimo(i) ) { return true } else { return false }
+                    if ( this.getStock(i) - this.getStock_pedido(i) >= this.getStock_minimo(i) ) { return true } else { return false }
                 }               
                 
                 return false                
@@ -334,6 +342,14 @@ export default {
             let cant = 0
             for ( let stockSucursal of item.relationships.purchaseproduct.relationships.stockproduct.relationships.stocksucursals ) {
                 cant = cant + Number(stockSucursal.attributes.stock)
+
+            }
+            return cant / item.relationships.purchaseproduct.attributes.relacion_compra_stock
+        },
+        getStock_pedido ( item ) {
+            let cant = 0
+            for ( let stockSucursal of item.relationships.purchaseproduct.relationships.stockproduct.relationships.stocksucursals ) {
+                cant = cant + Number(stockSucursal.attributes.stock_pedido)
 
             }
             return cant / item.relationships.purchaseproduct.attributes.relacion_compra_stock

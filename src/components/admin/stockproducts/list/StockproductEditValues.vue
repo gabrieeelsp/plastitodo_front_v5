@@ -134,10 +134,13 @@ export default {
                         if ( this.is_updategroup && this.item_cache.relationships.stockproductgroup ) {
                           this.update_costo_items_group({
                             id: resp.data.data[0].relationships.stockproductgroup.id,
-                            costo: resp.data.data[0].attributes.costo
+                            costo: resp.data.data[0].attributes.costo,
+                            time_set_costo: resp.data.data[0].attributes.time_set_costo,
                           })
                         }else {
                             this.item.attributes.costo = resp.data.data.attributes.costo
+                            this.item.attributes.time_set_costo = resp.data.data.attributes.time_set_costo
+                            this.item_cache.attributes.time_set_costo = resp.data.data.attributes.time_set_costo
                         }
                         
                     })

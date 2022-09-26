@@ -177,7 +177,8 @@ export default {
                 fecha_entrega_acordada: null,
                 state: 'EDITANDO',
                 user: null,
-                sale: null
+                sale: null,
+                cant_bultos: null,
             }
             commit('ADD_ORDER', order)
             commit('SET_ORDER_ACTIVE', order)
@@ -273,6 +274,7 @@ export default {
                 comboitems: json_comboitems,
                 is_delivery: getters.orderActive.is_delivery,
                 evento: evento,
+                cant_bultos: getters.orderActive.cant_bultos,
             }
             
 
@@ -322,7 +324,7 @@ export default {
             let items = []
             for ( let orderitem of payload.relationships.orderitems ) {
                 let stocksucursals = []
-                for ( let stocksucursal of orderitem.relationships.stockproduct.relationships.stocksucursals ) {
+                for ( let stocksucursal of orderitem.relationships.saleproduct.relationships.stockproduct.relationships.stocksucursals ) {
                     stocksucursals.push(stocksucursal)
                 }
 
@@ -514,6 +516,7 @@ export default {
                 fecha_entrega_acordada: fecha_entrega_acordada,
                 state: payload.attributes.state,
                 created_at: payload.attributes.created_at,
+                cant_bultos: payload.attributes.cant_bultos,
                 user: user,
                 deliveryshift: payload.relationships.deliveryshift,
                 sale: payload.relationships.sale,
@@ -529,7 +532,11 @@ export default {
                     state: state
                 }
             })
-        }
+        },
+
+        destroy_item( {getters}) {
+            return axios.delete(`orders/${getters.orderActive.id}`)
+        },
 
 
         

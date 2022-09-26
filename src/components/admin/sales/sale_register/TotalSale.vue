@@ -15,7 +15,15 @@
 					<span class="font-weight-bold black--text">Total: </span>
 				</v-col>
 				<v-col cols="12" sm="9"  class="d-flex justify-center align-center">
-					<span class="display-1 blue--text darken-4">{{ globalHelperFixeDecimalMoney(totalSaleActive) | money_string }}</span>
+					<v-badge
+						:value="!is_saleActive_complete_total"
+						bordered
+						color="error"
+						content="Aprox"
+						overlap
+					>
+						<span class="display-1 blue--text darken-4">{{ globalHelperFixeDecimalMoney(totalSaleActive) | money_string }}</span>
+					</v-badge>
 				</v-col>
 			</v-row>
 		</v-card-text>
@@ -35,6 +43,7 @@ export default {
       ...mapGetters({
         cantItemsSaleActive: 'sale_manager/cantItemsSaleActive',
 		totalSaleActive: 'sale_manager/totalSaleActive',
+		is_saleActive_complete_total: 'sale_manager/is_saleActive_complete_total',
       })
     },
 	methods: {

@@ -88,6 +88,7 @@ export default {
             is_generandoReporte: false,
 
             fontFamily: 'times',
+            
             cant_lineas_page: 10,
             line_height: 5,
             line_start: 90,

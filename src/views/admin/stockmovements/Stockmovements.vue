@@ -29,6 +29,7 @@ import { mapActions, mapGetters } from 'vuex'
 import List from '@/components/admin/stockmovements/List'
 export default {
     created () {
+        this.filters.sucursal_id = this.sucursal.id
         if ( this.items == null ) {
             this.getItems()
         }        
@@ -45,6 +46,9 @@ export default {
         ...mapGetters({
             items: 'stockmovements_manager/items',
             list_meta: 'stockmovements_manager/list_meta',
+
+            sucursal: 'sucursals_manager/sucursal',
+            filters: 'stockmovements_manager/filters',
         })
     },
     methods: {

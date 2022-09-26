@@ -35,6 +35,7 @@ import List from '@/components/admin/sales_manager/List'
 import Sale from '@/components/admin/sales_manager/Sale'
 export default {
     mounted() {
+        this.filters.sucursal_id = this.sucursal.id
         this.getItems()
     },
     components: {
@@ -45,6 +46,8 @@ export default {
         ...mapGetters({
             loading: 'sales_manager/loading',
             list_meta: 'sales_manager/list_meta',
+            sucursal: 'sucursals_manager/sucursal',
+            filters: 'sales_manager/filters',
         })
     },
     data() {

@@ -1,6 +1,14 @@
 <template>
     <div>
         <v-row class="">
+            <v-col cols="12" sm="2" class="d-flex align-center">
+                <v-checkbox
+                    label="Fecha Act."
+                    v-model="orders.time_set_costo"
+                    hide-details=""
+                >
+                </v-checkbox>
+            </v-col>
             <v-spacer></v-spacer>
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-select
@@ -58,6 +66,11 @@
                                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                 Costo
                             </th>
+                            <th     
+                            style="width: 100px;"                            
+                                class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                Actualización
+                            </th>
                             <th   
                             style="width: 100px;"                              
                                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
@@ -79,6 +92,7 @@
                         <td>{{ item.id }}</td>
                         <td >{{ item.attributes.name }}</td>
                         <td class="text-right">{{ globalHelperFixeDecimalMoney(item.attributes.costo) }}</td>
+                        <td class="text-right">{{ item.attributes.time_set_costo | luxon('dd-MM-yyyy') }}</td>
                         <td class="text-right">{{ item.relationships.ivaaliquot.attributes.name }}</td>
                         <td>
                             <v-btn
@@ -140,6 +154,8 @@ export default {
             items: 'stockproducts_manager/items',
             filters: 'stockproducts_manager/filters',
             ivaaliquots_select: 'ivaaliquots_manager/ivaaliquots_select',
+
+            orders: 'stockproducts_manager/orders',
 
             list_meta: 'stockproducts_manager/list_meta',
         })

@@ -39,24 +39,33 @@
                 </v-col>
             </v-row>
             <div v-if="sale.relationships.comprobante">
-            <v-btn 
-                v-if="!devolution.relationships.comprobante"
-                block 
-                small 
-                :loading="is_saving"   
-                @click="generarComprobante"    
-                :disabled="ivacondition_id == 0"    
-            >
-                Enviar
-            </v-btn>
-            <Comprobante 
-                v-else
-                :comprobante = "devolution.relationships.comprobante"
-                :items = "devolution.relationships.devolutionitems"
-                :comboitems = "devolution.relationships.devolutioncomboitems"
-                :total = "Number(devolution.attributes.total)"
-                tipo = "devolution"
-            />
+                <v-btn 
+                    v-if="!devolution.relationships.comprobante"
+                    block 
+                    small 
+                    :loading="is_saving"   
+                    @click="generarComprobante"    
+                    :disabled="ivacondition_id == 0"    
+                >
+                    Enviar
+                </v-btn>
+                <v-btn 
+                    v-else-if="!devolution.relationships.comprobante.attributes.cae"
+                    block 
+                    small 
+                    :loading="is_saving"   
+                    @click="generarComprobante"     
+                >
+                    Enviar
+                </v-btn>
+                <Comprobante 
+                    v-else
+                    :comprobante = "devolution.relationships.comprobante"
+                    :items = "devolution.relationships.devolutionitems"
+                    :comboitems = "devolution.relationships.devolutioncomboitems"
+                    :total = "Number(devolution.attributes.total)"
+                    tipo = "devolution"
+                />
             </div>
             
         </v-card-text>

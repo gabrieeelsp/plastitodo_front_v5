@@ -48,6 +48,15 @@
                 >
                     Enviar
                 </v-btn>
+                <v-btn 
+                    v-else-if="!debitnote.relationships.comprobante.attributes.cae"
+                    block 
+                    small 
+                    :loading="is_saving"   
+                    @click="generarComprobante"     
+                >
+                    Enviar
+                </v-btn>
                 <Comprobante 
                     v-else
                     :comprobante = "debitnote.relationships.comprobante"

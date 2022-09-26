@@ -27,6 +27,9 @@ import familias_manager from './familias_manager'
 import deliveryshifts_manager from './deliveryshifts_manager'
 import order_manager from './order_manager'
 import orders_manager from './orders_manager'
+import payments_manager from './payments_manager'
+import refunds_manager from './refunds_manager'
+import stocktransfers_manager from './stocktransfers_manager'
 
 Vue.use(Vuex)
 
@@ -36,8 +39,8 @@ export default new Vuex.Store({
     state: {
         init_error: null,
         show_init_admin: null,
-        url_asset: "http://localhost:8000/",
-        //url_asset: "https://plastitodo.online:8443/",
+        //url_asset: "http://localhost:8000/",
+        url_asset: "https://plastitodo.online:8443/",
 
         empresa: null,
     },
@@ -111,5 +114,8 @@ export default new Vuex.Store({
         deliveryshifts_manager,
         order_manager,
         orders_manager,
+        payments_manager,
+        refunds_manager,
+        stocktransfers_manager,
     }
 })

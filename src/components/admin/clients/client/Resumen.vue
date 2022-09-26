@@ -55,6 +55,23 @@
                     ></v-text-field>
                 </v-col>
             </v-row>
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Descripción</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-textarea
+                        v-model="item_cache.attributes.coments_direccion_client"
+                        counter="100"
+                        :rules="commentsDireccionRules"
+                        :error-messages="errorCommentsDireccionMessages"
+                        @keydown="errorCommentsDireccionMessages = ''"
+                        rows="2"
+                        outlined
+                        auto-grow
+                    ></v-textarea>
+                </v-col>
+            </v-row>
 
             <v-row>
                 <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
@@ -127,7 +144,8 @@
                         :rules="commentsRules"
                         :error-messages="errorCommentsMessages"
                         @keydown="errorCommentsMessages = ''"
-
+                        rows="2"
+                        auto-grow
                         outlined
                     ></v-textarea>
                 </v-col>
@@ -190,6 +208,11 @@ export default {
             ],
             errorCommentsMessages: '',
 
+            commentsDireccionRules: [
+                v => ( v.length < 100 ) ||"Exede el máximo permitido",
+            ],
+            errorCommentsDireccionMessages: '',
+
             surnameRules: [
                 v => ( v && v.length > 0 ) || "Valor requerido",
             ],
@@ -197,7 +220,7 @@ export default {
 
             creditoRules: [
                 v => ( v && v.length > 0 ) || "Valor requerido",
-                v => ( v && Number(v) > 0 ) || "El valor debe ser mayor a 0",
+                v => ( v && Number(v) >= 0 ) || "El valor debe ser mayor a 0",
             ],
             errorCreditoMessages: '',
 
@@ -217,6 +240,7 @@ export default {
             this.item_cache.attributes.direccion = this.item.attributes.direccion
             this.item_cache.attributes.tipo = this.item.attributes.tipo
             this.item_cache.attributes.coments_client = this.item.attributes.coments_client
+            this.item_cache.attributes.coments_direccion_client = this.item.attributes.coments_direccion_client
 
             this.item_cache.attributes.credito_disponible = this.item.attributes.credito_disponible
 
@@ -246,6 +270,7 @@ export default {
                         this.item.attributes.credito_disponible = this.item_cache.attributes.credito_disponible
 
                         this.item.attributes.coments_client = this.item_cache.attributes.coments_client
+                        this.item.attributes.coments_direccion_client = this.item_cache.attributes.coments_direccion_client
                     })
                     .catch((error) => {
                         this.$toast.error('Se ha producido un error.', { timeout: 3000 });

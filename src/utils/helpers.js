@@ -106,6 +106,31 @@ Vue.mixin({
             })
             return numero_format.format(num)
 
+        },
+
+        get_stock_relativo ( stock ) {
+            if ( stock < 0.2 ) {
+                return {num: '< 0.2', color: '#c8181a' }
+            }
+            if ( stock >= 0.2 && stock < 0.7  ) {
+                return {num: '< 0.7', color: '#de6716' }
+            }
+            if ( stock >= 0.7 && stock < 1 ) {
+                return {num: '< 1.0', color: '#e2a40c' }
+            }
+            if ( stock >= 1 && stock < 1.3  ) {
+                return {num: '< 1.3', color: '#e1c909' }
+            }
+            if ( stock >= 1.3 && stock < 1.8  ) {
+                return {num: '< 1.8', color: '#b9d72d' }
+            }
+            if ( stock >= 1.8 && stock < 2.3 ) {
+                return {num: '< 2.3', color: '#29be38' }
+            }
+            if ( stock >= 2.3   ) {
+                return {num: '> 2.3', color: '#079628' }
+            }
+            
         }
 
     },

@@ -156,6 +156,7 @@ export default {
                 direccion: getters.item_cache.attributes.direccion,
                 tipo: getters.item_cache.attributes.tipo,
                 coments_client: getters.item_cache.attributes.coments_client,
+                coments_direccion_client: getters.item_cache.attributes.coments_direccion_client,
                 credito_disponible: getters.item_cache.attributes.credito_disponible,
             }
 

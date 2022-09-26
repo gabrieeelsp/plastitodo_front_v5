@@ -29,6 +29,7 @@ import List from '@/components/admin/orders2/List'
 
 export default {
     created () {
+        this.filters.sucursal_id = this.sucursal.id
         if ( this.items == null || this.reload_items ) {
             this.getItems()
         }
@@ -48,6 +49,9 @@ export default {
             items: 'orders_manager/items',
             list_meta: 'orders_manager/list_meta',
             reload_items: 'orders_manager/reload_items',
+
+            sucursal: 'sucursals_manager/sucursal',
+            filters: 'orders_manager/filters',
         })
     },
     methods: {
@@ -65,11 +69,16 @@ export default {
                     this.set_item(null)
                     this.list_meta.last_page = resp.data.meta.last_page
                     this.set_reload_items(false)
+
+                    
+                    
                 })
                 .catch((error) => {
                     console.log(error)
                 })
         },
+
+
 
     }
 }

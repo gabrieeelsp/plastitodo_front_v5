@@ -20,7 +20,11 @@ export default {
         sale: null,
         devolution_editing: null,
         creditnote_editing: null,
-        debitnote_editing: null
+        debitnote_editing: null,
+
+        filters: {
+            sucursal_id: null,
+        },
     },
     getters: {
         loading ( state ) {
@@ -37,6 +41,9 @@ export default {
 
         client ( state ) {
             return state.client
+        },
+        filters (state) {
+            return state.filters
         },
         client_id ( state ) {
             if (state.client) {
@@ -219,20 +226,69 @@ export default {
         },
         ADD_PAYMENT ( state, payload ) {
             state.sale.relationships.payments.push(payload)
+
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+                sale.relationships.payments.push(payload)
+            }
         },
         UPDATE_PAYMENT ( state, payload ) {
             for ( let payment of state.sale.relationships.payments ) {
                 if( payment.id == payload.id ) {
                     payment.attributes.valor = payload.valor
                 }
-            }  
+            }
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+
+                for ( let payment_sale of sale.relationships.payments ) {
+                    if( payment_sale.id == payload.id ) {
+                        payment_sale.attributes.valor = Number(payload.valor)
+                    }
+                }
+            }            
         },
+
         REMOVE_PAYMENT ( state, payload ) {
             state.sale.relationships.payments = state.sale.relationships.payments.filter((item) => item.id != payload.id)
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+                sale.relationships.payments = sale.relationships.payments.filter((item) => item.id != payload.id)
+
+            }
+        },
+        SET_SAVE_PAYMENT ( state, payload ) {
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+
+                for ( let payment_sale of sale.relationships.payments ) {
+                    if( payment_sale.id == payload.payment.id ) {
+                        payment_sale.id = payload.id
+                        payment_sale.is_saved = true
+                    }
+                }
+
+                sale.attributes.saldo_sale = Number(sale.attributes.saldo_sale) - Number(payload.payment.attributes.valor)
+            } 
         },
 
         ADD_REFUND ( state, payload ) {
             state.sale.relationships.refunds.push(payload)
+
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+                sale.relationships.refunds.push(payload)
+            }
         },
 
         UPDATE_REFUND ( state, payload ) {
@@ -241,12 +297,54 @@ export default {
                     refund.attributes.valor = payload.valor
                 }
             }  
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+
+                for ( let refund_sale of sale.relationships.refunds ) {
+                    if( refund_sale.id == payload.id ) {
+                        refund_sale.attributes.valor = Number(payload.valor)
+                    }
+                }
+            } 
         },
         REMOVE_REFUND ( state, payload ) {
             state.sale.relationships.refunds = state.sale.relationships.refunds.filter((item) => item.id != payload.id)
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+                sale.relationships.refunds = sale.relationships.refunds.filter((item) => item.id != payload.id)
+
+            }
+        },
+        SET_SAVE_REFUND ( state, payload ) {
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+
+                for ( let refund_sale of sale.relationships.refunds ) {
+                    if( refund_sale.id == payload.refund.id ) {
+                        refund_sale.id = payload.id
+                        refund_sale.is_saved = true
+                    }
+                }
+
+                sale.attributes.saldo_sale = Number(sale.attributes.saldo_sale) + Number(payload.refund.attributes.valor)
+            } 
         },
         ADD_DEVOLUTION ( state, payload ) {
             state.sale.relationships.devolutions.push(payload)
+
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+
+                sale.attributes.saldo_sale = Number(sale.attributes.saldo_sale) - Number(payload.attributes.total)
+            }
         },
 
 
@@ -260,6 +358,15 @@ export default {
 
         ADD_CREDITNOTE ( state, payload ) {
             state.sale.relationships.creditnotes.push(payload)
+
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+
+                sale.attributes.saldo_sale = Number(sale.attributes.saldo_sale) - Number(payload.attributes.total)
+            }
+
         },
 
         SET_DEBITNOTE_EDITING ( state, debitnote ) {
@@ -268,6 +375,14 @@ export default {
 
         ADD_DEBITNOTE ( state, payload ) {
             state.sale.relationships.debitnotes.push(payload)
+
+            let sales = state.sales.filter((i) => { return i.id == state.sale.id })
+
+            if ( sales.length != 0 ) {
+                let sale = sales[0]
+
+                sale.attributes.saldo_sale = Number(sale.attributes.saldo_sale) + Number(payload.attributes.total)
+            }
         },
 
         SET_COMPROBANTE ( state, payload ) {
@@ -318,7 +433,8 @@ export default {
                     client_id: state.getters.client_id,
                     user_id: state.getters.user_id,
                     date_from: state.getters.date_from,
-                    date_to: state.getters.date_to
+                    date_to: state.getters.date_to,
+                    sucursal_id: state.getters.filters.sucursal_id,
                 }
             });
         },
@@ -351,6 +467,9 @@ export default {
 
         set_loading ( { commit }, payload) {
             commit('SET_LOADING', payload)
+        },
+        set_save_payment ( { commit }, payload ) {
+            commit('SET_SAVE_PAYMENT', payload)
         },
 
         async save_payment ( {  getters, rootState }, payload ) {
@@ -389,7 +508,7 @@ export default {
                 attributes: {
                     valor: payload.valor,
                     name: payload.name,
-                    is_confirmed: payload.is_confirmed
+                    is_saved: payload.is_saved
                 },
                 relationships: {
                     paymentmethod: {
@@ -411,7 +530,7 @@ export default {
                 attributes: {
                     valor: payload.valor,
                     name: payload.name,
-                    is_confirmed: payload.is_confirmed
+                    is_saved: payload.is_saved
                 },
                 relationships: {
                     paymentmethod: {
@@ -453,6 +572,10 @@ export default {
         },
         remove_refund ( { commit }, payload ) {
             commit ( 'REMOVE_REFUND', payload )
+        },
+
+        set_save_refund ( { commit }, payload ) {
+            commit('SET_SAVE_REFUND', payload)
         },
 
         async new_devolution( { commit, state } ) {

@@ -82,6 +82,21 @@ const routes = [
         component: () => import(/* webpackChunkName: "orders" */ '../views/admin/orders2/Orders.vue')
       },
       {
+        path: 'order/:id',
+        name: 'order',
+        component: () => import(/* webpackChunkName: "order" */ '../views/admin/orders2/Order.vue')
+      },
+      {
+        path: 'payments',
+        name: 'payments',
+        component: () => import(/* webpackChunkName: "payments" */ '../views/admin/payments/Payments.vue')
+      },
+      {
+        path: 'refunds',
+        name: 'refunds',
+        component: () => import(/* webpackChunkName: "refunds" */ '../views/admin/refunds/Refunds.vue')
+      },
+      {
         path: 'clients',
         name: 'clients',
         component: () => import(/* webpackChunkName: "clients" */ '../views/admin/clients/Clients.vue')
@@ -186,6 +201,16 @@ const routes = [
         path: 'stockmovements',
         name: 'stockmovements',
         component: () => import(/* webpackChunkName: "stockmovements" */ '../views/admin/stockmovements/Stockmovements.vue')
+      },
+      {
+        path: 'stocktransfers/:id(\\d+)',
+        name: 'stocktransfer',
+        component: () => import(/* webpackChunkName: "stocktransfer" */ '../views/admin/stocktransfers/Stocktransfer.vue')
+      },
+      {
+        path: 'stocktransfers',
+        name: 'stocktransfers',
+        component: () => import(/* webpackChunkName: "stocktransfers" */ '../views/admin/stocktransfers/Stocktransfers.vue')
       },
       {
         path: 'purchaseorders',

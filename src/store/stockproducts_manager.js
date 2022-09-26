@@ -17,6 +17,9 @@ export default {
         subitem_ids_select: {
             saleproductgroup_id: null
         },
+        orders: {
+            time_set_costo: false
+        },
         filters: {
             q: '',
             ivaaliquot_id: null,
@@ -64,6 +67,9 @@ export default {
         },
         subitem_cache_new (state) {
             return state.subitem_cache_new
+        },
+        orders (state) {
+            return state.orders
         },
     },
     mutations: {
@@ -252,6 +258,7 @@ export default {
                     page: state.list_meta.page,
                     q: state.filters.q,
                     ivaaliquot_id: state.filters.ivaaliquot_id,
+                    order_time_set_costo: state.orders.time_set_costo,
                 }
             })
         },
@@ -327,6 +334,7 @@ export default {
             }) ) {
                 if ( item_stockproduct.relationships.stockproductgroup.id == payload.id ) {
                     item_stockproduct.attributes.costo = payload.costo
+                    item_stockproduct.attributes.time_set_costo = payload.time_set_costo
                 }
             }
         },

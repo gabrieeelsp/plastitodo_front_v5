@@ -11,6 +11,20 @@
                 />
             </v-col>
             <v-col cols="12" sm="2" class="d-flex align-center">
+                <v-select
+                    dense
+                    :items="sucursals_select"
+                    item-text="name"
+                    item-value="id"
+                    v-model="filters.sucursal_id"
+                    :menu-props="{ offsetY: true }"
+                    hide-details=""
+                    label="Sucursal"
+                    clearable
+                >
+                </v-select>
+            </v-col>
+            <v-col cols="12" sm="2" class="d-flex align-center">
                 <SelectUser 
                     label="Usuario"
                     @setUser="setUser"
@@ -24,7 +38,7 @@
                     :date_to="date_to_default"
                 />
             </v-col>
-            <v-col cols="12" sm="2" class="d-flex align-center">
+            <v-col cols="12" sm="1" class="d-flex align-center">
                 <v-btn small
                     @click="$emit('getItems')"
                 >Search</v-btn>
@@ -78,6 +92,11 @@
                             Total
                         </th>
                         <th 
+                            style="width: 80px;"
+                            class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                            Saldo
+                        </th>
+                        <th 
                             style="width: 100px;"
                             class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
                             Actions
@@ -100,6 +119,11 @@
                             <span v-if="sale.relationships.comprobante">{{ sale.relationships.comprobante.attributes.tipo }} {{ sale.relationships.comprobante.attributes.punto_venta | punto_venta_string }} - {{ sale.relationships.comprobante.attributes.numero | numero_factura_string }}</span>
                         </td>
                         <td class="text-right">{{ globalHelperFixeDecimalMoney(sale.attributes.total) | money_string }}</td>
+                        <td class="text-right" :class="sale.attributes.saldo_sale > 0 ? 'red--text': ''" >
+                            <v-badge  color="error" dot :value="!saldo_confirmed(sale)"  >
+                                <span>{{ globalHelperFixeDecimalMoney(sale.attributes.saldo_sale) | money_string }}</span>
+                            </v-badge>
+                        </td>
                         <v-btn
                             icon
                             @click="showSalePage(sale.id)"
@@ -143,7 +167,7 @@
                 ></v-pagination>
             </v-col>
         </v-row>
-        
+        {{ sales }}
     </div>
 </template>
 
@@ -179,6 +203,9 @@ export default {
             date_to_default: 'sales_manager/date_to',
 
             list_meta: 'sales_manager/list_meta',
+
+            sucursals_select: 'sucursals_manager/sucursals_select',
+            filters: 'sales_manager/filters',
         })
     },
     components: {
@@ -232,7 +259,35 @@ export default {
         async showSalePage( sale_id ) {
             this.$emit('show_sale', sale_id)
                
-        }
+        },
+        saldo ( sale ) {
+            let saldo = Number(sale.attributes.total)
+            for ( let payment of sale.relationships.payments ) {
+                saldo = saldo - Number(payment.attributes.valor)
+                console.log('Payment: ' + payment.attributes.valor)
+            }
+
+            console.log('Payments: ' + saldo)
+            for ( let refund of sale.relationships.refunds ) {
+                saldo = saldo + Number(refund.attributes.valor)
+                console.log('refund: ' + refund.attributes.valor)
+            }
+            console.log('refund: ' + saldo)
+            return saldo
+        },
+        saldo_confirmed ( sale ) {
+            for ( let payment of sale.relationships.payments ) { 
+                if ( !payment.attributes.is_confirmed ) { 
+                    return false
+                }
+            }
+            for ( let refund of sale.relationships.refunds ) {
+                if ( !refund.attributes.is_confirmed ) {
+                    return false
+                }
+            }
+            return true
+        },
     }
 }
 </script>

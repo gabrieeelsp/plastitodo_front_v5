@@ -1,7 +1,29 @@
 <template>
     <div>
         <v-row class="">
+            <v-col cols="12" sm="2" class="d-flex align-center">
+                <v-checkbox
+                    label="Ordenar por STOCK"
+                    v-model="orders.stock"
+                    hide-details=""
+                >
+                </v-checkbox>
+            </v-col>
             <v-spacer></v-spacer>
+            <v-col cols="12" sm="2" class="d-flex align-center">
+                <v-select
+                    dense
+                    :items="sucursals_select"
+                    item-text="name"
+                    item-value="id"
+                    v-model="filters.sucursal_id"
+                    :menu-props="{ offsetY: true }"
+                    hide-details=""
+                    label="Sucursal"
+                    clearable
+                >
+                </v-select>
+            </v-col>
             
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-text-field
@@ -13,7 +35,7 @@
                 ></v-text-field>
             </v-col>
             
-            <v-col cols="12" sm="2" class="d-flex align-center">
+            <v-col cols="12" sm="1" class="d-flex align-center">
                 <v-btn small
                     @click="$emit('getItems')"
                 >Search</v-btn>
@@ -43,8 +65,26 @@
                             <th 
 
                                 style="width: 100px;"
-                                class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                 Stock
+                            </th>
+                            <th 
+
+                                style="width: 100px;"
+                                class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                Pedido
+                            </th>
+                            <th 
+
+                                style="width: 100px;"
+                                class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                Stock Min
+                            </th>
+                            <th 
+
+                                style="width: 60px;"
+                                class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                REL
                             </th>
 
                             <th   
@@ -70,7 +110,10 @@
                         >
                         <td>{{ item.id }}</td>
                         <td >{{ item.attributes.name }}</td>
-                        <td class="text-right" >{{ globalHelperFixeDecimalCantidad(getStock(item)) }}</td>
+                        <td class="text-right" >{{ globalHelperFixeDecimalCantidad(item.attributes.stock) }}</td>
+                        <td class="text-right" >{{ globalHelperFixeDecimalCantidad(item.attributes.stock_pedidos) }}</td>
+                        <td class="text-right" >{{ globalHelperFixeDecimalCantidad(item.attributes.stock_minimo) }}</td>
+                        <td class="" ><v-chip :color="get_stock_relativo(item.attributes.stock_relativo).color" style="width: 60px;" x-small class="d-flex justify-center"><span>{{ get_stock_relativo(item.attributes.stock_relativo).num }}</span></v-chip></td>
                         <td class="text-right" v-for="sucursal in sucursals" :key="sucursal.id" >
                             <template v-if="getStockSucursal(item, sucursal.id) != null" >
                                 <span :class="is_stock_low(item, sucursal.id) ? 'red--text': ''">{{ globalHelperFixeDecimalCantidad(getStockSucursal(item, sucursal.id).attributes.stock) }}</span>
@@ -131,10 +174,12 @@ export default {
         ...mapGetters({
             items: 'stocksucursals_manager/items',
             filters: 'stocksucursals_manager/filters',
+            orders: 'stocksucursals_manager/orders',
 
             list_meta: 'stocksucursals_manager/list_meta',
 
             sucursals: 'sucursals_manager/sucursals',
+            sucursals_select: 'sucursals_manager/sucursals_select',
         })
     },
     components: {

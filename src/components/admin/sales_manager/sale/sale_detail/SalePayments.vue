@@ -14,13 +14,14 @@
                 <v-col cols="12" sm="5"  class="d-flex justify-start pt-1 pb-1">
                     <span class="">{{ payment.attributes.name }}</span>
                 </v-col>
-                <v-col cols="10" sm="4"  class="d-flex justify-end pt-1 pb-1">
-                    <span
-                    >{{ globalHelperFixeDecimalMoney(payment.attributes.valor) }}</span>
+                <v-col cols="10" sm="4"  class="d-flex justify-end pt-1 pb-1 align-center">
+                    <v-badge  color="error" dot :value="Object.prototype.hasOwnProperty.call(payment.attributes, 'is_confirmed') && !payment.attributes.is_confirmed"  >
+                    <span>{{ globalHelperFixeDecimalMoney(payment.attributes.valor) }}</span>
+                    </v-badge>
                 </v-col>
                 <v-col cols="2" sm="3" class="pt-1 pb-1 d-flex justify-start align-center">
                     <v-btn
-                        v-if="Object.prototype.hasOwnProperty.call(payment.attributes, 'is_confirmed') && !payment.attributes.is_confirmed"
+                        v-if="Object.prototype.hasOwnProperty.call(payment.attributes, 'is_saved') && !payment.attributes.is_saved"
                         icon
                         @click="showEditPaymentModal ( payment )"
                         x-small
@@ -38,7 +39,7 @@
                     </v-btn>
 
                     <v-btn
-                        v-if="Object.prototype.hasOwnProperty.call(payment.attributes, 'is_confirmed') && !payment.attributes.is_confirmed"
+                        v-if="Object.prototype.hasOwnProperty.call(payment.attributes, 'is_saved') && !payment.attributes.is_saved"
                         icon
                         @click="removePayment ( payment )"
                         x-small
@@ -47,7 +48,7 @@
                     </v-btn>
                     <v-btn
                         :loading="is_saving && payment_saving.id == payment.id"
-                        v-if="Object.prototype.hasOwnProperty.call(payment.attributes, 'is_confirmed') && !payment.attributes.is_confirmed"
+                        v-if="Object.prototype.hasOwnProperty.call(payment.attributes, 'is_saved') && !payment.attributes.is_saved"
                         icon
                         @click="savePayment ( payment )"
                         x-small
@@ -70,6 +71,7 @@
             @close="editPaymentModalVisible = false"
             @updatePayment="updatePayment"
             />
+            
     </v-card>
 </template>
 
@@ -109,7 +111,8 @@ export default {
             save_payment: 'sales_manager/save_payment',
             add_payment: 'sales_manager/add_payment',
             update_payment: 'sales_manager/update_payment',
-            remove_payment: 'sales_manager/remove_payment'
+            remove_payment: 'sales_manager/remove_payment',
+            set_save_payment: 'sales_manager/set_save_payment',
         }),
 
         addPayment(payment) {
@@ -135,8 +138,11 @@ export default {
             this.is_saving = true
             await this.save_payment ( payment )
                 .then((resp) => {
+                    this.set_save_payment({payment: payment, id: resp.data.data.id})
                     payment.id = resp.data.data.id
-                    payment.attributes.is_confirmed = true
+                    payment.attributes.is_saved = true
+
+                    this.$set(payment.attributes, 'is_confirmed', resp.data.data.attributes.is_confirmed)
                     this.$toast.success('El pago se ha guardado correctamente', { timeout: 3000 });
                 })
                 .catch((e) => {

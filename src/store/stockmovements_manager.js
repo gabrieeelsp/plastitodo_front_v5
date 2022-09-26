@@ -99,7 +99,9 @@ export default {
                 data: {
                     id: getters.item.id,
                     type: 'stockmovements',
-                    attributes: null,
+                    attributes: {
+                        comments: getters.item.attributes.comments
+                    },
                     relationships: {
                         stockmovementitems: json_items,
                     },

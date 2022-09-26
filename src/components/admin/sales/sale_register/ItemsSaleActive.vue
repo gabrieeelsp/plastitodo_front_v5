@@ -1,9 +1,26 @@
 <template>
 <div>
+    <v-row class="">
+            <v-col class="">
+                <v-checkbox
+                class="mt-0 mb-1"
+                    v-model="show_images"
+                    label="Fotos"
+                    hide-details=""
+                ></v-checkbox> 
+            </v-col>
+            <v-spacer></v-spacer>
+            
+            
+            
+        </v-row>
     <v-simple-table>
         <template v-slot:default>
         <thead>
             <tr>
+                <th v-if="show_images" style="width: 110px;" class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                    Foto
+                </th>
             <th class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
                 Producto 
             </th>
@@ -48,6 +65,38 @@
             :key="item.id"
             :class="item.is_confirmado ? 'light-green lighten-4' : ''"
             >
+            <td v-if="show_images" >
+                <v-row class="">
+                    <v-col class="pl-0" >
+                        
+                        <Photoswipe
+                            v-if="item.image1"  
+                            :options="{bgOpacity: 0.5}">
+                            <v-card
+                                v-pswp="{
+                                    src: item.image1,
+                                    msrc: item.image1
+                                }"
+                                :style="getImageItemStyle(item.image1)"
+                                style="display: inline-block"
+                            >
+                            </v-card>
+                        </Photoswipe>
+
+                        <v-card v-else class="">
+                            <v-img                               
+                                class="white--text align-end mt-1 mb-1"
+                                height="100px"
+                                width="100px"
+                                :src="url_asset + 'images/image_default.jpg'"
+                                
+                            >
+                            </v-img>
+                            
+                            </v-card>
+                    </v-col>
+                </v-row>
+            </td>
 
             <td>{{ item.name }}</td>
 
@@ -110,7 +159,7 @@
 
             
 
-            <td v-if="item.is_stock_unitario_variable" class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.cantidad_total)) }}</td>
+            <td v-if="item.is_stock_unitario_variable" class="text-right"><v-badge content="Aprox" :value="Number(item.cantidad_total) == 0" color="red" dot><span>{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.cantidad_total)) }}</span></v-badge></td>
 
             <td v-else class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(item.precio, item.cantidad)) }}</td>
             <td class="pl-1 pr-1">
@@ -142,6 +191,9 @@
         <template v-slot:default>
         <tbody>
             <tr class="blue lighten-4"  >
+                <td v-if="show_images" 
+                            style="width: 110px;" 
+                        ></td>
                 <td><span class="font-weight-medium" :class="comboitem.is_complete() ? '' : 'red--text'">[Combo] {{ comboitem.name }}</span></td>
                 <td class="text-right" style="width: 100px;">{{ globalHelperFixeDecimalMoney(comboitem.precio) }}</td>
                 <td v-if="comboitem.is_editing_cantidad && !saleActive.is_saved" style="width: 100px;">
@@ -180,6 +232,9 @@
                 <template v-slot:default>
                 <tbody>
                     <tr class="font-weight-medium" >
+                        <td v-if="show_images" 
+                            style="width: 110px;" 
+                        ></td>
                         <td><span class="ml-3" :class="item.is_complete() ? '' : 'red--text'"> {{ item.name }} [ {{ globalHelperFixeDecimalCantidad(item.cantidad * item.cantidad_combos) }} ]</span></td>
                         <td style="width: 100px;"></td>
                         
@@ -187,7 +242,7 @@
                             class="text-right"
                             ></td>
                         <td style="width: 100px;"></td>
-                        <td style="width: 90px;">
+                        <td style="width: 90px;" class="">
                             <v-btn small icon color="green" :disabled="saleActive.is_saved"
                                 @click="item.is_editing_cantidades = !item.is_editing_cantidades"
                             >
@@ -207,6 +262,40 @@
                 <tbody>
 
                     <tr v-if="saleproduct.cantidad != 0" >
+                        <td v-if="show_images" 
+                            style="width: 110px;" 
+                        >
+                            <v-row class="">
+                                <v-col class="pl-0" >
+                                    
+                                    <Photoswipe
+                                        v-if="saleproduct.image1"  
+                                        :options="{bgOpacity: 0.5}">
+                                        <v-card
+                                            v-pswp="{
+                                                src: saleproduct.image1,
+                                                msrc: saleproduct.image1
+                                            }"
+                                            :style="getImageItemStyle(saleproduct.image1)"
+                                            style="display: inline-block"
+                                        >
+                                        </v-card>
+                                    </Photoswipe>
+
+                                    <v-card v-else class="">
+                                        <v-img                               
+                                            class="white--text align-end mt-1 mb-1"
+                                            height="100px"
+                                            width="100px"
+                                            :src="url_asset + 'images/image_default.jpg'"
+                                            
+                                        >
+                                        </v-img>
+                                        
+                                        </v-card>
+                                </v-col>
+                            </v-row>
+                        </td>
                         <td><span class="ml-6">* {{ saleproduct.name }}</span></td>
                         <td style="width: 100px;"></td>
                         <td v-if="saleproduct.is_editing_cantidad  && !saleActive.is_saved" style="width: 100px;">
@@ -225,7 +314,7 @@
                             @dblclick="saleproduct.is_editing_cantidad = true"
                             >{{ globalHelperFixeDecimalCantidad(saleproduct.cantidad) }}</td>
                         <td style="width: 100px;"></td>
-                        <td style="width: 90px;"></td>
+                        <td style="width: 80px;"></td>
                     </tr>
                 </tbody>
                 </template>
@@ -237,6 +326,40 @@
                     <tbody>
 
                         <tr v-if="saleproduct.cantidad == 0" >
+                            <td v-if="show_images" 
+                                    style="width: 110px;" 
+                                >
+                                    <v-row class="">
+                                        <v-col class="pl-0" >
+                                            
+                                            <Photoswipe
+                                                v-if="saleproduct.image1"  
+                                                :options="{bgOpacity: 0.5}">
+                                                <v-card
+                                                    v-pswp="{
+                                                        src: saleproduct.image1,
+                                                        msrc: saleproduct.image1
+                                                    }"
+                                                    :style="getImageItemStyle(saleproduct.image1)"
+                                                    style="display: inline-block"
+                                                >
+                                                </v-card>
+                                            </Photoswipe>
+
+                                            <v-card v-else class="">
+                                                <v-img                               
+                                                    class="white--text align-end mt-1 mb-1"
+                                                    height="100px"
+                                                    width="100px"
+                                                    :src="url_asset + 'images/image_default.jpg'"
+                                                    
+                                                >
+                                                </v-img>
+                                                
+                                                </v-card>
+                                        </v-col>
+                                    </v-row>
+                                </td>
                             <td><span class="ml-6">* {{ saleproduct.name }}</span></td>
                             <td style="width: 100px;"></td>
                             <td v-if="saleproduct.is_editing_cantidad" style="width: 100px;">
@@ -255,7 +378,7 @@
                                 @dblclick="saleproduct.is_editing_cantidad = true"
                                 >{{ globalHelperFixeDecimalCantidad(saleproduct.cantidad) }}</td>
                             <td style="width: 100px;"></td>
-                            <td style="width: 90px;"></td>
+                            <td style="width: 80px;"></td>
                         </tr>
                     </tbody>
                     </template>
@@ -284,6 +407,7 @@ export default {
     },
     computed: {
         ...mapGetters({
+            url_asset: 'url_asset',
             saleActive: 'sale_manager/saleActive',
             is_saleActiveStockUnitarioVariable: 'sale_manager/is_saleActiveStockUnitarioVariable',
         })
@@ -294,7 +418,7 @@ export default {
     },
 
     data: () => ({
-        show_images: true,
+        show_images: false,
         item_editing: null,
     }),
     methods: {
@@ -369,6 +493,17 @@ export default {
             }
         },
 
+        getImageItemStyle(src) {
+            return {
+                width: "100px",
+                height: "100px",
+                backgroundImage: `url(${src})`,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                
+            };
+        },
 
     },
 }

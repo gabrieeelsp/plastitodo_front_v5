@@ -290,13 +290,11 @@ export default {
                 doc.text('Dirección:  ', 8, client_h + 5)
             }
 
-            if ( this.order.client.direccion ) {
+            if ( this.order.client.telefono ) {
                 doc.text('Teléfono:  ' + this.order.client.telefono, 8, client_h + 10)
             }else {
                 doc.text('Teléfono:  ', 8, client_h + 10)
             }
-            
-            
             
             doc.text('Pedido Nro:  ', 130, client_h, { align: 'left', })
             doc.text(numero_format.format(this.order.id), 202, client_h, { align: 'right', })
@@ -304,13 +302,19 @@ export default {
             doc.text(this.$luxon(this.order.created_at, { output: "dd-MM-yyyy" }), 202, client_h + 5, { align: 'right', })
 
             doc.text('Entrega:  ', 130, client_h + 10, { align: 'left', })
-            if ( this.order.fecha_entrega_acordada ) {
-                doc.text(this.order.fecha_entrega_acordada, 171, client_h + 10, { align: 'right', })
-                if ( this.order.deliveryshift_id && this.deliveryshift_by_id(this.order.deliveryshift_id) ) {
-                    //doc.text('Horario:  ', 130, client_h + 15, { align: 'left', })
-                    doc.text(this.deliveryshift_by_id(this.order.deliveryshift_id).attributes.description, 202, client_h + 10, { align: 'right', })
+            
+            if ( this.order.is_delivery ) {
+                doc.text( 'Retiro', 171, client_h + 10, { align: 'right', })
+            }else {
+                if ( this.order.fecha_entrega_acordada ) {
+                    doc.text(this.order.fecha_entrega_acordada, 171, client_h + 10, { align: 'right', })
+                    if ( this.order.deliveryshift_id && this.deliveryshift_by_id(this.order.deliveryshift_id) ) {
+                        //doc.text('Horario:  ', 130, client_h + 15, { align: 'left', })
+                        doc.text(this.deliveryshift_by_id(this.order.deliveryshift_id).attributes.description, 202, client_h + 10, { align: 'right', })
+                    }
                 }
             }
+            
             
 
 

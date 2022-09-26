@@ -16,6 +16,7 @@ export default {
             state: null,
             client_id: null ,
             sucursal_id: null,
+            is_delivery: null,
         },
         list_meta: {
             select_limit_items: [5, 10, 15, 20],
@@ -28,8 +29,10 @@ export default {
             {state: 'FINALIZADO', color: 'blue'},
             {state: 'CONFIRMADO', color: 'brown'},
             {state: 'EN PREPARACION', color: 'orange'},
-            {state: 'PREPARADO', color: 'green'},
+            {state: 'PREPARADO', color: 'indigo'},
             {state: 'FACTURADO', color: 'teal'},
+            {state: 'EN DISTRIBUCION', color: 'red'},
+            {state: 'ENTREGADO', color: 'green'},
         ],
     },
     getters: {
@@ -74,9 +77,9 @@ export default {
             return state.item.relationships.orderitems.length + state.item.relationships.ordercomboitems.length
         },
 
-        totalOrder (state) {
+        totalOrder: () => (order) => {
             let total = 0
-            for ( let item of state.item.relationships.orderitems) {
+            for ( let item of order.relationships.orderitems) {
                 if( item.relationships.saleproduct.relationships.stockproduct.attributes.is_stock_unitario_variable ) {
                     if ( Number(item.attributes.cantidad_total) != 0 ) {
                         total = total + (item.attributes.precio * item.attributes.cantidad_total)
@@ -90,11 +93,20 @@ export default {
                 }                
             }
             
-            for ( let comboitem of state.item.relationships.ordercomboitems ) {
+            for ( let comboitem of order.relationships.ordercomboitems ) {
                 total = total + (comboitem.attributes.precio * comboitem.attributes.cantidad)
             }
             
             return total.toFixed(10)
+        },
+
+        is_order_active_complete_total: ( ) => (order) => {
+            for ( let item of order.relationships.orderitems ) {
+                if ( item.relationships.saleproduct.relationships.stockproduct.attributes.is_stock_unitario_variable && ( Number(item.attributes.cantidad_total) == 0 ) ) {
+                    return false
+                }
+            }
+            return true
         },
 
         
@@ -122,6 +134,14 @@ export default {
         ADD_ITEM ( state, payload ) {
             state.items.unshift(payload)
         },
+
+        UPDATE_STATE_ITEM ( state, payload ) {
+            for ( let order of state.items ) {
+                if ( order.id == payload.id ) {
+                    order.attributes.state = payload.state
+                }
+            }            
+        } 
     },
     actions: {
         item_new (_, payload) {
@@ -155,6 +175,16 @@ export default {
                     state: state.filters.state,
                     client_id: state.filters.client_id,
                     sucursal_id: state.filters.sucursal_id,
+                    is_delivery: state.filters.is_delivery,
+                }
+            })
+        },        
+
+        buscar_item_distribucion(_, payload) {
+            return axios.get('/orders/get_orders_distribucion', {
+                params: {
+                    sucursal_id: payload.sucursal_id,
+                    deliveryshift_id: payload.deliveryshift_id,
                 }
             })
         },
@@ -176,7 +206,40 @@ export default {
 
         add_item( { commit }, payload ) {
             commit('ADD_ITEM', payload)
-        }
+        },
+
+
+        update_state_item ( { commit }, payload ) {
+            commit('UPDATE_STATE_ITEM', payload)
+        },
+
+        async save_item( { getters }, payload) {
+            
+
+            let json_order = {
+                evento: payload.evento,
+                
+            }
+            json_order['ivacondition_id'] = payload.ivacondition_id
+            json_order['sucursal_id'] = payload.sucursal_id
+            json_order['deliveryshift_id'] = payload.deliveryshift_id
+            json_order['fecha_entrega_acordada'] = payload.fecha_entrega_acordada
+            json_order['is_delivery'] = payload.is_delivery
+
+            if ( payload.evento == 'FACTURAR' ) {
+                for ( let order of getters.items ) {
+                    if ( order.id == payload.id ) {
+                        json_order['total'] = getters.totalOrder(order)
+                        break
+                    }
+                }
+                
+            }
+            
+            return axios.put(`/orders/${payload.id}`, json_order);
+
+            //remover saleActive
+        },
         
     }
 }

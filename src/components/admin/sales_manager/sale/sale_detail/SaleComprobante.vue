@@ -39,22 +39,31 @@
             >
                 Enviar
             </v-btn>
+            <v-btn 
+                v-else-if="!sale.relationships.comprobante.attributes.cae"
+                block 
+                small 
+                :loading="is_saving"   
+                @click="generarComprobante"     
+            >
+                Enviar
+            </v-btn>
             <template v-else>
-            <Comprobante 
-                :comprobante = "sale.relationships.comprobante"
-                :items = "sale.relationships.saleitems"
-                :comboitems = "sale.relationships.salecomboitems"
-                :total = "Number(sale.attributes.total)"
-                tipo = "sale"
-            />
-            <Comprobante_80 
-            class="mt-2"
-                :comprobante = "sale.relationships.comprobante"
-                :items = "sale.relationships.saleitems"
-                :comboitems = "sale.relationships.salecomboitems"
-                :total = "Number(sale.attributes.total)"
-                tipo = "sale"
-            />
+                <Comprobante 
+                    :comprobante = "sale.relationships.comprobante"
+                    :items = "sale.relationships.saleitems"
+                    :comboitems = "sale.relationships.salecomboitems"
+                    :total = "Number(sale.attributes.total)"
+                    tipo = "sale"
+                />
+                <Comprobante_80 
+                class="mt-2"
+                    :comprobante = "sale.relationships.comprobante"
+                    :items = "sale.relationships.saleitems"
+                    :comboitems = "sale.relationships.salecomboitems"
+                    :total = "Number(sale.attributes.total)"
+                    tipo = "sale"
+                />
             </template>
             
         </v-card-text>

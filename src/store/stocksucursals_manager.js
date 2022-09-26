@@ -9,6 +9,10 @@ export default {
 
         filters: {
             q: '',
+            sucursal_id: null,
+        },
+        orders: {
+            stock: false
         },
         list_meta: {
             select_limit_items: [5, 10, 15, 20],
@@ -35,6 +39,9 @@ export default {
         filters (state) {
             return state.filters
         },
+        orders (state) {
+            return state.orders
+        },
 
     },
     mutations: {
@@ -57,6 +64,9 @@ export default {
                     limit: state.list_meta.limit,
                     page: state.list_meta.page,
                     q: state.filters.q,
+                    sucursal_id: state.filters.sucursal_id,
+
+                    order_stock: state.orders.stock,
                 }
             })
         },

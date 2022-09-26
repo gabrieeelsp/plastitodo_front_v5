@@ -14,13 +14,14 @@
                 <v-col cols="12" sm="5"  class="d-flex justify-start pt-1 pb-1">
                     <span class="">{{ refund.attributes.name }}</span>
                 </v-col>
-                <v-col cols="10" sm="4"  class="d-flex justify-end pt-1 pb-1">
-                    <span
-                    >{{ globalHelperFixeDecimalMoney(refund.attributes.valor) }}</span>
+                <v-col cols="10" sm="4"  class="d-flex justify-end pt-1 pb-1 align-center">
+                    <v-badge  color="error" dot :value="Object.prototype.hasOwnProperty.call(refund.attributes, 'is_confirmed') && !refund.attributes.is_confirmed"  >
+                    <span>{{ globalHelperFixeDecimalMoney(refund.attributes.valor) }}</span>
+                    </v-badge>
                 </v-col>
                 <v-col cols="2" sm="3" class="pt-1 pb-1 d-flex justify-start align-center">
                     <v-btn
-                        v-if="Object.prototype.hasOwnProperty.call(refund.attributes, 'is_confirmed') && !refund.attributes.is_confirmed"
+                        v-if="Object.prototype.hasOwnProperty.call(refund.attributes, 'is_saved') && !refund.attributes.is_saved"
                         icon
                         @click="showEditRefundModal ( refund )"
                         x-small
@@ -38,7 +39,7 @@
                     </v-btn>
 
                     <v-btn
-                        v-if="Object.prototype.hasOwnProperty.call(refund.attributes, 'is_confirmed') && !refund.attributes.is_confirmed"
+                        v-if="Object.prototype.hasOwnProperty.call(refund.attributes, 'is_saved') && !refund.attributes.is_saved"
                         icon
                         @click="removeRefund ( refund )"
                         x-small
@@ -47,7 +48,7 @@
                     </v-btn>
                     <v-btn
                         :loading="is_saving && refund_saving.id == refund.id"
-                        v-if="Object.prototype.hasOwnProperty.call(refund.attributes, 'is_confirmed') && !refund.attributes.is_confirmed"
+                        v-if="Object.prototype.hasOwnProperty.call(refund.attributes, 'is_saved') && !refund.attributes.is_saved"
                         icon
                         @click="saveRefund ( refund )"
                         x-small
@@ -109,7 +110,8 @@ export default {
             save_refund: 'sales_manager/save_refund',
             add_refund: 'sales_manager/add_refund',
             update_refund: 'sales_manager/update_refund',
-            remove_refund: 'sales_manager/remove_refund'
+            remove_refund: 'sales_manager/remove_refund',
+            set_save_refund: 'sales_manager/set_save_refund',
         }),
 
         addRefund(refund) {
@@ -135,8 +137,10 @@ export default {
             this.is_saving = true
             await this.save_refund ( refund )
                 .then((resp) => {
+                    this.set_save_refund({refund: refund, id: resp.data.data.id})
                     refund.id = resp.data.data.id
-                    refund.attributes.is_confirmed = true
+                    refund.attributes.is_saved = true
+                    this.$set(refund.attributes, 'is_confirmed', resp.data.data.attributes.is_confirmed)
                     this.$toast.success('El reintegro se ha guardado correctamente', { timeout: 3000 });
                 })
                 .catch(() => {

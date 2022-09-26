@@ -56,7 +56,7 @@
                                     Cerrar
                                 </v-btn>
                                 <v-btn
-                                    :disabled="!is_saleActive_ok_to_save || saleActive.is_saved"
+                                    :disabled="!is_saleActive_ok_to_save || saleActive.is_saved || !is_saleActive_complete_total"
                                     
                                     @click="save_sale"
                                     color="success"
@@ -105,7 +105,7 @@
             </v-col>
 
         </v-row>
-
+        {{ saleActive }}
     </div>
 
 </template>
@@ -160,6 +160,7 @@ export default {
             caja: 'cajas_manager/caja',
             cantItemsSaleActive: 'sale_manager/cantItemsSaleActive',
             is_saleActive_ok_to_save: 'sale_manager/is_saleActive_ok_to_save',
+            is_saleActive_complete_total: 'sale_manager/is_saleActive_complete_total',
             
         })
     },

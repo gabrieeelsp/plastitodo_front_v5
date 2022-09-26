@@ -144,7 +144,7 @@ export default {
                     paymentmethod_id: this.select.id,
                     name: name,
                     valor: this.globalHelperFixeDecimalMoney(this.valor),
-                    is_confirmed: false
+                    is_saved: false
                 })
             }
             

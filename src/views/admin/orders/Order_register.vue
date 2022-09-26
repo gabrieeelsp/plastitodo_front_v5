@@ -61,7 +61,8 @@
                                     color="primary"
                                     class="ml-1"
                                     outlined
-                                    :loading="is_registrandoOrder"
+                                    :loading="is_event_check"
+                                    :disabled="orderActive.state == 'FACTURADO' || is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar"
                                 >
                                     
                                     Actualizar Precios
@@ -74,37 +75,48 @@
                                     v-if="orderActive.state != 'EDITANDO'"
                                     :order="orderActive"
                                     class="mr-auto"
+                                    :disabled="is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                 />
+
+                                <v-btn
+                                    v-if="!orderActive.is_new"
+                                    @click="destroy_order(orderActive.id)"
+                                    color="error"
+                                    text
+                                    :disabled="orderActive.state != 'EDITANDO'"
+                                >
+                                    ELIMINAR
+                                </v-btn>
 
                                 <v-btn
                                     @click="delete_order(orderActive.id)"
                                     color="error"
                                     text
+                                    :disabled="is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                 >
                                     Cerrar
                                 </v-btn>
-                                <v-btn
-                                        :disabled="!is_orderActive_ok_to_save"
-                                        
-                                        @click="save_order('GUARDAR')"
-                                        color="success"
-                                        class="ml-1"
-                                        :loading="is_registrandoOrder"
-                                    >
-                                        
-                                        Guardar
-                                        <v-icon right>
-                                            mdi-content-save-outline
-                                        </v-icon>
-                                    </v-btn>
+                                <v-btn                                        
+                                    @click="save_order('GUARDAR')"
+                                    color="success"
+                                    class="ml-1"
+                                    :loading="is_event_guardar"
+                                    :disabled="!is_orderActive_ok_to_save || is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
+                                >
+                                    
+                                    Guardar
+                                    <v-icon right>
+                                        mdi-content-save-outline
+                                    </v-icon>
+                                </v-btn>
                                 <template v-if="orderActive.state == 'EDITANDO'">
                                     
                                     <v-btn                                    
                                         @click="save_order('FINALIZAR')"
                                         color="success"
-                                        :loading="is_registrandoOrder"
+                                        :loading="is_event_finalizar"
                                         class="ml-1"
-                                        :disabled="!is_orderActive_ok_to_save || !orderActive.sucursal_id"
+                                        :disabled="!orderActive.sucursal_id || is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                     >
                                         
                                         Guardar y Finalizar
@@ -118,7 +130,8 @@
                                         @click="save_order('EDITAR')"
                                         color="warning"
                                         class="ml-1"
-                                        :loading="is_registrandoOrder"
+                                        :loading="is_event_editar"
+                                        :disabled="is_event_guardar || is_event_finalizar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                     >
                                         
                                         EDITAR
@@ -130,7 +143,8 @@
                                         @click="save_order('CONFIRMAR')"
                                         color="success"
                                         class="ml-1"
-                                        :loading="is_registrandoOrder"
+                                        :loading="is_event_confirmar"
+                                        :disabled="is_event_guardar || is_event_finalizar || is_event_editar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                     >
                                         
                                         confirmar
@@ -144,7 +158,8 @@
                                         @click="save_order('EDITAR')"
                                         color="warning"
                                         class="ml-1"
-                                        :loading="is_registrandoOrder"
+                                        :loading="is_event_editar"
+                                        :disabled="is_event_guardar || is_event_finalizar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                     >
                                         
                                         EDITAR
@@ -156,7 +171,8 @@
                                         @click="save_order('INICIAR PREPARACION')"
                                         color="success"
                                         class="ml-1"
-                                        :loading="is_registrandoOrder"
+                                        :loading="is_event_iniciar_preparacion"
+                                        :disabled="is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                     >
                                         
                                         Iniciar Preparación
@@ -170,7 +186,8 @@
                                         @click="save_order('CANCELAR PREPARACION')"
                                         color="warning"
                                         class="ml-1"
-                                        :loading="is_registrandoOrder"
+                                        :loading="is_event_cancelar_preparacion"
+                                        :disabled="is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                     >
                                         
                                         Cancelar preparación
@@ -182,8 +199,8 @@
                                         @click="save_order('FINALIZAR PREPARACION')"
                                         color="success"
                                         class="ml-1"
-                                        :loading="is_registrandoOrder"
-                                        :disabled="!is_orderActive_prepared || !is_order_active_complete_total"
+                                        :loading="is_event_finalizar_preparacion"
+                                        :disabled="!is_orderActive_prepared || !is_order_active_complete_total || !(Number(orderActive.cant_bultos) > 0) || is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_facturar || is_event_check"
                                     >
                                         
                                         finalizar preparación
@@ -197,7 +214,8 @@
                                         @click="save_order('EDITAR')"
                                         color="warning"
                                         class="ml-1"
-                                        :loading="is_registrandoOrder"
+                                        :loading="is_event_editar"
+                                        :disabled="is_event_guardar || is_event_finalizar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                     >
                                         
                                         EDITAR
@@ -210,7 +228,8 @@
                                         color="primary"
                                         class="ml-1"
                                         outlined
-                                        :loading="is_registrandoOrder"
+                                        :loading="is_event_facturar"
+                                        :disabled="is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_check"
                                     >
                                         
                                         Facturar
@@ -234,7 +253,7 @@
                     </v-col>
                     <v-col cols="12">
                         <ModeloFactOrderActive
-                            :disabled="!orderActive.client"
+                            :disabled="!orderActive.client || orderActive.state == 'FACTURADO'"
                         />
                     </v-col>
                     <v-col cols="12">
@@ -244,6 +263,11 @@
                     </v-col>
                     <v-col cols="12">
                         <DiahoraOrderActive
+                            
+                        />
+                    </v-col>
+                    <v-col cols="12">
+                        <MetadataOrder
                             
                         />
                     </v-col>
@@ -278,6 +302,7 @@ import SelectProduct from '@/components/admin/orders/order_register/SelectProduc
 import ModeloFactOrderActive from '@/components/admin/orders/order_register/ModeloFactOrderActive'
 import SucursalOrderActive from '@/components/admin/orders/order_register/SucursalOrderActive'
 import DiahoraOrderActive from '@/components/admin/orders/order_register/DiahoraOrderActive'
+import MetadataOrder from '@/components/admin/orders/order_register/MetadataOrder.vue'
 
 import TotalOrder from '@/components/admin/orders/order_register/TotalOrder'
 import SearchOrderModal from '@/components/admin/orders/list/SearchOrderModal'
@@ -311,9 +336,20 @@ export default {
         OrderUser,
         OrderPDF,
         OrderCheckSaleModal,
+        MetadataOrder,
     },
     data: () => ({
         is_registrandoOrder: false,
+        is_event_guardar: false,
+        is_event_finalizar: false,
+        is_event_editar: false,
+        is_event_confirmar: false,
+        is_event_iniciar_preparacion: false,
+        is_event_cancelar_preparacion: false,
+        is_event_finalizar_preparacion: false,
+        is_event_facturar: false,
+        is_event_check: false,
+
 
         showOrderCheckSaleModal: false,
         orderCheckSale: null,
@@ -358,6 +394,8 @@ export default {
 
             update_precios: 'order_manager/update_precios',
 
+            destroy_item: 'order_manager/destroy_item',
+
         }),
 
         create_order () {
@@ -397,7 +435,95 @@ export default {
         },
 
         async save_order(evento) {
-            this.is_registrandoVenta = true
+            if ( evento == 'GUARDAR' ) {
+                this.is_event_guardar = true
+                this.is_event_finalizar = false
+                this.is_event_editar = false
+                this.is_event_confirmar = false
+                this.is_event_iniciar_preparacion = false
+                this.is_event_cancelar_preparacion = false
+                this.is_event_finalizar_preparacion = false
+                this.is_event_facturar = false
+                this.is_event_check = false
+            }
+            if ( evento == 'FINALIZAR') {
+                this.is_event_guardar = false
+                this.is_event_finalizar = true
+                this.is_event_editar = false
+                this.is_event_confirmar = false
+                this.is_event_iniciar_preparacion = false
+                this.is_event_cancelar_preparacion = false
+                this.is_event_finalizar_preparacion = false
+                this.is_event_facturar = false
+                this.is_event_check = false
+            }
+            if ( evento == 'EDITAR' ) {
+                this.is_event_guardar = false
+                this.is_event_finalizar = false
+                this.is_event_editar = true
+                this.is_event_confirmar = false
+                this.is_event_iniciar_preparacion = false
+                this.is_event_cancelar_preparacion = false
+                this.is_event_finalizar_preparacion = false
+                this.is_event_facturar = false
+                this.is_event_check = false
+            }
+            if ( evento == 'CONFIRMAR' ) {
+                this.is_event_guardar = false
+                this.is_event_finalizar = false
+                this.is_event_editar = false
+                this.is_event_confirmar = true
+                this.is_event_iniciar_preparacion = false
+                this.is_event_cancelar_preparacion = false
+                this.is_event_finalizar_preparacion = false
+                this.is_event_facturar = false
+                this.is_event_check = false
+            }
+            if ( evento == 'INICIAR PREPARACION' ) {
+                this.is_event_guardar = false
+                this.is_event_finalizar = false
+                this.is_event_editar = false
+                this.is_event_confirmar = false
+                this.is_event_iniciar_preparacion = true
+                this.is_event_cancelar_preparacion = false
+                this.is_event_finalizar_preparacion = false
+                this.is_event_facturar = false
+                this.is_event_check = false
+            }
+            if ( evento == 'CANCELAR PREPARACION' ) {
+                this.is_event_guardar = false
+                this.is_event_finalizar = false
+                this.is_event_editar = false
+                this.is_event_confirmar = false
+                this.is_event_iniciar_preparacion = false
+                this.is_event_cancelar_preparacion = true
+                this.is_event_finalizar_preparacion = false
+                this.is_event_facturar = false
+                this.is_event_check = false
+            }
+            if ( evento == 'FINALIZAR PREPARACION' ) {
+                this.is_event_guardar = false
+                this.is_event_finalizar = false
+                this.is_event_editar = false
+                this.is_event_confirmar = false
+                this.is_event_iniciar_preparacion = false
+                this.is_event_cancelar_preparacion = false
+                this.is_event_finalizar_preparacion = true
+                this.is_event_facturar = false
+                this.is_event_check = false
+            }
+            if ( evento == 'FACTURAR' ) {
+                this.is_event_guardar = false
+                this.is_event_finalizar = false
+                this.is_event_editar = false
+                this.is_event_confirmar = false
+                this.is_event_iniciar_preparacion = false
+                this.is_event_cancelar_preparacion = false
+                this.is_event_finalizar_preparacion = false
+                this.is_event_facturar = true
+                this.is_event_check = false
+            }
+
             await this.save_orderActive(evento)
                 .then((resp) => {
                     //console.log(resp.data.data)
@@ -441,7 +567,7 @@ export default {
                         for ( let item of this.orderActive.items ) {
                             for ( let orderitem of resp.data.data.relationships.orderitems ) {
                                 if ( item.saleproduct_id == orderitem.saleproduct_id ) {
-                                    item.relationships.stockproduct.relationships.stocksucursals = orderitem.relationships.stockproduct.relationships.stocksucursals
+                                    item.relationships.stockproduct.relationships.stocksucursals = orderitem.relationships.saleproduct.relationships.stockproduct.relationships.stocksucursals
                                 }
                             }
                         }
@@ -474,20 +600,43 @@ export default {
                         this.orderActive.sale = resp.data.data.relationships.sale
                     }
 
-
+                    
                     this.orderActive.state = resp.data.data.attributes.state                     
 
                     this.$toast.success('Los cambios se han registrado correctamente.', { timeout: 3000 });
                 })  
                 .catch((error) => {
-                    this.$toast.error(error.response.data.message, { timeout: 3000 });
+                    console.log(error)
+                    if ( error.response ) {
+                        this.$toast.error(error.response.data.message, { timeout: 3000 });
+                    }else {
+                        this.$toast.error('Se ha producido un error.', { timeout: 3000 });
+                    }
+                    
                 }).finally(() =>{
                     this.is_registrandoVenta = false
-                })        
-            
+                })  
+            this.is_event_guardar = false
+            this.is_event_finalizar = false
+            this.is_event_editar = false
+            this.is_event_confirmar = false
+            this.is_event_iniciar_preparacion = false
+            this.is_event_cancelar_preparacion = false
+            this.is_event_finalizar_preparacion = false
+            this.is_event_facturar = false      
+            this.is_event_check = false
         },
 
         async show_OrderCheckSaleModal ( ) {
+            this.is_event_guardar = false
+            this.is_event_finalizar = false
+            this.is_event_editar = false
+            this.is_event_confirmar = false
+            this.is_event_iniciar_preparacion = false
+            this.is_event_cancelar_preparacion = false
+            this.is_event_finalizar_preparacion = false
+            this.is_event_facturar = false
+            this.is_event_check = true
             await axios.get(`orders/${this.orderActive.id}/get_order_check_sale`)
                 .then((resp) => {
                     this.orderCheckSale = resp.data.data
@@ -497,6 +646,7 @@ export default {
                 .catch((error) => {
                     console.log(error)
                 })
+            this.is_event_check = false
         },
 
         actualizar_precios ( items ) {
@@ -518,7 +668,19 @@ export default {
                         }
                     }
                 })
-        }
+        },
+
+        destroy_order (id) {
+            this.destroy_item(id)
+                .then(() => {
+                    this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 })
+                    this.delete_order(id)
+                })
+                .catch((error) => {
+                    console.log(error)
+                    this.$toast.error('Se ha producido un error.', { timeout: 3000 });
+                })
+        },
         
         
         

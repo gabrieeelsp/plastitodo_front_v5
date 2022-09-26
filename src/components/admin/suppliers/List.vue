@@ -130,6 +130,7 @@ export default {
 
         setLimit() {
             //this.set_list_meta_limt(this.limitSelected)
+            this.list_meta.page = 1
             this.$emit('getItems')
         },
         setPage() {

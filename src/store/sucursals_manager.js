@@ -17,6 +17,14 @@ export default {
             return state.sucursal != null
         },
 
+        sucursal_by_id: (state) => (id) => {
+            for ( let sucursal of state.sucursals ) {
+                if ( sucursal.id == id ) {
+                    return sucursal
+                }
+            }
+            return null
+        },
 
         sucursals (state) {
             return state.sucursals
