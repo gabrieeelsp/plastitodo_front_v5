@@ -128,7 +128,8 @@ export default {
         }
     },
     methods: {
-        ...mapActions({            
+        ...mapActions({         
+            set_item: 'clients_manager/set_item',   
             store_item_new: 'clients_manager/store_item_new',
             set_reload_items: 'clients_manager/set_reload_items',
         }),
@@ -145,6 +146,7 @@ export default {
                     .then((resp) => {
                         this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
                         this.set_reload_items ( true )
+                        this.set_item(null)
                         this.$router.push({
                             name: 'client',
                             params:  {

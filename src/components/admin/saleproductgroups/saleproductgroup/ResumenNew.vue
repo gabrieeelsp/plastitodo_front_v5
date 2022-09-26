@@ -60,7 +60,6 @@ export default {
     },
     methods: {
         ...mapActions({
-            
             store_item_new: 'saleproductgroups_manager/store_item_new',
             set_item: 'saleproductgroups_manager/set_item',
             set_reload_items: 'saleproductgroups_manager/set_reload_items',
@@ -79,6 +78,7 @@ export default {
                         this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
 
                         this.set_reload_items ( true )
+                        this.set_item(null)
                         this.$router.push({
                             name: 'saleproductgroup',
                             params:  {

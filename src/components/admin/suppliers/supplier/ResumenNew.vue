@@ -108,7 +108,8 @@ export default {
         }
     },
     methods: {
-        ...mapActions({            
+        ...mapActions({        
+            set_item: 'suppliers_manager/set_item',    
             store_item_new: 'suppliers_manager/store_item_new',
             set_reload_items: 'suppliers_manager/set_reload_items',
         }),
@@ -125,6 +126,7 @@ export default {
                     .then((resp) => {
                         this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
                         this.set_reload_items ( true )
+                        this.set_item(null)
                         this.$router.push({
                             name: 'supplier',
                             params:  {

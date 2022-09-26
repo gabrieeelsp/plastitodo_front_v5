@@ -60,7 +60,7 @@ export default {
     },
     methods: {
         ...mapActions({
-            
+            set_item: 'stockproductgroups_manager/set_item',
             store_item_new: 'stockproductgroups_manager/store_item_new',
             set_reload_items: 'stockproductgroups_manager/set_reload_items',
         }),
@@ -78,6 +78,7 @@ export default {
                         this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
 
                         this.set_reload_items ( true )
+                        this.set_item(null)
                         this.$router.push({
                             name: 'stockproductgroup',
                             params:  {

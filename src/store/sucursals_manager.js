@@ -149,6 +149,7 @@ export default {
                 telefono: getters.item_cache.attributes.telefono,
                 telefono_movil: getters.item_cache.attributes.telefono_movil,
                 punto_venta_fe: getters.item_cache.attributes.punto_venta_fe,
+                horario: getters.item_cache.attributes.horario,
             }
 
             return axios.put(`sucursals/${getters.item.id}`, {

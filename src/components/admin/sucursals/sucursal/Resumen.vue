@@ -52,6 +52,18 @@
                        
                     ></v-text-field>
                 </v-col>
+            </v-row> 
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Horario</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="item_cache.attributes.horario"
+                       
+                    ></v-text-field>
+                </v-col>
             </v-row>  
             <v-row>
                 <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
@@ -123,6 +135,7 @@ export default {
             this.item_cache.attributes.telefono = this.item.attributes.telefono
             this.item_cache.attributes.telefono_movil = this.item.attributes.telefono_movil
             this.item_cache.attributes.punto_venta_fe = this.item.attributes.punto_venta_fe
+            this.item_cache.attributes.horario = this.item.attributes.horario
         },
         validate () {
             this.$refs.form.validate()
@@ -140,6 +153,7 @@ export default {
                         this.item.attributes.telefono = this.item_cache.attributes.telefono
                         this.item.attributes.telefono_movil = this.item_cache.attributes.telefono_movil
                         this.item.attributes.punto_venta_fe = this.item_cache.attributes.punto_venta_fe
+                        this.item.attributes.horario = this.item_cache.attributes.horario
 
                     })
                     .catch((error) => {
