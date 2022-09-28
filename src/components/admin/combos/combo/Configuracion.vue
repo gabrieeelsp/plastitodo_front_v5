@@ -30,7 +30,7 @@
                                                 value: item_cache.attributes.desc_min
                                             }"
 
-                                            @close="item.is_editing_desc_min = false"
+                                            @close="item_cache.is_editing_desc_min = false"
                                             @accept="set_desc_min"
                                         />
                                     </td>
@@ -69,7 +69,7 @@
                                                 value: item_cache.attributes.desc_may
                                             }"
 
-                                            @close="item.is_editing_desc_may = false"
+                                            @close="item_cache.is_editing_desc_may = false"
                                             @accept="set_desc_may"
                                         />
                                     </td>

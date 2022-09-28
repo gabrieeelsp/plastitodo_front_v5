@@ -172,6 +172,21 @@ const routes = [
         component: () => import(/* webpackChunkName: "tag" */ '../views/admin/tags/Tag.vue')
       },
       {
+        path: 'catalogos',
+        name: 'catalogos',
+        component: () => import(/* webpackChunkName: "catalogos" */ '../views/admin/catalogos/Catalogos.vue')
+      },
+      {
+        path: 'catalogos/create',
+        name: 'catalogo_create',
+        component: () => import(/* webpackChunkName: "catalogo_create" */ '../views/admin/catalogos/CatalogoNew.vue')
+      },
+      {
+        path: 'catalogos/:id',
+        name: 'catalogo',
+        component: () => import(/* webpackChunkName: "catalogos" */ '../views/admin/catalogos/Catalogo.vue')
+      },
+      {
         path: 'sucursals/:id(\\d+)',
         name: 'sucursal',
         component: () => import(/* webpackChunkName: "sucursal" */ '../views/admin/sucursals/Sucursal.vue')
@@ -297,6 +312,11 @@ const routes = [
         path: 'cajas/caja',
         name: 'caja',
         component: () => import(/* webpackChunkName: "caja" */ '../views/admin/cajas/OpenCloseCaja.vue')
+      },
+      {
+        path: 'cajas',
+        name: 'cajas',
+        component: () => import(/* webpackChunkName: "caja" */ '../views/admin/cajas/Cajas.vue')
       },
       
     ],

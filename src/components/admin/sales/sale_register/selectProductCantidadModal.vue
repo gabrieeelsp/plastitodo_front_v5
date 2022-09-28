@@ -232,7 +232,8 @@ import axios from 'axios'
                             for ( let itemCombo of combo.relationships.comboitems ) {
                                 let saleproducts = []
                                 let cantidad = 0
-                                if ( itemCombo.relationships.saleproducts.length == 1 ) {
+                                //if ( itemCombo.relationships.saleproducts.length == 1 ) {
+                                if ( itemCombo.relationships.saleproducts.filter((i) => { return i.attributes.is_enable }).length == 1 ) {
                                     cantidad = this.cantidad * itemCombo.attributes.cantidad
                                 }
                                 for ( let saleproduct of itemCombo.relationships.saleproducts ) {

@@ -67,6 +67,8 @@ import MenuUser from '@/components/admin/utils/MenuUser'
 import MenuSucursal from '@/components/admin/utils/MenuSucursal'
 
 import { mapActions, mapGetters } from 'vuex'
+import axios from 'axios'
+
 export default {
     computed: {
         ...mapGetters({
@@ -88,34 +90,34 @@ export default {
 
     methods: {
         ...mapActions({
-            buscar_paymentMethods: 'paymentMethods_manager/buscar_paymentMethods',
+            //buscar_paymentMethods: 'paymentMethods_manager/buscar_paymentMethods',
             set_paymentMethods: 'paymentMethods_manager/set_paymentMethods',
 
-            buscar_ivaaliquots: 'ivaaliquots_manager/buscar_ivaaliquots',
+            //buscar_ivaaliquots: 'ivaaliquots_manager/buscar_ivaaliquots',
             set_ivaaliquots: 'ivaaliquots_manager/set_ivaaliquots',
 
-            buscar_modelofacts: 'modelofacts_manager/buscar_modelofacts',
+            //buscar_modelofacts: 'modelofacts_manager/buscar_modelofacts',
             set_modelofacts: 'modelofacts_manager/set_modelofacts',
 
             buscar_caja: 'cajas_manager/buscar_caja',
             set_caja: 'cajas_manager/set_caja',
 
-            buscar_ivaconditions: 'ivaconditions_manager/buscar_ivaconditions',
+            //buscar_ivaconditions: 'ivaconditions_manager/buscar_ivaconditions',
             set_ivaconditions: 'ivaconditions_manager/set_ivaconditions',
 
-            buscar_doctypes: 'doctypes_manager/buscar_doctypes',
+            //buscar_doctypes: 'doctypes_manager/buscar_doctypes',
             set_doctypes: 'doctypes_manager/set_doctypes',
 
-            buscar_sucursals: 'sucursals_manager/buscar_sucursals',
+            //buscar_sucursals: 'sucursals_manager/buscar_sucursals',
             set_sucursals: 'sucursals_manager/set_sucursals',
 
-            buscar_valors: 'valors_manager/buscar_valors',
+            //buscar_valors: 'valors_manager/buscar_valors',
             set_valors: 'valors_manager/set_valors',
 
-            buscar_deliveryshifts: 'deliveryshifts_manager/buscar_deliveryshifts',
-            set_deliveryshifts: 'deliveryshifts_manager/set_deliveryshifts',
+            //buscar_deliveryshifts: 'deliveryshifts_manager/buscar_deliveryshifts',
+            set_deliveryshifts: 'deliveryshifts_manager/set_deliveryshifts', 
 
-            buscar_empresa: 'buscar_empresa',
+            //buscar_empresa: 'buscar_empresa',
             set_empresa: 'set_empresa',
 
             set_show_init_admin: 'set_show_init_admin',
@@ -123,7 +125,12 @@ export default {
         async init () {
             this.set_show_init_admin (true)
 
-            await this.buscar_paymentMethods()
+            this.get_inicio_data()
+
+
+
+
+            /* await this.buscar_paymentMethods()
                 .then((resp) => {
                     this.set_paymentMethods(resp.data.data)
                     
@@ -185,26 +192,45 @@ export default {
 
                 }).catch((error) => {
                     console.log(error)
-                })
+                }) */
 
             await this.buscar_caja()
                 .then((resp) => {
                     this.set_caja(resp.data.data)
-                }).catch((error) => {
-                    console.log(error)
+                }).catch(() => {
+                    //console.log(error)
                 })
 
-            await this.buscar_empresa()
+            /* await this.buscar_empresa()
                 .then((resp) => {
                     this.set_empresa(resp.data.data)
                 }).catch((error) => {
                     console.log(error)
-                })
+                }) */
 
             this.set_show_init_admin (false)
             
             
+        },
+
+        async get_inicio_data ( ) {
+            await axios.get('inicio_data')
+                .then((resp) => {
+                    this.set_paymentMethods(resp.data.data.paymentMethods)
+                    this.set_ivaaliquots(resp.data.data.ivaaliquots)
+                    this.set_modelofacts(resp.data.data.modelofacts)
+                    this.set_ivaconditions(resp.data.data.ivaconditions)
+                    this.set_doctypes(resp.data.data.doctypes)
+                    this.set_sucursals(resp.data.data.sucursals)
+                    this.set_valors(resp.data.data.valors)
+                    this.set_deliveryshifts(resp.data.data.deliveryshifts)
+                    this.set_empresa(resp.data.data.empresa)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
         }
+
     }
 }
 </script>

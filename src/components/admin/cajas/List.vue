@@ -2,23 +2,28 @@
     <div>
         <v-row class="">
             <v-spacer></v-spacer>
-
-
+            <v-col cols="12" sm="2" class="d-flex align-center">
+                <SelectUser 
+                    label="Usuario"
+                    @setUser="setUser"
+                    :user="filters.user"
+                />
+            </v-col>
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-select
                     dense
-                    :items="[{name: 'Si', value: true}, {name: 'No', value: false}]"
+                    :items="sucursals_select"
                     item-text="name"
-                    item-value="value"
-                    v-model="filters.is_confirmed"
+                    item-value="id"
+                    v-model="filters.sucursal_id"
                     :menu-props="{ offsetY: true }"
                     hide-details=""
-                    label="Confirmado"
+                    label="Sucursal"
                     clearable
-                    @input="list_meta.page = 1"  
                 >
                 </v-select>
             </v-col>
+
             
             <v-col cols="12" sm="1" class="d-flex align-center">
                 <v-btn small
@@ -28,7 +33,6 @@
             </v-col>
         </v-row>
         <v-row>
-            
             <v-col>
                 <v-simple-table
                     dense
@@ -41,25 +45,21 @@
                                 class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                 Id
                             </th>
+
+                            <th 
+                                
+                                class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                Usuario
+                            </th>
                             <th 
                                 style="width: 160px;"
                                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
-                                Fecha
+                                Sucursal
                             </th>
                             <th 
-                                style="width: 50px;"
-                                class="pl-1 text-right font-weight-bold text-subtitle-1 grey--text text--darken-3">
-                                Venta
-                            </th>
-
-                            <th 
-                                class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
-                                Metodo
-                            </th>
-                            <th 
-                                style="width: 100px;"
+                                style="width: 150px;"
                                 class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
-                                Valor
+                                Fecha
                             </th>
                             <th 
                                 style="width: 100px;"
@@ -68,7 +68,7 @@
                             </th>
                             <th 
                                 style="width: 100px;"
-                                class="pl-1 text-center font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                 Actions
                             </th>
                         
@@ -80,35 +80,22 @@
                         :key="item.id"
                         >
                         <td>{{ item.id }}</td>
-                        <td>{{ item.attributes.created_at | luxon('dd-MM-yyyy HH:mm') }}</td>
-                        <td>{{ item.relationships.sale.id }}</td>
-                        <td><span>{{ item.relationships.paymentmethod.name }}</span></td>
-                        <td class="text-right" >{{ globalHelperFixeDecimalMoney(item.attributes.valor) | money_string }}</td>
+                        <td >{{ item.relationships.user.data.attributes.name + ' ' + item.relationships.user.data.attributes.surname }}</td>
+                        <td class="text-center">{{ item.relationships.sucursal.data.attributes.name }}</td>
+
                         <td class="text-center" >
-                            <v-chip x-small class="ma-2 white--text" color="success" v-if="item.attributes.is_confirmed" >CONFIRMADO</v-chip>
-                            <v-chip x-small class="ma-2 white--text" color="warning" v-else >NO CONFIRMADO</v-chip>
+                            <span>{{ item.attributes.created_at | luxon("dd-MM-yyyy HH:mm") }}</span>
+                        </td>
+                        <td class="text-center" >
+                            <v-chip x-small class="ma-2 white--text" :color="colors_is_open(item.attributes.is_open)" >{{ item.attributes.is_open ? 'Abierta' : 'Cerrada' }}</v-chip>
                         </td>
                         
-                        <td class="text-center">
-
+                        <td>
                             <v-btn
-                                v-if="item.attributes.is_confirmed"
-                                @click="no_confirm(item)"
-                                small
-                                color="warning"
                                 icon
-                                :disabled="!item.relationships.paymentmethod.requires_confirmation"
+                                @click="open_caja_modal(item)"
                             >
-                                <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                            <v-btn
-                                v-if="!item.attributes.is_confirmed"
-                                @click="confirm(item)"
-                                small
-                                color="success"
-                                :disabled="!item.relationships.paymentmethod.requires_confirmation"
-                            >
-                                Confirmar
+                                <v-icon>mdi-eye</v-icon>
                             </v-btn>
                         </td>
                         </tr>
@@ -116,9 +103,11 @@
                     </template>
                 </v-simple-table>
             </v-col>
-            
         </v-row>
         <v-row>
+            <v-col>
+
+            </v-col>
             <v-spacer></v-spacer>
             <v-col cols="12" md="4" class="d-flex align-center justify-center justify-md-end   pt-1 pb-1">
                 <span class=" font-weight-bold text-caption grey--text font-weight-light">Items per page:</span>
@@ -148,38 +137,63 @@
                 ></v-pagination>
             </v-col>
         </v-row>
-        
+        <ShowCajaModal 
+            :dialogVisible="show_caja_modal"
+            :caja="caja_showed"
+            v-if="caja_showed && show_caja_modal" 
+            @close="close_caja_modal"
+        />
+
     </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import SelectUser from '@/components/admin/users/SelectUser'
+import ShowCajaModal from '@/components/admin/cajas/caja/ShowCajaModal.vue'
 
+
+import axios from 'axios'
 export default {
     
     components: {
-        
+        SelectUser,
+        ShowCajaModal,
     },
     data () {
         return {
-
+            caja_showed: null,
+            show_caja_modal: false,
         }
     },
 
     computed: {
         ...mapGetters({
-            items: 'payments_manager/items',
-            filters: 'payments_manager/filters',
+            items: 'cajas_manager/items',
+            filters: 'cajas_manager/filters',
 
-            list_meta: 'payments_manager/list_meta',
+            list_meta: 'cajas_manager/list_meta',
+            sucursals_select: 'sucursals_manager/sucursals_select',
+            colors_is_open: 'cajas_manager/colors_is_open',
         })
     },
     methods: {
         ...mapActions({
-            update_confirm: 'payments_manager/update_confirm',
-            update_no_confirm: 'payments_manager/update_no_confirm',
+            set_item: 'cajas_manager/set_item'
         }),
-
+        open_caja_modal (item) {
+            axios.get(`cajas/${item.id}`)
+                .then((resp) => {
+                    console.log(resp.data.data)
+                    //this.order_showed = resp.data.data
+                    this.caja_showed = item
+                    this.show_caja_modal = true
+                })
+            
+        },
+        close_caja_modal () {
+            this.show_caja_modal = false
+        },
 
         setLimit() {
             //this.set_list_meta_limt(this.limitSelected)
@@ -190,45 +204,14 @@ export default {
             //this.set_list_meta_page(this.page)
             this.$emit('getItems')
         },
-        setClint(client) {
-            if ( client ) {
-                this.filters.client_id = client.id
+        setUser(user) {
+            if ( user ) {
+                this.filters.user_id = user.id
             }else {
-                this.filters.client_id = null
+                this.filters.user_id = null
             }
             
         },
-
-        async confirm ( item ) {
-            await this.update_confirm ( item.id )
-                .then((resp) => {
-                    for ( let payment of this.items ) {
-                        if ( payment.id == item.id ) {
-                            payment.attributes.is_confirmed = resp.data.data.attributes.is_confirmed
-                        }
-                    }
-                    this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
-                })
-                .catch((error) => {
-                    console.log(error)
-                    this.$toast.error('Se ha producido un error.', { timeout: 3000 });
-                })
-        },
-        async no_confirm ( item ) {
-            await this.update_no_confirm ( item.id )
-                .then((resp) => {
-                    for ( let payment of this.items ) {
-                        if ( payment.id == item.id ) {
-                            payment.attributes.is_confirmed = resp.data.data.attributes.is_confirmed
-                        }
-                    }
-                    this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
-                })
-                .catch((error) => {
-                    console.log(error)
-                    this.$toast.error('Se ha producido un error.', { timeout: 3000 });
-                })
-        }
 
     }
 }

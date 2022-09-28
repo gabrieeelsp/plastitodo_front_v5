@@ -50,8 +50,20 @@
                     tipo = "sale"
                 />
                 <Comprobante_80 
-                class="mt-2"
+                    class="mt-2"
                     :comprobante = "sale.sale_saved.relationships.comprobante"
+                    :items = "sale.sale_saved.relationships.saleitems"
+                    :comboitems = "sale.sale_saved.relationships.salecomboitems"
+                    :total = "Number(sale.sale_saved.attributes.total)"
+                    tipo = "sale"
+                />
+                
+            </template>
+
+            <template v-if="sale.is_saved">
+                <Comprobante_a5
+                    class="mt-2"
+                    :sale = "sale.sale_saved"
                     :items = "sale.sale_saved.relationships.saleitems"
                     :comboitems = "sale.sale_saved.relationships.salecomboitems"
                     :total = "Number(sale.sale_saved.attributes.total)"
@@ -72,6 +84,7 @@ import { mapActions } from 'vuex'
 
 import Comprobante from '@/components/admin/sales_manager/sale/comprobantes/Comprobante'
 import Comprobante_80 from '@/components/admin/sales_manager/sale/comprobantes/Comprobante_80'
+import Comprobante_a5 from '@/components/admin/sales_manager/sale/comprobantes/Comprobante_a5'
 export default {
     mounted ( ) {
         this.ivacondition_id = this.ivacondition_id_prop
@@ -83,7 +96,8 @@ export default {
     },
     components: {
         Comprobante,
-        Comprobante_80
+        Comprobante_80,
+        Comprobante_a5
     },
     computed: {
         ...mapGetters({

@@ -8,7 +8,17 @@ export default {
     getters: {
         paymentMethods (state) {
             return state.paymentMethods
-        }
+        },
+        payment_methods_select ( state ) {
+            let items = []
+            for (let item of state.paymentMethods ) {
+                items.push({
+                    name: item.attributes.name,
+                    id: item.id
+                    })
+            }
+            return items
+        },
     },
     mutations: {
         SET_PAYMENTMETHODS (state, data) {

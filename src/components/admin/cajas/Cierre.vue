@@ -219,7 +219,7 @@
                     <v-col>
                         <v-card class="" outlined v-if="caja_edit" >
                             <v-card-title class="blue lighten-4 pt-1 pb-1 d-flex justify-center">
-                                <span class="text-body-1 font-weight-medium">Caja ( N {{ caja_edit.id }} )</span>
+                                <span class="text-body-1 font-weight-medium">Caja ( # {{ caja_edit.id }} )</span>
                             </v-card-title>
                             <v-divider></v-divider>
 
@@ -258,10 +258,6 @@
                         </v-card>
                     </v-col>
                 </v-row>
-                
-                
-                
-                
                              
             </v-col>
         </v-row>    

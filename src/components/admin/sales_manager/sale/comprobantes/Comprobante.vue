@@ -104,6 +104,8 @@ export default {
     },
     methods: {
         generateReport () { 
+            this.comprobanteItems = []
+            this.comprobanteComboItems = []
             this.is_generandoReporte = true
             if ( this.tipo == 'sale') { this.ObtenerSaleItems() }
             if ( this.tipo == 'devolution') { this.ObtenerDevolutionItems() }
@@ -350,7 +352,7 @@ export default {
             doc.text(180, 30, num_comp_format.format(this.comprobante.attributes.numero))
 
             doc.text(120, 35, 'Fecha de Emisión:')
-            doc.text(150, 35, this.comprobante.attributes.created_at)
+            doc.text(150, 35, this.$luxon(this.comprobante.attributes.created_at, { output: "dd-MM-yyyy" }))
             doc.text(120, 40, 'Cuit:')
             doc.setFont(this.fontFamily, 'normal')
             doc.text(130, 40, this.comprobante.attributes.cuit_empresa)

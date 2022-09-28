@@ -105,7 +105,7 @@
             </v-col>
 
         </v-row>
-        {{ saleActive }}
+    
     </div>
 
 </template>

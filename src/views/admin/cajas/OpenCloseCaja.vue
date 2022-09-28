@@ -75,8 +75,8 @@ export default {
 
         async cerrarCaja () {
             await this.cerrar_caja()
-                .then((resp) => {
-                    console.log(resp.data.data)
+                .then(() => {
+                    //console.log(resp.data.data)
                     this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
                     this.set_caja(null)
                 })

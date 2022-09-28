@@ -38,7 +38,7 @@
         >
             <v-list-item to="/admin" exact>
                 <v-list-item-icon>
-                    <v-icon color="light-green lighten-3" >mdi-widgets</v-icon>
+                    <v-icon >mdi-widgets</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                     <v-list-item-title>Inicio</v-list-item-title>
@@ -120,7 +120,7 @@
 
         <v-list-group
             :value="empresa_open"
-            prepend-icon="mdi-apartment"
+            prepend-icon="mdi-domain"
         >
             <template v-slot:activator>
                 <v-list-item-title>Empresa</v-list-item-title>
@@ -182,6 +182,8 @@
         empresa: [
             ['Usuarios', '/admin/users', false],
             ['Etiquetas', '/admin/tags', false],
+            ['Catálogos', '/admin/catalogos', false],
+            ['Cajas', '/admin/cajas', false],
         ],
 
         logo_nophoto: require('@/assets/nophoto.jpg'),

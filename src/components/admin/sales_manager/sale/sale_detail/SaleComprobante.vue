@@ -65,6 +65,15 @@
                     tipo = "sale"
                 />
             </template>
+            <Comprobante_a5 
+                class="mt-2"
+                    :sale = "sale"
+                    :items = "sale.relationships.saleitems"
+                    :comboitems = "sale.relationships.salecomboitems"
+                    :total = "Number(sale.attributes.total)"
+                    tipo = "sale"
+                />
+
             
         </v-card-text>
     </v-card> 
@@ -79,6 +88,7 @@ import { mapActions } from 'vuex'
 
 import Comprobante from '@/components/admin/sales_manager/sale/comprobantes/Comprobante'
 import Comprobante_80 from '@/components/admin/sales_manager/sale/comprobantes/Comprobante_80'
+import Comprobante_a5 from '@/components/admin/sales_manager/sale/comprobantes/Comprobante_a5'
 export default {
     mounted ( ) {
         
@@ -86,7 +96,8 @@ export default {
     },
     components: {
         Comprobante,
-        Comprobante_80
+        Comprobante_80,
+        Comprobante_a5,
     },
     computed: {
         ...mapGetters({

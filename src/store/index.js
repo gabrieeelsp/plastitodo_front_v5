@@ -30,6 +30,7 @@ import orders_manager from './orders_manager'
 import payments_manager from './payments_manager'
 import refunds_manager from './refunds_manager'
 import stocktransfers_manager from './stocktransfers_manager'
+import catalogos_manager from './catalogos_manager'
 
 Vue.use(Vuex)
 
@@ -117,5 +118,6 @@ export default new Vuex.Store({
         payments_manager,
         refunds_manager,
         stocktransfers_manager,
+        catalogos_manager,
     }
 })
