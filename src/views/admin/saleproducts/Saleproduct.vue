@@ -8,11 +8,12 @@
                         <span class="text-h4 font-weight-light">Gestión de Productos Venta</span>
                         
                         <div>
-                        <v-tabs>
-                            <v-tab @click="tab_showed = 'resumen'">Resumen</v-tab>
-                            <v-tab @click="tab_showed = 'images'">Imágenes</v-tab>
-                            
-                        </v-tabs>
+                            <v-tabs>
+                                <v-tab @click="tab_showed = 'resumen'">Resumen</v-tab>
+                                <v-tab @click="tab_showed = 'images'">Imágenes</v-tab>
+                                <v-tab @click="tab_showed = 'promocion'">Promoción</v-tab>
+                                
+                            </v-tabs>
                         </div>
                     </v-card-title>
                     <v-divider></v-divider>
@@ -24,6 +25,10 @@
 
                         <Images
                             v-if="tab_showed == 'images'"
+                            @volver="volver"
+                        />
+                        <Descuentos
+                            v-if="tab_showed == 'promocion'"
                             @volver="volver"
                         />
 
@@ -41,6 +46,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import Resumen from '@/components/admin/saleproducts/saleproduct/Resumen'
 import Images from '@/components/admin/saleproducts/saleproduct/Images'
+import Descuentos from '@/components/admin/saleproducts/saleproduct/Descuentos'
 
 export default {
     created() {
@@ -56,6 +62,7 @@ export default {
     components: {
         Resumen,
         Images,
+        Descuentos,
     },
     computed: {
         ...mapGetters({

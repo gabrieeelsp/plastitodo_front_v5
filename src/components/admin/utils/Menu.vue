@@ -197,7 +197,7 @@
         }),
         almacen_open () {
             for ( let url of this.almacen ) {
-                if (this.$route.path == url[1]) {
+                if (this.$route.path.startsWith(url[1])) {
                     return true
                 }
             }
@@ -205,7 +205,7 @@
         },
         ventas_open () {
             for ( let url of this.ventas ) {
-                if (this.$route.path == url[1]) {
+                if (this.$route.path.startsWith(url[1])) {
                     return true
                 }
             }
@@ -213,7 +213,7 @@
         },
         compras_open () {
             for ( let url of this.compras ) {
-                if (this.$route.path == url[1]) {
+                if (this.$route.path.startsWith(url[1])) {
                     return true
                 }
             }
@@ -221,7 +221,7 @@
         },
         sucursales_open () {
             for ( let url of this.sucursales ) {
-                if (this.$route.path == url[1]) {
+                if (this.$route.path.startsWith(url[1])) {
                     return true
                 }
             }
@@ -229,7 +229,7 @@
         },
         empresa_open () {
             for ( let url of this.empresa ) {
-                if (this.$route.path == url[1]) {
+                if (this.$route.path.startsWith(url[1])) {
                     return true
                 }
             }

@@ -198,9 +198,11 @@ import axios from 'axios'
                     let name = this.item.name
                     if ( this.is_promo ) {
                         if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
-                            name = name + ' [Promo - ' + this.item.desc_may + ' %]'
+                            name = name + ' [Promo - ' + Number(this.item.desc_may).toFixed(0) + ' %]'
+                        }else {
+                            name = name + ' [Promo - ' + Number(this.item.desc_min).toFixed(0) + ' %]'
                         }
-                        name = name + ' [Promo - ' + Number(this.item.desc_min).toFixed(0) + ' %]'
+                        
                     }
 
                     this.$emit('addItem', {

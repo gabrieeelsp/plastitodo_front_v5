@@ -2,7 +2,21 @@
     <div>
         <v-row class="">
             <v-spacer></v-spacer>
-            
+            <v-col cols="12" sm="2" class="d-flex align-center">
+                <v-select
+                    dense
+                    :items="[{name: 'Si', value: true}, {name: 'No', value: false}]"
+                    item-text="name"
+                    item-value="value"
+                    v-model="filters.is_promo"
+                    :menu-props="{ offsetY: true }"
+                    hide-details=""
+                    label="Promo"
+                    clearable
+                    @input="list_meta.page = 1"  
+                >
+                </v-select>
+            </v-col>
             
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-text-field

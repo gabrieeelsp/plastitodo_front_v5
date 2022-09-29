@@ -14,6 +14,7 @@ export default {
         filters: {
             q: '',
             ivaaliquot_id: null,
+            is_promo: null,
         },
         list_meta: {
             select_limit_items: [5, 10, 15, 20],
@@ -69,6 +70,7 @@ export default {
                     limit: state.list_meta.limit,
                     page: state.list_meta.page,
                     q: state.filters.q,
+                    is_promo: state.filters.is_promo,
                 }
             })
         },
@@ -129,6 +131,25 @@ export default {
             }
 
             return axios.put(`saleproducts/${getters.item.id}/update_values`, {
+                data: {
+                    id: getters.item.id,
+                    update_group: is_updategroup,
+                    type: 'saleproducts',
+                    attributes: attributes,
+                }
+            })
+        },
+
+        update_item_descuentos( { getters }, is_updategroup) {
+
+            let attributes = {
+                fecha_desc_desde: getters.item_cache.attributes.fecha_desc_desde,
+                fecha_desc_hasta: getters.item_cache.attributes.fecha_desc_hasta,
+                desc_min: getters.item_cache.attributes.desc_min,
+                desc_may: getters.item_cache.attributes.desc_may,
+            }
+
+            return axios.put(`saleproducts/${getters.item.id}/update_desc_values`, {
                 data: {
                     id: getters.item.id,
                     update_group: is_updategroup,
