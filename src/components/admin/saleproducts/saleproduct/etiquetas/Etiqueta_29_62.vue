@@ -62,7 +62,7 @@
                         </template>
                         <v-date-picker
                             v-model="date"
-                            no-title
+                            
                             @input="input_date"
                             :min="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
                         ></v-date-picker>
