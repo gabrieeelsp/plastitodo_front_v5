@@ -64,7 +64,7 @@ export default {
             this.buscar_item(this.$route.params.id)
                 .then((resp) => {
                     this.set_item(resp.data.data)
-                    console.log(resp.data.data)
+                    //console.log(resp.data.data)
                 })
                 .catch((error) => {
                     console.log(error)

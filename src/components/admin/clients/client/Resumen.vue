@@ -134,6 +134,33 @@
             </v-row>
 
             <v-row>
+                <v-col cols="12" sm="4"  class="d-flex justify-sm-end align-center">
+                    <span class="font-weight-bold black--text">Catalogos</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class="d-flex justify-start align-center">
+                    <div>
+                    <v-chip
+                        v-for="catalogo in ids_select.catalogos" :key="catalogo.id"
+                        class="mr-2"
+                        close
+                        :color="catalogo.color"
+                        text-color="white"
+                        small
+                        @click:close="removeCatalogo(catalogo.id)"
+                        >
+                        {{ catalogo.name }}
+                    </v-chip>
+                    </div>
+                    <SelectCatalogoModal
+                        disable="false"
+                        :btn_data="{name: null, icon: 'mdi-plus'}"
+
+                        @set="addCatalogo"
+                    />
+                </v-col>
+            </v-row>
+
+            <v-row>
                 <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
                     <span class="font-weight-bold black--text">Comnentarios</span>
                 </v-col>
@@ -179,6 +206,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import SelectTagModal from '@/components/admin/tags/selectTagModal'
+import SelectCatalogoModal from '@/components/admin/catalogos/selectCatalogoModal'
 
 export default {
     mounted() {
@@ -192,6 +220,7 @@ export default {
     },
     components: {
         SelectTagModal,
+        SelectCatalogoModal,
         
     },
     data () {
@@ -299,6 +328,23 @@ export default {
             }
             if ( add ) {
                 this.ids_select.tags.push({id: tag_nuevo.id, name: tag_nuevo.name, color: tag_nuevo.color})
+            }
+        },
+        removeCatalogo(id) {
+            this.ids_select.catalogos = this.ids_select.catalogos.filter((i) => {
+                return i.id != id
+            })
+        },
+        addCatalogo(catalogo_nuevo) {
+            let add = true
+            for ( let catalogo of this.ids_select.catalogos ) {
+                if (catalogo.id == catalogo_nuevo.id ) {
+                    add = false
+                    break
+                }
+            }
+            if ( add ) {
+                this.ids_select.catalogos.push({id: catalogo_nuevo.id, name: catalogo_nuevo.name, color: catalogo_nuevo.color})
             }
         }
     }

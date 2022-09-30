@@ -131,6 +131,33 @@
                 </v-col>
             </v-row>
 
+            <v-row>
+                <v-col cols="12" sm="4"  class="d-flex justify-sm-end align-center">
+                    <span class="font-weight-bold black--text">Catalogos</span>
+                </v-col>
+                <v-col cols="12" sm="4"  class="d-flex justify-start align-center">
+                    <div>
+                    <v-chip
+                        v-for="catalogo in ids_select.catalogos" :key="catalogo.id"
+                        class="mr-2"
+                        close
+                        :color="catalogo.color"
+                        text-color="white"
+                        small
+                        @click:close="removeCatalogo(catalogo.id)"
+                        >
+                        {{ catalogo.name }}
+                    </v-chip>
+                    </div>
+                    <SelectCatalogoModal
+                        disable="false"
+                        :btn_data="{name: null, icon: 'mdi-plus'}"
+
+                        @set="addCatalogo"
+                    />
+                </v-col>
+            </v-row>
+
 
             <v-row>
                 <v-spacer></v-spacer>
@@ -162,6 +189,7 @@ import { mapGetters, mapActions } from 'vuex'
 import VueBarcode from 'vue-barcode';
 import Etiqueta_29_62 from '@/components/admin/saleproducts/saleproduct/etiquetas/Etiqueta_29_62'
 import SelectTagModal from '@/components/admin/tags/selectTagModal'
+import SelectCatalogoModal from '@/components/admin/catalogos/selectCatalogoModal'
 
 export default {
     mounted() {
@@ -170,7 +198,8 @@ export default {
     components: {
         VueBarcode,
         Etiqueta_29_62,
-        SelectTagModal
+        SelectTagModal,
+        SelectCatalogoModal
     },
     computed: {
         ...mapGetters({
@@ -234,6 +263,11 @@ export default {
                 this.ids_select.tags.push({id: tag.id, name: tag.attributes.name, color: tag.attributes.color})
             }
 
+            this.ids_select.catalogos = []
+            for ( let catalogo of this.item.relationships.catalogos ) {
+                this.ids_select.catalogos.push({id: catalogo.id, name: catalogo.attributes.name, color: catalogo.attributes.color})
+            }
+
         },
         validate () {
             this.$refs.form.validate()
@@ -284,6 +318,23 @@ export default {
             }
             if ( add ) {
                 this.ids_select.tags.push({id: tag_nuevo.id, name: tag_nuevo.name, color: tag_nuevo.color})
+            }
+        },
+        removeCatalogo(id) {
+            this.ids_select.catalogos = this.ids_select.catalogos.filter((i) => {
+                return i.id != id
+            })
+        },
+        addCatalogo(catalogo_nuevo) {
+            let add = true
+            for ( let catalogo of this.ids_select.catalogos ) {
+                if (catalogo.id == catalogo_nuevo.id ) {
+                    add = false
+                    break
+                }
+            }
+            if ( add ) {
+                this.ids_select.catalogos.push({id: catalogo_nuevo.id, name: catalogo_nuevo.name, color: catalogo_nuevo.color})
             }
         }
     }

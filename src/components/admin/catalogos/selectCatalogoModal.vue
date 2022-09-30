@@ -40,7 +40,7 @@
             <v-card-title>
                 <v-row class="d-flex align-center">
                     <v-col cols="12" sm="3">
-                        <span>Tags</span>
+                        <span>Catalogos</span>
                     </v-col>
                     <v-spacer></v-spacer>
                     

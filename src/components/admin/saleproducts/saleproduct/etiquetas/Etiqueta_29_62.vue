@@ -24,7 +24,7 @@
                 <v-col cols="12" sm="6"  class=" d-flex justify-sm-end align-center">
                     <span class="font-weight-bold black--text">Cantidad</span>
                 </v-col>
-                <v-col cols="12" sm="3"  class="d-flex pa-0 mt-1">
+                <v-col cols="12" sm="4"  class="d-flex pa-0 mt-1">
                     <v-text-field 
                         reverse
                         dense
@@ -35,16 +35,38 @@
                     ></v-text-field>
                 </v-col>
             </v-row>
+            
             <v-row>
                 <v-col cols="12" sm="6"  class="d-flex justify-sm-end align-center">
                     <span class="font-weight-bold black--text">Vencimiento</span>
                 </v-col>
-                <v-col cols="12" sm="3"  class="d-flex pa-0">
-                    <v-text-field 
-                        reverse
-                        dense
-                        v-model="vencimiento"                     
-                    ></v-text-field>
+                <v-col cols="12" sm="4"  class="d-flex align-center">
+                    <v-menu
+                        v-model="menu1"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        max-width="290px"
+                        min-width="auto"
+                        >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                            v-model="computedDateFormatted"
+                            append-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            dense
+                            hide-details=""
+                            ></v-text-field>
+                        </template>
+                        <v-date-picker
+                            v-model="date"
+                            no-title
+                            @input="input_date"
+                            :min="(new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)"
+                        ></v-date-picker>
+                        </v-menu>
                 </v-col>
             </v-row>
             
@@ -68,6 +90,7 @@
     <div v-show="false">
         <img id="barcode"/>
     </div>
+    
   </div>
 </template>
 
@@ -93,6 +116,11 @@ export default {
     components: {
         
     },
+    computed: {
+        computedDateFormatted () {
+            return this.formatDate(this.date)
+        },
+    },
     data () {
         return {
             is_generando: false,
@@ -107,9 +135,22 @@ export default {
             errorCantidadMessages: '', 
 
             vencimiento: '',
+            menu1: false,
+            date: null,
         }
     },
     methods: {
+        input_date () {
+            this.menu1 = false
+            this.vencimiento = this.formatDate(this.date)
+        },
+        formatDate (date) {
+            if (!date) return null
+
+            const [year, month, day] = date.split('-')
+            return `${day}/${month}/${year}`
+        },
+
         imprimir () {
             var doc = new jsPDF('l', 'mm', [62, 29])
             var width = doc.internal.pageSize.getWidth()
@@ -118,17 +159,17 @@ export default {
 
             for (let step = 1; step <= this.cantidad; step++) {
 
-                doc.addImage(this.img.src, 'png', 6 ,3, 50, 11)
-
-                doc.setFontSize(9);
-                doc.text(this.saleproduct.attributes.barcode, (width)/2, 18, { align: 'center', maxWidth: width - 5 } )
+                doc.addImage(this.img.src, 'png', 6 ,3, 50, 8)
 
                 doc.setFontSize(8);
-                doc.text(this.saleproduct.attributes.name, (width)/2, 22, { align: 'center', maxWidth: width - 5 } )
+                doc.text(this.saleproduct.attributes.barcode, (width)/2, 15, { align: 'center', maxWidth: width - 5 } )
+
+                doc.setFontSize(8);
+                doc.text(this.saleproduct.attributes.name, (width)/2, 19, { align: 'center', maxWidth: width - 5 } )
 
                 if ( this.vencimiento != '' ) {
                     doc.setFontSize(8);
-                    doc.text('Venc: ' + this.vencimiento, width - 5, 27, { align: 'right' } )
+                    doc.text('Venc: ' + this.vencimiento, width - 5, 24, { align: 'right' } )
                 }
 
                 if ( this.cantidad != step ) {

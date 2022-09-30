@@ -5,12 +5,13 @@
                 <v-card class="">
                     <v-card-title class="d-flex justify-space-between align-center">
                         <template >                
-                            <span class="text-h4 font-weight-light">Etiqueta: {{ item.attributes.name }}</span>
+                            <span class="text-h4 font-weight-light">Catalogo: {{ item.attributes.name }}</span>
                         </template>
                         <div>
                         <v-tabs>
                             <v-tab @click="tab_showed = 'resumen'">Resumen</v-tab>
                             <v-tab @click="tab_showed = 'saleproducts'">Productos Venta</v-tab>
+                            <v-tab @click="tab_showed = 'clients'">Clientes</v-tab>
                         </v-tabs>
                         </div>
                     </v-card-title>
@@ -18,6 +19,14 @@
                     <v-card-text >
                         <Resumen
                             v-if="tab_showed == 'resumen'"
+                            @volver="volver"
+                        />
+                        <Saleproducts
+                            v-if="tab_showed == 'saleproducts'"
+                            @volver="volver"
+                        />
+                        <Clients
+                            v-if="tab_showed == 'clients'"
                             @volver="volver"
                         />
                         
@@ -34,6 +43,8 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Resumen from '@/components/admin/catalogos/catalogo/Resumen'
+import Saleproducts from '@/components/admin/catalogos/catalogo/Saleproducts.vue'
+import Clients from '@/components/admin/catalogos/catalogo/Clients.vue'
 
 export default {
     created() {
@@ -48,6 +59,8 @@ export default {
     },
     components: {
         Resumen,
+        Saleproducts,
+        Clients,
     },
     computed: {
         ...mapGetters({
@@ -61,6 +74,7 @@ export default {
         }),
 
         volver ( ) {
+            this.item.relationships.saleproducts = null
             this.$router.replace({
                 name: 'catalogos'
             })
@@ -69,9 +83,11 @@ export default {
             this.buscar_item(this.$route.params.id)
                 .then((resp) => {
                     if ( !this.item ) {
+                        //console.log(resp.data.data)
                         this.set_item(resp.data.data)
                     }else {
                         this.$set(this.item.relationships, 'saleproducts', resp.data.data.relationships.saleproducts)
+                        this.$set(this.item.relationships, 'clients', resp.data.data.relationships.clients)
                     }
 
                     

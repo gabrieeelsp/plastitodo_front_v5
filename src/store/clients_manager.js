@@ -9,7 +9,8 @@ export default {
         item_cache: null,
         item_cache_new: null,
         ids_select: {
-            tags: []
+            tags: [],
+            catalogos: [],
         },
         filters: {
             tipo: null,
@@ -140,6 +141,13 @@ export default {
                     state.ids_select.tags.push({id: tag.id, name: tag.attributes.name, color: tag.attributes.color})
                 }
             }
+
+            state.ids_select.catalogos = []
+            if ( state.item ){
+                for ( let catalogo of state.item.relationships.catalogos ) {
+                    state.ids_select.catalogos.push({id: catalogo.id, name: catalogo.attributes.name, color: catalogo.attributes.color})
+                }
+            }
             
             
         },
@@ -169,13 +177,19 @@ export default {
                 tags_json.push({id: tag.id})
             }
 
+            let catalogos_json = []
+            for ( let catalogo of state.ids_select.catalogos ) {
+                catalogos_json.push({id: catalogo.id})
+            }
+
             return axios.put(`clients/${getters.item.id}`, {
                 data: {
                     id: getters.item.id,
                     type: 'clients',
                     attributes: attributes,
                     relationships: {
-                        tags: tags_json
+                        tags: tags_json,
+                        catalogos: catalogos_json
                     }
                 }
             })
