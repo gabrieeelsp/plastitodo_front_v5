@@ -5,7 +5,7 @@
                 <v-card class="">
                     <v-card-title class="d-flex justify-space-between align-center pt-1 pb-1">                
                         <div class="">
-                            <span class="text-h4 font-weight-light">Order Register</span>
+                            <span class="text-h4 font-weight-light">Editor de PEDIDOS</span>
 
                             
                         </div>

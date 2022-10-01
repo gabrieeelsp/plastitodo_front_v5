@@ -85,6 +85,8 @@ export default {
     methods: {
         async generateReport () { 
             this.is_generandoReporte = true
+            this.comprobanteItems = []
+            this.comprobanteComboItems = []
             if ( this.tipo == 'sale') { this.ObtenerSaleItems() }
             if ( this.tipo == 'devolution') { this.ObtenerDevolutionItems() }
             if ( this.tipo == 'creditnote') { this.ObtenerCreditnoteItems() }

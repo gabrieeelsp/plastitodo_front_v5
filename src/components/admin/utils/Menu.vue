@@ -160,6 +160,7 @@
             ['Gestión de Ventas', '/admin/sales/manager', false],
             ['Editor de Pedidos', '/admin/orders/order_register', false],
             ['Gestión de Pedidos', '/admin/orders', true],
+            ['Editor de Presupuestos', '/admin/presupuestos/presupuesto_register', false],
             ['Abrir/Cerrar Caja', '/admin/cajas/caja', false],
             ['Pagos Recibidos', '/admin/payments', false],
             ['Reintegros Emitidos', '/admin/refunds', false],

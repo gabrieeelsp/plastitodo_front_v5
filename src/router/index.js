@@ -72,6 +72,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "sale_register" */ '../views/admin/sales/Sale_register.vue')
       },
       {
+        path: 'presupuestos/presupuesto_register',
+        name: 'presupuesto_register',
+        component: () => import(/* webpackChunkName: "presupuesto_register" */ '../views/admin/presupuestos/Presupuesto_register.vue')
+      },
+      {
         path: 'orders/order_register',
         name: 'order_register',
         component: () => import(/* webpackChunkName: "order_register" */ '../views/admin/orders/Order_register.vue')

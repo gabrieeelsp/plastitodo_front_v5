@@ -76,13 +76,19 @@ export default {
         },
         set_item({ commit }, payload) {
             commit('SET_ITEM', payload)
-            commit('SET_ITEM_CACHE', JSON.parse(JSON.stringify(payload)))            
+            //commit('SET_ITEM_CACHE', JSON.parse(JSON.stringify(payload)))            
         },
         set_item_cache({ commit }, payload) {
             commit('SET_ITEM_CACHE', payload)
         },
 
-
+        update_item_values( _, payload ) {
+            return axios.put(`stocksucursals/update_values`, {
+                data: {
+                    stocksucursals: payload
+                }
+            })
+        }
         
     }
 }

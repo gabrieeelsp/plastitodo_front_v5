@@ -30,6 +30,14 @@
 <script>
 import { mapGetters } from 'vuex'
 export default {
+    data () {
+        return {
+            commentsRules: [
+                v => ( v.length < 200 ) ||"Exede el máximo permitido",
+            ],
+            errorCommentsMessages: '',
+        }
+    },
 
     computed: {
         ...mapGetters({

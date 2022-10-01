@@ -124,7 +124,10 @@
                             </template>
                         </td>
                         <td>
-                            
+                            <StocksucursalEdit
+                                :stockproduct="item"
+                                @reload_items="reload_items"
+                            />
                         </td>
                         </tr>
                     </tbody>
@@ -167,7 +170,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-
+import StocksucursalEdit from '@/components/admin/stocksucursals/list/StocksucursalEdit.vue'
 export default {
 
     computed: {
@@ -183,7 +186,7 @@ export default {
         })
     },
     components: {
-        
+        StocksucursalEdit
     },
     methods: {
         ...mapActions({
@@ -233,6 +236,10 @@ export default {
                 ab = ab.concat(palabra.substring(0, 4) + ' ')
             }
             return ab
+        },
+
+        reload_items ( ) {
+            this.$emit('getItems');
         }
     }
 }

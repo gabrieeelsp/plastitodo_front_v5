@@ -21,7 +21,7 @@
             </v-col>
             
         </v-row>
-        {{ items }}
+
     </div>
 </template>
 

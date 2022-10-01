@@ -262,7 +262,7 @@
             </v-col>
 
         </v-row>
-        {{ item }}
+
     </div>
 </template>
 <script>

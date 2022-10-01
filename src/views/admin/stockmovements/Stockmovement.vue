@@ -1,5 +1,5 @@
 <template>
-    <div class="pa-sm-3" v-if="item.relationships.stockmovementitems">
+    <div class="pa-sm-3" v-if="item && item.relationships.stockmovementitems">
         <v-row>
             <v-col cols="12" md="9">
                 <v-card class="">
@@ -115,7 +115,7 @@
             </v-col>
 
         </v-row>
-        {{ item }}
+
     </div>
 </template>
 <script>
