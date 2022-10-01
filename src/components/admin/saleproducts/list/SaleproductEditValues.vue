@@ -39,7 +39,6 @@
                     </v-col>
 
                 </v-row>
-
                 <v-row>
                     <v-col cols="12" sm="5"  class="pt-2 pb-0 d-flex justify-sm-end">
                         <span class="font-weight-bold black--text">Porc Min</span>
@@ -57,8 +56,29 @@
                         ></v-text-field>
                     </v-col>
 
+                </v-row>
+
+                <v-row>
+                    <v-col cols="12" sm="5"  class="pt-2 pb-0 d-flex justify-sm-end">
+                        <span class="font-weight-bold black--text">Precisión Min</span>
+                    </v-col>
+                    <v-col cols="12" sm="3"  class=" pt-0 pb-0 d-flex">
+                        <v-select
+                            class="mt-0"
+                                dense
+                                :items="[{name: '-3', value: -3}, {name: '-2', value: -2}, {name: '-1', value: -1}, {name: '0', value: 0}, {name: '1', value: 1}, {name: '2', value: 2}, {name: '3', value: 3}]"
+                                item-text="name"
+                                item-value="value"
+                                v-model="item_cache.attributes.precision_min"
+                                :menu-props="{ offsetY: true }"
+                                hide-details
+
+                            >
+                            </v-select>
+                    </v-col>
+
                     <v-col cols="12" sm="3"  class="d-flex align-center justify-end">
-                        <span>( {{ globalHelperFixeDecimalMoney(precio_min) }} )</span>
+                        <span>( {{ globalHelperFixeDecimalMoney(getPrecioMinDesc) }} )</span>
                     </v-col>
 
                 </v-row>
@@ -79,8 +99,29 @@
                         ></v-text-field>
                     </v-col>
 
+
+                </v-row> 
+                <v-row>
+                    <v-col cols="12" sm="5"  class="pt-2 pb-0 d-flex justify-sm-end">
+                        <span class="font-weight-bold black--text">Precisión May</span>
+                    </v-col>
+                    <v-col cols="12" sm="3"  class=" pt-0 pb-0 d-flex">
+                        <v-select
+                            class="mt-0"
+                                dense
+                                :items="[{name: '-3', value: -3}, {name: '-2', value: -2}, {name: '-1', value: -1}, {name: '0', value: 0}, {name: '1', value: 1}, {name: '2', value: 2}, {name: '3', value: 3}]"
+                                item-text="name"
+                                item-value="value"
+                                v-model="item_cache.attributes.precision_may"
+                                :menu-props="{ offsetY: true }"
+                                hide-details
+
+                            >
+                            </v-select>
+                    </v-col>
+
                     <v-col cols="12" sm="3"  class="d-flex align-center justify-end">
-                        <span>( {{ globalHelperFixeDecimalMoney(precio_may) }} )</span>
+                        <span>( {{ globalHelperFixeDecimalMoney(getPrecioMayDesc) }} )</span>
                     </v-col>
 
                 </v-row> 
@@ -171,7 +212,19 @@ export default {
             let num = ( this.item_cache.attributes.porc_may / 100 ).toFixed(10)
             if ( num <= 2 ) { num = Number(num) + 1 }
             return (this.costo * num).toFixed(10)
-        }
+        },
+        getPrecioMinDesc: function ( ) {
+            let precio =  Number(this.precio_min)
+            let precision = 10 ** Number(this.item_cache.attributes.precision_min)
+
+            return Math.round((precio + Number.EPSILON) * precision) / precision
+        },
+        getPrecioMayDesc: function ( ) {
+            let precio =  Number(this.precio_may)
+            let precision = 10 ** Number(this.item_cache.attributes.precision_may)
+
+            return Math.round((precio + Number.EPSILON) * precision) / precision
+        },
     },
     methods: {
         ...mapActions({
@@ -197,12 +250,17 @@ export default {
                             porc_may: resp.data.data[0].attributes.porc_may,
                             precio_min: resp.data.data[0].attributes.precio_min,
                             precio_may: resp.data.data[0].attributes.precio_may,
+                            //precio_min: resp.data.data[0].attributes.precio_min,
+                            precision_min: resp.data.data[0].attributes.precision_min,
+                            precision_may: resp.data.data[0].attributes.precision_may,
                           })
                         }else {
                             this.item.attributes.porc_min = resp.data.data.attributes.porc_min
                             this.item.attributes.porc_may = resp.data.data.attributes.porc_may
                             this.item.attributes.precio_min = resp.data.data.attributes.precio_min
                             this.item.attributes.precio_may = resp.data.data.attributes.precio_may
+                            this.item.attributes.precision_min = resp.data.data.attributes.precision_min
+                            this.item.attributes.precision_may = resp.data.data.attributes.precision_may
                         }
                         
                         this.dialog = false
@@ -234,7 +292,9 @@ export default {
         },
         setFocusName() {
             this.$refs.precioMinTextField.focus();
-        },       
+        },  
+        
+        
     }
 
 }

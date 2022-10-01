@@ -47,14 +47,16 @@ import { mapActions, mapGetters  } from 'vuex'
 export default {
     data: () => ({
         valid: true,
-        email: 'test@mail.com',
+        //email: 'test@mail.com',
+        email: '',
         emailRules: [
             v => !!v || 'E-mail is required',
             v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
         ],
         errorEmailMessages: '',
         showPassword: false,
-        password: 'secret999',
+        //password: 'secret999',
+        password: '',
         passwordRules: [
             v => !!v || 'Password is required',
         ],

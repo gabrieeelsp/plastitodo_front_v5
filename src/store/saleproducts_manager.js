@@ -141,6 +141,8 @@ export default {
             let attributes = {
                 porc_min: getters.item_cache.attributes.porc_min,
                 porc_may: getters.item_cache.attributes.porc_may,
+                precision_min: getters.item_cache.attributes.precision_min,
+                precision_may: getters.item_cache.attributes.precision_may,
             }
 
             return axios.put(`saleproducts/${getters.item.id}/update_values`, {
@@ -182,6 +184,9 @@ export default {
 
                     item_saleproduct.attributes.precio_min = payload.precio_min
                     item_saleproduct.attributes.precio_may = payload.precio_may
+
+                    item_saleproduct.attributes.precision_min = payload.precision_min
+                    item_saleproduct.attributes.precision_may = payload.precision_may
                 }
             }
         }
