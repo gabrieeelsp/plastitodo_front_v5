@@ -173,7 +173,6 @@
         </v-card-actions>
       </v-card>
       </v-form>
-
     </v-dialog>
   </div>
 </template>
@@ -279,9 +278,13 @@ export default {
 
         onload () {
             this.set_subitem(this.saleproduct)
-        },
+            if ( this.subitem.relationships.saleproductgroup ) {
+                this.subitem_ids_select.saleproductgroup_id = this.subitem.relationships.saleproductgroup.id
+            }
+            
+        },  
 
-        setSaleproductgroup (saleproductgroup) { console.log( saleproductgroup)
+        setSaleproductgroup (saleproductgroup) { //console.log( saleproductgroup)
             if ( saleproductgroup ) {
                 this.subitem_ids_select.saleproductgroup_id = saleproductgroup.id            
             }else {

@@ -111,7 +111,7 @@ export default {
             ],
             errorSurnameMessages: '',
 
-            role_items: ['', 'ADMINISTRADOR', 'VENDEDOR']
+            role_items: ['', 'ADMINISTRADOR', 'RESPONSABLE SUCURSAL', 'VENDEDOR']
 
         }
     },

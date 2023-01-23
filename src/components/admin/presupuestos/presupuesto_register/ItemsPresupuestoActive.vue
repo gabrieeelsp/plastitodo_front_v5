@@ -112,7 +112,7 @@
                 class="text-right"
                 @dblclick="item.is_editing_cantidad = true"
                 >{{ globalHelperFixeDecimalCantidad(item.cantidad) }}</td>
-            <td v-if="item.is_stock_unitario_variable" class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, null)) }}</td>
+            <td v-if="item.is_stock_unitario_variable" class="text-right"><v-badge content="Aprox" :value="item.is_stock_unitario_variable" color="red" dot><span>{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.relacion_venta_stock, null)) }}</span></v-badge></td>
             <td v-else class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(item.precio, item.cantidad)) }}</td>
             <td class="pl-1 pr-1">
                 <v-btn

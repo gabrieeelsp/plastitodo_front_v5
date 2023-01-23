@@ -7,7 +7,7 @@
             </v-col>
             <v-col cols="12" sm="8"  class="">
                 <template v-if="!image1" >
-                    <input type="file" accept="image/*" @change="uploadImage1" />
+                    <input v-if="user.role != 'VENDEDOR'" type="file" accept="image/*" @change="uploadImage1" />
 
                 </template>
                 <template v-else>
@@ -24,7 +24,7 @@
                         <v-btn
                             class="mt-1"
                                 color="warning"
-                                v-if="image1"
+                                v-if="image1 && user.role != 'VENDEDOR'"
                                 text
                                 @click="remove_image(1)"
                                 x-small
@@ -45,7 +45,7 @@
             </v-col>
             <v-col cols="12" sm="4"  class="">
                 <template v-if="!image2" >
-                    <input type="file" accept="image/*" @change="uploadImage2" />
+                    <input v-if="user.role != 'VENDEDOR'" type="file" accept="image/*" @change="uploadImage2" />
 
                 </template>
                 <template v-else>
@@ -64,7 +64,7 @@
                         <v-btn
                             class="mt-1"
                                 color="warning"
-                                v-if="image2"
+                                v-if="image2 && user.role != 'VENDEDOR'"
                                 text
                                 @click="remove_image(2)"
                                 x-small
@@ -84,7 +84,7 @@
             </v-col>
             <v-col cols="12" sm="4" >
                 <template v-if="!image3" >
-                    <input type="file" accept="image/*" @change="uploadImage3" />
+                    <input v-if="user.role != 'VENDEDOR'" type="file" accept="image/*" @change="uploadImage3" />
                 </template>
                 <template v-else>
                     
@@ -101,7 +101,7 @@
                         <v-btn
                             class="mt-1"
                                 color="warning"
-                                v-if="image3"
+                                v-if="image3 && user.role != 'VENDEDOR'"
                                 text
                                 @click="remove_image(3)"
                                 x-small
@@ -136,6 +136,7 @@ export default {
         ...mapGetters({
             item_cache: 'saleproducts_manager/item_cache',
             item: 'saleproducts_manager/item',
+            user: 'auth/user',
         }),
     },
     data () {

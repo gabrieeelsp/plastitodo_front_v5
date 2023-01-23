@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
 
         <v-row>
             <v-spacer></v-spacer>
@@ -110,7 +110,12 @@
                         :key="sale.id"
                         >
                         <td>{{ sale.id }}</td>
-                        <td v-if="sale.relationships.client">{{ sale.relationships.client.attributes.name }}</td>
+                        <template v-if="sale.relationships.client">
+                            <td v-if="sale.relationships.client.attributes.tipo_persona == 'FISICA'" >{{ sale.relationships.client.attributes.name + ' ' + sale.relationships.client.attributes.surname }}</td>
+                            <td v-else >{{ sale.relationships.client.attributes.name }}</td>
+                            
+                        </template>
+                        
                         <td v-else>---</td>
                         <td>{{ sale.relationships.user.attributes.name }}</td>
                         <td>{{ sale.relationships.sucursal.attributes.name }}</td>
@@ -167,7 +172,6 @@
                 ></v-pagination>
             </v-col>
         </v-row>
-        
     </div>
 </template>
 
@@ -206,6 +210,7 @@ export default {
 
             sucursals_select: 'sucursals_manager/sucursals_select',
             filters: 'sales_manager/filters',
+            //user_logged: 'auth/user',
         })
     },
     components: {
@@ -245,7 +250,7 @@ export default {
             
         },
         setLimit() {
-            //this.set_list_meta_limt(this.limitSelected)
+            this.set_list_meta_limt(1)
             this.$emit('getItems')
         },
         setPage() {
@@ -288,6 +293,10 @@ export default {
             }
             return true
         },
+        getItems() {
+            this.set_list_meta_limt(1)
+            this.$emit('getItems')
+        }
     }
 }
 </script>

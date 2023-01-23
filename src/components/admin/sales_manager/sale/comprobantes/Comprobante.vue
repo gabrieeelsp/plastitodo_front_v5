@@ -223,6 +223,7 @@ export default {
                     if ( [3, 4, 5].includes(ivaaliquot.id)) {
                         doc.text('IVA ' + ivaaliquot.attributes.name + ' %: ', 180, h, { align: 'right' })
                         doc.text(this.fixeDecimalMoney(this.getImporteIva(ivaaliquot.id)), 200, h, { align: 'right' })
+                        //console.log(this.getImporteIva(ivaaliquot.id))
                         h = h + 5
                     }                
                 }
@@ -389,6 +390,7 @@ export default {
             let total = 0
             for ( let item of this.comprobanteItems ) {
                 if ( ivaaliquot_id == item.iva_id ) {
+                    
                     total = this.roundHalfUp(total + item.iva_valor, 4)
                 }
             }
@@ -404,10 +406,19 @@ export default {
             
             for ( let item of this.items ) {
                 let precio = 0
-                if ( this.discriminar_iva ) {
-                    precio = this.roundHalfUp(item.attributes.precio / ( this.roundHalfUp(1 + item.relationships.ivaaliquot.valor / 100, 4) ), 2)
+
+                let precio_base = 0
+                if ( item.attributes.is_stock_unitario_variable ) {
+                    precio_base = (( item.attributes.precio / item.attributes.stock_aproximado_unidad ) / item.attributes.relacion_venta_stock ) 
+                    //console.log(item.attributes.precio)
                 }else {
-                    precio = this.roundHalfUp(item.attributes.precio, 2)
+                    precio_base = item.attributes.precio
+                }
+
+                if ( this.discriminar_iva ) {
+                    precio = this.roundHalfUp(precio_base / ( this.roundHalfUp(1 + item.relationships.ivaaliquot.valor / 100, 4) ), 2)
+                }else {
+                    precio = this.roundHalfUp(precio_base, 2)
                 }
                 let cantidad = 0
                 if ( item.attributes.is_stock_unitario_variable ) {
@@ -422,10 +433,20 @@ export default {
                     precio: precio,
                     cantidad: cantidad,
                     subtotal: subtotal,
-                    iva_valor: this.roundHalfUp(this.roundHalfUp(item.attributes.precio * cantidad - subtotal, 2), 2),
+                    iva_valor: this.roundHalfUp(this.roundHalfUp(precio_base * cantidad - subtotal, 2), 2),
                     iva_id: item.relationships.ivaaliquot.id,
                     iva_name: item.relationships.ivaaliquot.name
                 })
+                /* console.log({
+                    name: item.attributes.name,
+                    precio: precio,
+                    cantidad: cantidad,
+                    subtotal: subtotal,
+                    //iva_valor: this.roundHalfUp(this.roundHalfUp(item.attributes.precio * cantidad - subtotal, 2), 2),
+                    iva_valor: this.roundHalfUp(this.roundHalfUp(precio_base * cantidad - subtotal, 2), 2),
+                    iva_id: item.relationships.ivaaliquot.id,
+                    iva_name: item.relationships.ivaaliquot.name
+                }) */
             }
             for ( let comboitem of this.comboitems ) {
                 let precio = 0

@@ -24,14 +24,12 @@
                                     <v-img
                                         v-if="item.attributes.image1"                                    
                                         class="white--text align-end"
-                                        height="200px"
                                         :src="item.attributes.image1"
                                     >
                                     </v-img>
                                     <v-img
                                         v-else                                    
                                         class="white--text align-end"
-                                        height="200px"
                                         :src="url_asset + 'images/image_default.jpg'"
                                     >
                                     </v-img>

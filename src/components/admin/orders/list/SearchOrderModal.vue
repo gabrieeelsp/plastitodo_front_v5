@@ -23,10 +23,33 @@
         <v-card>
             <v-card-title>
                 <v-row class="d-flex align-center">
-                    <v-col cols="12" sm="3">
-                        <span>Pedidos Activos</span>
+                    
+                    <v-col cols="12" sm="3" class="d-flex align-center">
+                        <SelectClient 
+                            label="Cliente"
+                            @setClient="setClint"
+                            :client="filters.client"
+                        />
+                    </v-col>
+                    <v-col cols="12" sm="3" class="d-flex align-center">
+                        <v-select
+                            dense
+                            :items="['EDITANDO', 'FINALIZADO', 'CONFIRMADO', 'EN PREPARACION', 'PREPARADO', 'FACTURADO', 'EN DISTRIBUCION', 'ENTREGADO']"
+                            v-model="filters.state"
+                            :menu-props="{ offsetY: true }"
+                            hide-details=""
+                            label="Estado"
+                            clearable
+                        >
+                        </v-select>
                     </v-col>
                     <v-spacer></v-spacer>
+                    <v-col cols="12" sm="2" class="d-flex align-end">
+                        <v-btn small
+                            @click="getItems"
+                        >Search</v-btn>
+                        
+                    </v-col>
                     
                     
                 </v-row>
@@ -40,11 +63,12 @@
                     <v-col cols="12" sm="6" md="5" class="">
                         
                     </v-col>
+                    
                 </v-row>
                 
                 <v-simple-table
                     fixed-header
-                    height="300px"
+                    height="600px"
                 >
                     <template v-slot:default>
                     <thead>
@@ -87,7 +111,10 @@
 
                             <td>{{ item.attributes.fecha_entrega_acordada | luxon("dd-MM-yyyy") }}</td>
 
-                            <td class="text-center" ><v-chip x-small class="ma-2" color="success" >{{ item.attributes.state }}</v-chip></td>
+                            <td class="text-center" >
+                                <v-chip x-small class="ma-2 white--text" :color="color_state(item.attributes.state)" >{{ item.attributes.state }}</v-chip>
+                            </td>
+                            
 
                             <td v-if="item.relationships.sucursal" >{{ item.relationships.sucursal.attributes.name }}</td>
                             <td v-else>--------</td>
@@ -107,7 +134,6 @@
                     </template>
                 </v-simple-table> 
                 
-                
             </v-card-text>            
         </v-card>
         </v-dialog>
@@ -116,8 +142,12 @@
 
 <script>
 import axios from 'axios'
+import SelectClient from '@/components/admin/clients/SelectClient'
 import { mapGetters } from 'vuex'
 export default {
+    components: {
+        SelectClient,
+    },
 
     props:{
         disabled: Boolean,
@@ -128,20 +158,29 @@ export default {
             dialog: false,
             items: [],
             loadingTable: false,
+
+            filters: {
+                client: null,
+                state: null,
+            }
         }
     },
     computed: {
-      ...mapGetters({
-
-      })
+        ...mapGetters({
+            color_state: 'orders_manager/color_state',
+        })
     },
 
     methods: {
+        setClint(client) {
+            this.filters.client = client
+        },
         async getItems () {
             this.loadingTable = true,
             await axios.get('/orders', {
                 params: {
-                    
+                    client_id: this.filters.client ? this.filters.client.id : null,
+                    state: this.filters.state,
                 }
             }).then((result) => {
                 
@@ -155,7 +194,8 @@ export default {
         },
         onload() {
             this.items = []
-
+            this.filters.client = null,
+            this.filters.state = null,
             this.getItems()
 
         },

@@ -237,10 +237,22 @@ export default {
             
             for ( let item of this.items ) {
                 let precio = 0
-                if ( this.discriminar_iva ) {
-                    precio = this.roundHalfUp(item.attributes.precio / ( this.roundHalfUp(1 + item.relationships.ivaaliquot.valor / 100, 4) ), 2)
+
+
+                let precio_base = 0
+                if ( item.attributes.is_stock_unitario_variable ) {
+                    precio_base = (( item.attributes.precio / item.attributes.stock_aproximado_unidad ) / item.attributes.relacion_venta_stock ) 
+                    console.log(item.attributes.precio)
                 }else {
-                    precio = this.roundHalfUp(item.attributes.precio, 2)
+                    precio_base = item.attributes.precio
+                }
+
+
+
+                if ( this.discriminar_iva ) {
+                    precio = this.roundHalfUp(precio_base / ( this.roundHalfUp(1 + item.relationships.ivaaliquot.valor / 100, 4) ), 2)
+                }else {
+                    precio = this.roundHalfUp(precio_base, 2)
                 }
                 let cantidad = 0
                 if ( item.attributes.is_stock_unitario_variable ) {
@@ -255,7 +267,8 @@ export default {
                     precio: precio,
                     cantidad: cantidad,
                     subtotal: subtotal,
-                    iva_valor: this.roundHalfUp(this.roundHalfUp(item.attributes.precio * cantidad - subtotal, 2), 2),
+                    iva_valor: this.roundHalfUp(this.roundHalfUp(precio_base * cantidad - subtotal, 2), 2),
+                    //iva_valor: this.roundHalfUp(this.roundHalfUp(item.attributes.precio * cantidad - subtotal, 2), 2),
                     iva_id: item.relationships.ivaaliquot.id,
                     iva_name: item.relationships.ivaaliquot.name
                 })
@@ -374,6 +387,7 @@ export default {
                     precio: precio,
                     cantidad: cantidad,
                     subtotal: subtotal,
+                    
                     iva_valor: this.roundHalfUp(this.roundHalfUp(item.attributes.precio * cantidad - subtotal, 2), 2),
                     iva_id: item.relationships.ivaaliquot.id,
                     iva_name: item.relationships.ivaaliquot.name

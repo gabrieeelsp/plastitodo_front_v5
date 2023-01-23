@@ -125,8 +125,23 @@
                     </v-col>
 
                 </v-row> 
+
+                <v-row v-if="item_cache.relationships.saleproductgroup">
+                    <v-col cols="12" sm="5"  class="pt-2 pb-0 d-flex justify-sm-end">
+                        <span class="font-weight-bold black--text">Grupo</span>
+                    </v-col>
+                    <v-col cols="12" sm="6"  class=" pt-0 pb-0 d-flex">
+                        <v-text-field 
+                            dense
+                            :value="item_cache.relationships.saleproductgroup.attributes.name"
+                            disabled
+                        ></v-text-field>
+                    </v-col>
+
+
+                </v-row> 
                 
-                <v-row>
+                <v-row v-if="item_cache.relationships.saleproductgroup">
                     <v-col cols="12" sm="5"  class="pt-0 pb-0 d-flex justify-sm-end">
                         
                     </v-col>
@@ -140,6 +155,8 @@
                             ></v-checkbox>
                     </v-col>
                 </v-row>
+                
+                
                 
             
         </v-card-text>
@@ -240,6 +257,11 @@ export default {
             this.validate()
             if ( this.valid ) {
                 this.is_saving = true
+
+                if ( !this.item_cache.relationships.saleproductgroup ) {
+                    this.is_updategroup = false
+                }
+
                 await this.update_item_values(this.is_updategroup)
                     .then((resp) => {
                         this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });

@@ -3,7 +3,7 @@
 
     <v-dialog
         v-model="intDialogVisible"
-        max-width="700"
+        max-width="900"
     >
       <v-card>
         <v-card-title class="text-h5">
@@ -24,14 +24,14 @@
                                     <v-img
                                         v-if="item.attributes.image1"                                    
                                         class="white--text align-end"
-                                        height="200px"
+                                        
                                         :src="item.attributes.image1"
                                     >
                                     </v-img>
                                     <v-img
                                         v-else                                    
                                         class="white--text align-end"
-                                        height="200px"
+                                        
                                         :src="url_asset + 'images/image_default.jpg'"
                                     >
                                     </v-img>
@@ -95,6 +95,15 @@
                                 >
                                     Aceptar
                                 </v-btn>
+                            </v-col>
+                        </v-row>
+
+                        <v-row>
+                            <v-col>
+                                <div class="d-flex justify-space-between" v-for="saleproduct_sibling in item.relationships.stockproduct.relationships.saleproducts.filter((i) => { return i.id != item.id })" :key="saleproduct_sibling.id">
+                                    <span>{{ saleproduct_sibling.attributes.name }}</span>
+                                    <span>{{ precio_sibling(saleproduct_sibling) }}</span>
+                                </div>
                             </v-col>
                         </v-row>
                     
@@ -225,6 +234,26 @@ import { mapGetters } from 'vuex'
         onload() {
             setTimeout(() => this.$refs.input_cantidad.$refs.input.focus(), 100); 
             
+        },
+
+        is_promo_sibling ( item ) {
+            if ( item.attributes.fecha_desc_desde && (new Date(item.attributes.fecha_desc_desde).getTime() <= new Date().getTime()) && (new Date(item.attributes.fecha_desc_hasta).getTime() >= new Date().getTime()) ) {
+                return true;
+            }
+            return false;
+        },
+        precio_sibling ( item ){
+            if ( this.is_promo_sibling ( item ) ) {
+                if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
+                    return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(item.attributes.precio_may, item.attributes.desc_may))
+                }
+                return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(item.attributes.precio_min, item.attributes.desc_min))    
+                }
+            if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
+                return this.globalHelperFixeDecimalMoney(item.attributes.precio_may)
+            }
+            return this.globalHelperFixeDecimalMoney(item.attributes.precio_min)             
+
         },
     }
   }

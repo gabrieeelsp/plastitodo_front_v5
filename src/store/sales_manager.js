@@ -154,8 +154,9 @@ export default {
             let total = 0
             for ( let item of state.devolution_editing.devitems) {
                 if ( item.is_devolution_item ){
-                    if( item.is_stock_unitario_variable ) {
-                        total = total + (item.precio * item.cantidad_total)
+                    if( item.is_stock_unitario_variable ) { 
+                        total = total + ( ( ( item.precio / item.stock_aproximado_unidad ) / item.relacion_venta_stock ) * item.cantidad_total)
+                        //total = total + (item.precio * item.cantidad_total)
                     }else {
                         total = total + (item.precio * item.cantidad)
                     }
@@ -595,6 +596,8 @@ export default {
                             cantidad_total: item.cant_total_disponible_devolucion,
                             cant_total_disponible_devolucion: item.cant_total_disponible_devolucion,
                             is_editing_cantidad_total: false,
+                            relacion_venta_stock: item.relacion_venta_stock,
+                            stock_aproximado_unidad: item.stock_aproximado_unidad,
                         }
                         devitems.push(devitem)
                     }

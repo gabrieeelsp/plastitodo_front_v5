@@ -10,7 +10,7 @@
                 </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="user.role != 'VENDEDOR'">
                 <v-col cols="12" sm="4"  class="d-flex justify-sm-end align-center">
                     <span class="font-weight-bold black--text">Costo</span>
                 </v-col>
@@ -19,7 +19,7 @@
                 </v-col>
 
             </v-row>
-            <v-row>
+            <v-row v-if="user.role != 'VENDEDOR'">
                 <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
                     <span class="font-weight-bold black--text">Porc Min</span>
                 </v-col>
@@ -40,7 +40,7 @@
                 </v-col>
 
             </v-row>
-            <v-row>
+            <v-row v-if="user.role != 'VENDEDOR'">
                 <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
                     <span class="font-weight-bold black--text">Porc May</span>
                 </v-col>
@@ -81,7 +81,7 @@
                         <v-btn
                         class="mt-1"
                             color="warning"
-                            
+                            :disabled="user.role == 'VENDEDOR'"
                             text
                             @click="item_cache.attributes.barcode = null; barcode = ''"
                             x-small
@@ -123,7 +123,7 @@
                     </v-chip>
                     </div>
                     <SelectTagModal
-                        disable="false"
+                        v-if="user.role != 'VENDEDOR'"
                         :btn_data="{name: null, icon: 'mdi-plus'}"
 
                         @set="addTag"
@@ -150,7 +150,7 @@
                     </v-chip>
                     </div>
                     <SelectCatalogoModal
-                        disable="false"
+                        v-if="user.role != 'VENDEDOR'"
                         :btn_data="{name: null, icon: 'mdi-plus'}"
 
                         @set="addCatalogo"
@@ -163,11 +163,13 @@
                 <v-spacer></v-spacer>
                 <v-col class="d-flex" cols="8">
                     <v-btn
+                        v-if="user.role != 'VENDEDOR'"
                         :loading="is_saving" 
                         type="submit"
                         color="success"
                     >Guardar</v-btn>
                     <v-btn class="ml-2"
+                        v-if="user.role != 'VENDEDOR'"
                         @click="reset"
                         color="primary"
                     >Reset</v-btn>
@@ -194,6 +196,7 @@ import SelectCatalogoModal from '@/components/admin/catalogos/selectCatalogoModa
 export default {
     mounted() {
         //this.onload()
+        this.barcode = this.item_cache.attributes.barcode
     },
     components: {
         VueBarcode,
@@ -205,7 +208,8 @@ export default {
         ...mapGetters({
             item_cache: 'saleproducts_manager/item_cache',
             item: 'saleproducts_manager/item',
-            ids_select: 'saleproducts_manager/ids_select'
+            ids_select: 'saleproducts_manager/ids_select',
+            user: 'auth/user',
         }),
         costo: function ( ) {
             return Number(this.item_cache.relationships.stockproduct.attributes.costo * this.item_cache.attributes.relacion_venta_stock).toFixed(10) 

@@ -279,7 +279,7 @@
             </v-col>
 
         </v-row>
-        {{ orderActive }}
+        
         <OrderCheckSaleModal
             v-if="showOrderCheckSaleModal"    
             :dialogVisible="showOrderCheckSaleModal"

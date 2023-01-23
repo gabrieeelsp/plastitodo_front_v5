@@ -64,7 +64,7 @@
             </td>
 
             </template>            
-            <td v-if="item.attributes.is_stock_unitario_variable" class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.attributes.precio, item.attributes.cantidad, item.attributes.stock_aproximado_unidad, item.attributes.cantidad_total)) }}</td>
+            <td v-if="item.attributes.is_stock_unitario_variable" class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.attributes.precio, item.attributes.cantidad, item.attributes.stock_aproximado_unidad, item.attributes.relacion_venta_stock, item.attributes.cantidad_total)) }}</td>
             <td v-else class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(item.attributes.precio, item.attributes.cantidad)) }}</td>
             
             </tr>   
@@ -132,6 +132,7 @@
         </template>
         
     </v-simple-table>
+    
     </div>
     
     

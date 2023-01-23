@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="user">
         <v-toolbar dark >
 
 
@@ -56,7 +56,7 @@
                 <v-list-item-title>Almacén</v-list-item-title>
             </template>            
 
-            <v-list-item :to="link" v-for="([title, link, exact], i) of almacen" :key="i" :exact="exact" >
+            <v-list-item :disabled="!disabled" :to="link" v-for="([title, link, exact, disabled], i) of almacen" :key="i" :exact="exact" >
                 <v-list-item-icon>
                     <v-icon color="light-green lighten-3">mdi-apps</v-icon>
                 </v-list-item-icon>
@@ -73,7 +73,7 @@
                 <v-list-item-title>Ventas</v-list-item-title>
             </template>            
 
-            <v-list-item :to="link" v-for="([title, link, exact], i) of ventas" :key="i" :exact="exact" >
+            <v-list-item :disabled="!disabled" :to="link" v-for="([title, link, exact, disabled], i) of ventas" :key="i" :exact="exact" >
                 <v-list-item-icon>
                     <v-icon color="light-green lighten-3">mdi-apps</v-icon>
                 </v-list-item-icon>
@@ -90,7 +90,7 @@
                 <v-list-item-title>Compras</v-list-item-title>
             </template>            
 
-            <v-list-item :to="link" v-for="([title, link, exact], i) of compras" :key="i" :exact="exact" >
+            <v-list-item :disabled="!disabled" :to="link" v-for="([title, link, exact, disabled], i) of compras" :key="i" :exact="exact" >
                 <v-list-item-icon>
                     <v-icon color="light-green lighten-3">mdi-apps</v-icon>
                 </v-list-item-icon>
@@ -107,7 +107,7 @@
                 <v-list-item-title>Sucursales</v-list-item-title>
             </template>            
 
-            <v-list-item :to="link" v-for="([title, link, exact], i) of sucursales" :key="i" :exact="exact" >
+            <v-list-item :disabled="!disabled" :to="link" v-for="([title, link, exact, disabled], i) of sucursales" :key="i" :exact="exact" >
                 <v-list-item-icon>
                     <v-icon color="light-green lighten-3">mdi-apps</v-icon>
                 </v-list-item-icon>
@@ -126,7 +126,7 @@
                 <v-list-item-title>Empresa</v-list-item-title>
             </template>            
 
-            <v-list-item :to="link" v-for="([title, link, exact], i) of empresa" :key="i" :exact="exact" >
+            <v-list-item :disabled="!disabled" :to="link" v-for="([title, link, exact, disabled], i) of empresa" :key="i" :exact="exact" >
                 <v-list-item-icon>
                     <v-icon color="light-green lighten-3">mdi-apps</v-icon>
                 </v-list-item-icon>
@@ -149,43 +149,9 @@
   export default {
     data: () => ({
         selectedItem: 1,
-        almacen: [
-            ['Familias', '/admin/familias', false],
-            ['Productos Stock', '/admin/stockproducts', false],
-            ['Grupos Productos Stock', '/admin/stockproductgroups', false],
-            ['Stock Sucursales', '/admin/stocksucursals', false],
-        ],
-        ventas: [
-            ['Editor de Ventas', '/admin/sales/sale_register', false],
-            ['Gestión de Ventas', '/admin/sales/manager', false],
-            ['Editor de Pedidos', '/admin/orders/order_register', false],
-            ['Gestión de Pedidos', '/admin/orders', true],
-            ['Editor de Presupuestos', '/admin/presupuestos/presupuesto_register', false],
-            ['Abrir/Cerrar Caja', '/admin/cajas/caja', false],
-            ['Pagos Recibidos', '/admin/payments', false],
-            ['Reintegros Emitidos', '/admin/refunds', false],
-            ['Productos Venta', '/admin/saleproducts', false],
-            ['Grupos Productos Venta', '/admin/saleproductgroups', false],
-            ['Productos Combo', '/admin/combos', false],
-            ['Gestión de Clientes', '/admin/clients', false],
+        
 
-        ],
-        compras: [
-            ['Proveedores', '/admin/suppliers', false],
-            ['Ordenes de Compra', '/admin/purchaseorders', false],
-        ],
-        sucursales: [
-            ['Sucursales', '/admin/sucursals', false],
-            ['Movimientos de Stock', '/admin/stockmovements', false],
-            ['Transferencias de Stock', '/admin/stocktransfers', false],
-        ],
-
-        empresa: [
-            ['Usuarios', '/admin/users', false],
-            ['Etiquetas', '/admin/tags', false],
-            ['Catálogos', '/admin/catalogos', false],
-            ['Cajas', '/admin/cajas', false],
-        ],
+        
 
         logo_nophoto: require('@/assets/nophoto.jpg'),
     }),
@@ -196,6 +162,56 @@
             user: 'auth/user',
             caja: 'caja/caja'
         }),
+
+        almacen () { 
+            return [
+                ['Familias', '/admin/familias', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Productos Stock', '/admin/stockproducts', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Grupos Productos Stock', '/admin/stockproductgroups', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Stock Sucursales', '/admin/stocksucursals', false, true],
+            ]
+        },
+
+        ventas (){
+            return [
+                ['Editor de Ventas', '/admin/sales/sale_register', false, true],
+                ['Gestión de Ventas', '/admin/sales/manager', false, true],
+                ['Editor de Pedidos', '/admin/orders/order_register', false, true],
+                ['Gestión de Pedidos', '/admin/orders', true, true],
+                ['Editor de Presupuestos', '/admin/presupuestos/presupuesto_register', false, true],
+                ['Abrir/Cerrar Caja', '/admin/cajas/caja', false, true],
+                ['Pagos Recibidos', '/admin/payments', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Reintegros Emitidos', '/admin/refunds', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Productos Venta', '/admin/saleproducts', false, true],
+                ['Grupos Productos Venta', '/admin/saleproductgroups', false, this.user.role == 'VENDEDOR' || this.user.role == 'RESPONSABLE SUCURSAL' ? false : true],
+                ['Productos Combo', '/admin/combos', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Gestión de Clientes', '/admin/clients', false, this.user.role == 'VENDEDOR' ? false : true],
+
+            ]
+        },
+        compras () {
+            return [
+                ['Proveedores', '/admin/suppliers', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Ordenes de Compra', '/admin/purchaseorders', false, this.user.role == 'VENDEDOR' ? false : true],
+            ]
+        },
+        sucursales () {
+            return [
+                ['Sucursales', '/admin/sucursals', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Movimientos de Stock', '/admin/stockmovements', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Transferencias de Stock', '/admin/stocktransfers', false, this.user.role == 'VENDEDOR' ? false : true],
+            ]
+        },
+
+        empresa () { 
+            return [
+                ['Usuarios', '/admin/users', false, this.user.role == 'VENDEDOR' || this.user.role == 'RESPONSABLE SUCURSAL' ? false : true],
+                ['Etiquetas', '/admin/tags', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Catálogos', '/admin/catalogos', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Cajas', '/admin/cajas', true, true],
+            ]
+        },
+
         almacen_open () {
             for ( let url of this.almacen ) {
                 if (this.$route.path.startsWith(url[1])) {

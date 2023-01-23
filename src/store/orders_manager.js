@@ -33,6 +33,7 @@ export default {
             {state: 'FACTURADO', color: 'teal'},
             {state: 'EN DISTRIBUCION', color: 'red'},
             {state: 'ENTREGADO', color: 'green'},
+            {state: 'CANCELADO', color: 'red'},
         ],
     },
     getters: {
@@ -82,10 +83,16 @@ export default {
             for ( let item of order.relationships.orderitems) {
                 if( item.relationships.saleproduct.relationships.stockproduct.attributes.is_stock_unitario_variable ) {
                     if ( Number(item.attributes.cantidad_total) != 0 ) {
-                        total = total + (item.attributes.precio * item.attributes.cantidad_total)
+                        //Nuevo
+                        total = total + ( ( ( item.attributes.precio / item.relationships.saleproduct.relationships.stockproduct.attributes.stock_aproximado_unidad ) / item.relationships.saleproduct.attributes.relacion_venta_stock ) * item.attributes.cantidad_total)
+                        
+                        //antiguo
+                        //total = total + (item.attributes.precio * item.attributes.cantidad_total)
                     }else {
                         //console.log(item.stock_aproximado_unidad)
-                        total = total + (item.attributes.precio * item.attributes.cantidad * Number(item.relationships.saleproduct.relationships.stockproduct.attributes.stock_aproximado_unidad))
+                        
+                        total = total + (item.attributes.precio * item.attributes.cantidad )
+                        //total = total + (item.attributes.precio * item.attributes.cantidad * Number(item.relationships.saleproduct.relationships.stockproduct.attributes.stock_aproximado_unidad))
                     }
                     
                 }else {

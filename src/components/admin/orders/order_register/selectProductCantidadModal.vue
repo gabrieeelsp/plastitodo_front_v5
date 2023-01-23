@@ -23,14 +23,12 @@
                                 <v-img
                                     v-if="item.image1"                                    
                                     class="white--text align-end"
-                                    height="200px"
                                     :src="url_asset + item.image1"
                                 >
                                 </v-img>
                                 <v-img
                                     v-else                                    
                                     class="white--text align-end"
-                                    height="200px"
                                     :src="url_asset + 'images/image_default.jpg'"
                                 >
                                 </v-img>
@@ -244,11 +242,18 @@ import axios from 'axios'
                 if ( this.item.tipo == 'saleproduct' ) {
                     
                     let name = this.item.name
+
+                    if ( this.item.is_stock_unitario_variable ) {
+                        name = name + ' ( ' + this.item.stock_aproximado_unidad + ' aprox ) '
+                    }
+                    
                     if ( this.is_promo ) {
                         if ( this.orderActive.client != null && this.orderActive.client.tipo == 'MAYORISTA' ) {
-                            name = name + ' [Promo - ' + this.item.desc_may + ' %]'
+                            name = name + ' [Promo - ' + Number(this.item.desc_may).toFixed(0) + ' %]'
+                        }else {
+                            name = name + ' [Promo - ' + Number(this.item.desc_min).toFixed(0) + ' %]'
                         }
-                        name = name + ' [Promo - ' + Number(this.item.desc_min).toFixed(0) + ' %]'
+                        
                     }
 
                     this.$emit('addItem', {

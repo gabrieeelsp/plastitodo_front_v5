@@ -3,9 +3,10 @@
         <v-card-title class="d-flex justify-space-between pb-2 pt-2">
             <span>Pagos</span>
             <v-btn 
+                v-if="caja"
                 x-small 
                 @click="newPaymentModalVisible = true"
-                :disabled="saldoTotalSale <= 0"
+                :disabled="saldoTotalSale <= 0 && false"
             ><v-icon>mdi-plus</v-icon> </v-btn>
         </v-card-title>
         <v-divider></v-divider>
@@ -57,6 +58,7 @@
                     </v-btn>
                 </v-col>
             </v-row>
+            
         </v-card-text>
         <NewPaymentModal
             :saldoSale="saldoTotalSale"
@@ -71,7 +73,7 @@
             @close="editPaymentModalVisible = false"
             @updatePayment="updatePayment"
             />
-            
+        
     </v-card>
 </template>
 
@@ -103,6 +105,7 @@ export default {
         ...mapGetters({
             sale: 'sales_manager/sale',
             saldoTotalSale: 'sales_manager/saldoTotalSale',
+            caja: 'cajas_manager/caja',
         })
     },
 

@@ -15,8 +15,15 @@
 					<span class="font-weight-bold black--text">Total: </span>
 				</v-col>
 				<v-col cols="12" sm="9"  class="d-flex justify-center align-center">
+					<v-badge
+						:value="!is_presupuestoActive_complete_total"
+						bordered
+						color="error"
+						content="Aprox"
+						overlap
+					>
 					<span class="display-1 blue--text darken-4">{{ globalHelperFixeDecimalMoney(totalPresupuestoActive) | money_string }}</span>
-
+					</v-badge>
 				</v-col>
 			</v-row>
 		</v-card-text>
@@ -36,6 +43,7 @@ export default {
       ...mapGetters({
         cantItemsPresupuestoActive: 'presupuestos_manager/cantItemsPresupuestoActive',
 		totalPresupuestoActive: 'presupuestos_manager/totalPresupuestoActive',
+		is_presupuestoActive_complete_total: 'presupuestos_manager/is_presupuestoActive_complete_total',
       })
     },
 	methods: {

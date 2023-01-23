@@ -116,23 +116,68 @@
                             <template v-if="item.tipo == 'saleproduct'">
                                 <template v-if="presupuestoActive.client != null && presupuestoActive.client.tipo == 'MAYORISTA'">
                                     <template v-if="Number(item.desc_may) != 0 && (new Date(item.fecha_desc_desde).getTime() <= new Date().getTime()) && (new Date(item.fecha_desc_hasta).getTime() >= new Date().getTime())">
-                                        <td class="pl-1">{{ item.name }} [ Promo ]</td>
-                                        <td class="text-right" >{{ globalHelperFixeDecimalMoney(globalHelerAplicaDescuento(item.precio_may, item.desc_may)) }}</td>
+                                        <td v-if="!Boolean(Number(item.is_stock_unitario_variable))" class="pl-1">{{ item.name }} [ Promo ]</td>
+                                        <td v-else class="pl-1">{{ item.name + ' ( ' + item.stock_aproximado_unidad + ' aprox )' }} [ Promo ]</td>
+
+                                        <td class="text-right" >
+                                            <v-badge
+                                                :value="Boolean(Number(item.is_stock_unitario_variable))"
+                                                bordered
+                                                color="error"
+                                                
+                                                dot
+                                            >
+                                                {{ globalHelperFixeDecimalMoney(globalHelerAplicaDescuento(item.precio_may, item.desc_may)) }}
+                                            </v-badge>
+                                        </td>
                                     </template>
                                     <template v-else>
-                                        <td class="pl-1">{{ item.name }}</td>
-                                        <td class="text-right" >{{ globalHelperFixeDecimalMoney(item.precio_may) }}</td>
+                                        <td v-if="!Boolean(Number(item.is_stock_unitario_variable))" class="pl-1">{{ item.name }}</td>
+                                        <td v-else class="pl-1">{{ item.name + ' ( ' + item.stock_aproximado_unidad + ' aprox )' }}</td>
+                                        <td class="text-right" >
+                                            <v-badge
+                                                :value="Boolean(Number(item.is_stock_unitario_variable))"
+                                                bordered
+                                                color="error"
+                                                
+                                                dot
+                                            >
+                                            {{ globalHelperFixeDecimalMoney(item.precio_may) }}
+                                            </v-badge>
+                                        </td>
                                     </template>
                                 </template>
 
                                 <template v-else >
                                     <template v-if="Number(item.desc_min) != 0 && (new Date(item.fecha_desc_desde).getTime() <= new Date().getTime()) && (new Date(item.fecha_desc_hasta).getTime() >= new Date().getTime())">
-                                        <td class="pl-1">{{ item.name }} [ Promo ]</td>
-                                        <td class="text-right" >{{ globalHelperFixeDecimalMoney(globalHelerAplicaDescuento(item.precio_min, item.desc_min)) }}</td>
+                                        <td v-if="!Boolean(Number(item.is_stock_unitario_variable))" class="pl-1">{{ item.name }} [ Promo ]</td>
+                                        <td v-else class="pl-1">{{ item.name + ' ( ' + item.stock_aproximado_unidad + ' aprox )' }} [ Promo ]</td>
+                                        <td class="text-right" >
+                                            <v-badge
+                                                :value="Boolean(Number(item.is_stock_unitario_variable))"
+                                                bordered
+                                                color="error"
+                                                
+                                                dot
+                                            >
+                                            {{ globalHelperFixeDecimalMoney(globalHelerAplicaDescuento(item.precio_min, item.desc_min)) }}
+                                            </v-badge>
+                                        </td>
                                     </template>
                                     <template v-else>
-                                        <td class="pl-1">{{ item.name }}</td>
-                                        <td class="text-right" >{{ globalHelperFixeDecimalMoney(item.precio_min) }}</td>
+                                        <td v-if="!Boolean(Number(item.is_stock_unitario_variable))" class="pl-1">{{ item.name }}</td>
+                                        <td v-else class="pl-1">{{ item.name + ' ( ' + item.stock_aproximado_unidad + ' aprox )' }}</td>
+                                        <td class="text-right" >
+                                            <v-badge
+                                                :value="Boolean(Number(item.is_stock_unitario_variable))"
+                                                bordered
+                                                color="error"
+                                                
+                                                dot
+                                            >
+                                            {{ globalHelperFixeDecimalMoney(item.precio_min) }}
+                                            </v-badge>
+                                        </td>
                                     </template>
                                 </template>
 

@@ -102,6 +102,8 @@ export default {
                     name: getters.subitem_cache.attributes.name,
                     relacion_compra_stock: getters.subitem_cache.attributes.relacion_compra_stock,
                     is_enable: getters.subitem_cache.attributes.is_enable,
+                    codigo: getters.subitem_cache.attributes.codigo,
+                    rel_precio_codigo: getters.subitem_cache.attributes.rel_precio_codigo,
                 }
     
                 return axios.put(`purchaseproducts/${getters.subitem.id}`, {

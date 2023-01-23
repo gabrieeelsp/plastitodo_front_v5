@@ -147,7 +147,7 @@
 
             
             <template v-if="item.cant_disponible_devolucion != 0">
-                <td v-if="item.is_stock_unitario_variable" class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.cantidad_total)) }}</td>
+                <td v-if="item.is_stock_unitario_variable" class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.relacion_venta_stock, item.cantidad_total)) }}</td>
 
                 <td v-else class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(item.precio, item.cantidad)) }}</td>
             </template>
@@ -255,10 +255,10 @@
                     <td colspan="3"></td>
                 </tr>
             </tbody>
-
+            
         </template>
     </v-simple-table>
-
+    
     
 </div>
     

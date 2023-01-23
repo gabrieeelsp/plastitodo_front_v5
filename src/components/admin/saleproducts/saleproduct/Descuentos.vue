@@ -32,6 +32,7 @@
                             v-on="on"
                             dense
                             hide-details=""
+                            :disabled="user.role == 'VENDEDOR'"
                             ></v-text-field>
                         </template>
                         <v-date-picker
@@ -66,6 +67,7 @@
                             v-on="on"
                             dense
                             hide-details=""
+                            :disabled="user.role == 'VENDEDOR'"
                             ></v-text-field>
                         </template>
                         <v-date-picker
@@ -99,6 +101,7 @@
                         :rules="desc_minRules"
                         :error-messages="errorDesc_minMessages"
                         @keydown="errorDesc_minMessages = ''"
+                        :disabled="user.role == 'VENDEDOR'"
                        
                     ></v-text-field>
                 </v-col>
@@ -130,6 +133,7 @@
                         :rules="desc_mayRules"
                         :error-messages="errorDesc_mayMessages"
                         @keydown="errorDesc_mayMessages = ''"
+                        :disabled="user.role == 'VENDEDOR'"
                        
                     ></v-text-field>
                 </v-col>
@@ -146,11 +150,13 @@
                 <v-spacer></v-spacer>
                 <v-col class="d-flex" cols="8">
                     <v-btn
+                        v-if="user.role != 'VENDEDOR'"
                         :loading="is_saving" 
                         type="submit"
                         color="success"
                     >Guardar</v-btn>
                     <v-btn class="ml-2"
+                        v-if="user.role != 'VENDEDOR'"
                         @click="reset"
                         color="primary"
                     >Reset</v-btn>
@@ -169,8 +175,10 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
     mounted() {
-        this.date_desde = this.item_cache.attributes.fecha_desc_desde.substr(0, 10)
-        this.date_hasta = this.item_cache.attributes.fecha_desc_hasta.substr(0, 10)
+        if ( this.item_cache.attributes.fecha_desc_desde && this.item_cache.attributes.fecha_desc_hasta ) {
+            this.date_desde = this.item_cache.attributes.fecha_desc_desde.substr(0, 10)
+            this.date_hasta = this.item_cache.attributes.fecha_desc_hasta.substr(0, 10)
+        }
     },
     components: {
 
@@ -179,7 +187,8 @@ export default {
         ...mapGetters({
             item_cache: 'saleproducts_manager/item_cache',
             item: 'saleproducts_manager/item',
-            ids_select: 'saleproducts_manager/ids_select'
+            ids_select: 'saleproducts_manager/ids_select',
+            user: 'auth/user',
         }),
         computedDateFormatted_desde () {
             return this.formatDate(this.date_desde)

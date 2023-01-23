@@ -1,6 +1,14 @@
 <template>
     <div>
         <v-row class="">
+            <v-col class="">
+                <v-checkbox
+                    class="mt-0 mb-1"
+                    v-model="list_meta.show_images"
+                    label="Fotos"
+                    hide-details=""
+                ></v-checkbox> 
+            </v-col>
             <v-spacer></v-spacer>
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-select
@@ -30,7 +38,7 @@
             
             <v-col cols="12" sm="1" class="d-flex align-center">
                 <v-btn small
-                    @click="$emit('getItems')"
+                    @click="buscar_q"
                 >Search</v-btn>
                 
             </v-col>
@@ -43,6 +51,9 @@
                     <template v-slot:default>
                     <thead>
                         <tr>
+                            <th v-if="list_meta.show_images" style="width: 110px;" class="pl-1 text-left font-weight-bold text-subtitle-1 grey--text text--darken-3">
+                                Foto
+                            </th>
                             <th 
                                 style="width: 50px;"
                                 class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
@@ -54,6 +65,7 @@
                                 Nombre
                             </th>
                             <th 
+                                v-if="user.role != 'VENDEDOR'"
                                 style="width: 100px;"   
                                 class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                 Costo
@@ -64,6 +76,7 @@
                                 Pre-min
                             </th>
                             <th 
+                                v-if="user.role != 'VENDEDOR'"
                                 style="width: 100px;"   
                                 class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                 Porc-min
@@ -74,6 +87,7 @@
                                 Pre-may
                             </th>
                             <th 
+                                v-if="user.role != 'VENDEDOR'"
                                 style="width: 100px;"   
                                 class="pl-1 text-start font-weight-bold text-subtitle-1 grey--text text--darken-3">
                                 Porc-may
@@ -91,16 +105,62 @@
                         v-for="item in items"
                         :key="item.id"
                         >
+                        <td v-if="list_meta.show_images" >
+                            <v-row class="">
+                                <v-col class="pl-0" >
+                                    
+                                    <Photoswipe
+                                        v-if="item.attributes.image1"  
+                                        :options="{bgOpacity: 0.5}">
+                                        <v-card
+                                            v-pswp="{
+                                                src: item.attributes.image1,
+                                                msrc: item.attributes.image1
+                                            }"
+                                            :style="getImageItemStyle(item.attributes.image1)"
+                                            style="display: inline-block"
+                                        >
+                                        </v-card>
+                                    </Photoswipe>
+
+                                    <v-card v-else class="">
+                                        <v-img                               
+                                            class="white--text align-end mt-1 mb-1"
+                                            height="100px"
+                                            width="100px"
+                                            :src="url_asset + 'images/image_default.jpg'"
+                                            
+                                        >
+                                        </v-img>
+                                        
+                                        </v-card>
+                                </v-col>
+                            </v-row>
+                        </td>
                         <td>{{ item.id }}</td>
                         <td >{{ item.attributes.name }}</td>
-                        <td class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaCosto(item.relationships.stockproduct.attributes.costo, item.attributes.relacion_venta_stock)) }}</td>
+
                         
                         
+                        
+                        <td 
+                            v-if="user.role != 'VENDEDOR'"
+                            class="text-right">
+                            
+                            <span v-if="item.relationships.stockproduct.attributes.is_stock_unitario_variable">{{ globalHelperFixeDecimalMoney(globalHelperCalculaCostoStockUnitario(item.relationships.stockproduct.attributes.costo, item.attributes.relacion_venta_stock, item.relationships.stockproduct.attributes.stock_aproximado_unidad)) }}</span>
+                            <span v-else>{{ globalHelperFixeDecimalMoney(globalHelperCalculaCosto(item.relationships.stockproduct.attributes.costo, item.attributes.relacion_venta_stock)) }}</span>
+                        </td>
+                        
+
                         <td class="text-right">{{ globalHelperFixeDecimalMoney(item.attributes.precio_min) }}</td>
                         
-                        <td class="text-right">{{ globalHelperFixeDecimalPorcentaje(item.attributes.porc_min) }}</td>
+                        <td 
+                            v-if="user.role != 'VENDEDOR'"
+                            class="text-right">{{ globalHelperFixeDecimalPorcentaje(item.attributes.porc_min) }}</td>
                         <td class="text-right">{{ globalHelperFixeDecimalMoney(item.attributes.precio_may) }}</td>
-                        <td class="text-right">{{ globalHelperFixeDecimalPorcentaje(item.attributes.porc_may) }}</td>
+                        <td 
+                            v-if="user.role != 'VENDEDOR'"
+                            class="text-right">{{ globalHelperFixeDecimalPorcentaje(item.attributes.porc_may) }}</td>
                         <td>
                             <v-btn
                                 icon
@@ -109,6 +169,7 @@
                                 <v-icon>mdi-eye</v-icon>
                             </v-btn>
                             <SaleproductEditValues
+                                v-if="user.role != 'VENDEDOR'"
                                 :saleproduct="item"
                             />
                         </td>
@@ -157,9 +218,14 @@ import { mapGetters, mapActions } from 'vuex'
 import SaleproductEditValues from '@/components/admin/saleproducts/list/SaleproductEditValues'
 
 export default {
+    data: () => ({
+
+    }),
 
     computed: {
         ...mapGetters({
+            url_asset: 'url_asset',
+            user: 'auth/user',
             items: 'saleproducts_manager/items',
             filters: 'saleproducts_manager/filters',
             list_meta: 'saleproducts_manager/list_meta',
@@ -196,7 +262,19 @@ export default {
         buscar_q() {
             this.list_meta.page = 1
             this.$emit('getItems')
-        }
+        },
+
+        getImageItemStyle(src) {
+            return {
+                width: "100px",
+                height: "100px",
+                backgroundImage: `url(${src})`,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                
+            };
+        },
         
     }
 }

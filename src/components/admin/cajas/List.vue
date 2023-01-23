@@ -104,7 +104,7 @@
                 </v-simple-table>
             </v-col>
         </v-row>
-        <v-row>
+        <v-row v-show="user.role != 'VENDEDOR'">
             <v-col>
 
             </v-col>
@@ -122,6 +122,7 @@
                         solo
                         dense
                         @input="setLimit"
+                        :disabled="user.role == 'VENDEDOR'"
                     ></v-select>
                 </div>
             </v-col>
@@ -131,7 +132,7 @@
                     :length="list_meta.last_page"
                     :total-visible="5"
                     @input="setPage"
-                    :disabled="list_meta.last_page <2"
+                    :disabled="list_meta.last_page <2 || user.role == 'VENDEDOR'"
                     prev-icon="mdi-menu-left"
                     next-icon="mdi-menu-right"
                 ></v-pagination>
@@ -143,7 +144,6 @@
             v-if="caja_showed && show_caja_modal" 
             @close="close_caja_modal"
         />
-
     </div>
 </template>
 
@@ -175,6 +175,8 @@ export default {
             list_meta: 'cajas_manager/list_meta',
             sucursals_select: 'sucursals_manager/sucursals_select',
             colors_is_open: 'cajas_manager/colors_is_open',
+
+            user: 'auth/user',
         })
     },
     methods: {
@@ -209,8 +211,7 @@ export default {
                 this.filters.user_id = user.id
             }else {
                 this.filters.user_id = null
-            }
-            
+            }            
         },
 
     }

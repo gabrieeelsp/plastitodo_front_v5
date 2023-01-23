@@ -302,8 +302,8 @@ export default {
             doc.text(this.$luxon(this.order.created_at, { output: "dd-MM-yyyy" }), 202, client_h + 5, { align: 'right', })
 
             doc.text('Entrega:  ', 130, client_h + 10, { align: 'left', })
-            
-            if ( this.order.is_delivery ) {
+
+            if ( !this.order.is_delivery ) {
                 doc.text( 'Retiro', 171, client_h + 10, { align: 'right', })
             }else {
                 if ( this.order.fecha_entrega_acordada ) {
@@ -312,6 +312,8 @@ export default {
                         //doc.text('Horario:  ', 130, client_h + 15, { align: 'left', })
                         doc.text(this.deliveryshift_by_id(this.order.deliveryshift_id).attributes.description, 202, client_h + 10, { align: 'right', })
                     }
+                }else {
+                    doc.text('Envio', 171, client_h + 10, { align: 'right', })
                 }
             }
             

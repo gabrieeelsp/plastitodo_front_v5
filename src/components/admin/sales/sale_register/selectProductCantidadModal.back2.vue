@@ -3,12 +3,12 @@
 
     <v-dialog
       v-model="intDialogVisible"
-      max-width="700"
+      max-width="900"
     >
-      <v-card>
+      <v-card v-if="item.tipo != 'saleproduct' || saleproduct">
         <v-card-title class="text-h5">
-            <span class="">{{ item.name }}</span>
-          
+            <span v-if="item.tipo == 'saleproduct'" class="">{{ saleproduct.attributes.name }}</span>
+            <span v-else class="">{{ item.name }}</span>
         </v-card-title>
         <v-form @submit.prevent="accept" ref="form" v-model="valid" >
         <v-card-text>
@@ -19,7 +19,7 @@
                 <v-col cols="12" sm="6">
                     <v-row class="">
                         <v-col class="pt-0">
-                            <v-card class="">
+                            <v-card class="pa-0">
                                 <v-img
                                     v-if="item.image1"                                    
                                     class="white--text align-end"
@@ -95,6 +95,15 @@
                                 </v-btn>
                             </v-col>
                         </v-row>
+
+                        <v-row v-if="saleproduct">
+                            <v-col>
+                                <div class="d-flex justify-space-between" v-for="saleproduct_sibling in saleproduct.relationships.stockproduct.relationships.saleproducts.filter((i) => { return i.id != saleproduct.id })" :key="saleproduct_sibling.id">
+                                    <span>{{ saleproduct_sibling.attributes.name }}</span>
+                                    <span>{{ precio_sibling(saleproduct_sibling) }}</span>
+                                </div>
+                            </v-col>
+                        </v-row>
                     
                 </v-col>
 
@@ -127,6 +136,8 @@ import axios from 'axios'
             v => ( v && v >= 0 ) || "Cantidad should be above 0",
         ],
         errorCantidadMessages: '',
+
+        saleproduct: null,
       }
     },
     props: {
@@ -136,34 +147,33 @@ import axios from 'axios'
     },
     computed: {
         ...mapGetters({
-            presupuestoActive: 'presupuestos_manager/presupuestoActive',
+            saleActive: 'sale_manager/saleActive',
             url_asset: 'url_asset',
         }),
         precio: function (){
             if ( this.item.tipo == 'saleproduct') {
                 if ( this.is_promo ) {
-                    if ( this.presupuestoActive.client != null && this.presupuestoActive.client.tipo == 'MAYORISTA' ) {
-                        return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(this.item.precio_may, this.item.desc_may))
+                    if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
+                        return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(this.saleproduct.attributes.precio_may, this.saleproduct.attributes.desc_may))
                     }
-                    return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(this.item.precio_min, this.item.desc_min))    
-                    }
-                if ( this.presupuestoActive.client != null && this.presupuestoActive.client.tipo == 'MAYORISTA' ) {
-                    return this.globalHelperFixeDecimalMoney(this.item.precio_may)
+                    return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(this.saleproduct.attributes.precio_min, this.saleproduct.attributes.desc_min))    
                 }
-                return this.globalHelperFixeDecimalMoney(this.item.precio_min)
+                if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
+                    return this.globalHelperFixeDecimalMoney(this.saleproduct.attributes.precio_may)
+                }
+                return this.globalHelperFixeDecimalMoney(this.saleproduct.attributes.precio_min)
             }
             if ( this.item.tipo == 'combo') {
-                if ( this.presupuestoActive.client != null && this.presupuestoActive.client.tipo == 'MAYORISTA' ) {
+                if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
                     return this.globalHelperFixeDecimalMoney(this.item.precio_may)
                 }
                 return this.globalHelperFixeDecimalMoney(this.item.precio_min)
             }   
-            return 0
-            
+            return 0            
 
         },
         is_promo: function () {
-            if ( this.item.fecha_desc_desde && (new Date(this.item.fecha_desc_desde).getTime() <= new Date().getTime()) && (new Date(this.item.fecha_desc_hasta).getTime() >= new Date().getTime()) ) {
+            if ( this.saleproduct.attributes.fecha_desc_desde && (new Date(this.saleproduct.attributes.fecha_desc_desde).getTime() <= new Date().getTime()) && (new Date(this.saleproduct.attributes.fecha_desc_hasta).getTime() >= new Date().getTime()) ) {
                 return true;
             }
             return false;
@@ -195,32 +205,32 @@ import axios from 'axios'
             if ( this.valid ) {
                 if ( this.item.tipo == 'saleproduct' ) {
                     
-                    let name = this.item.name
+                    let name = this.saleproduct.attributes.name
                     if ( this.is_promo ) {
-                        if ( this.presupuestoActive.client != null && this.presupuestoActive.client.tipo == 'MAYORISTA' ) {
-                            name = name + ' [Promo - ' + Number(this.item.desc_may).toFixed(0) + ' %]'
+                        if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
+                            name = name + ' [Promo - ' + Number(this.saleproduct.attributes.desc_may).toFixed(0) + ' %]'
                         }else {
-                            name = name + ' [Promo - ' + Number(this.item.desc_min).toFixed(0) + ' %]'
+                            name = name + ' [Promo - ' + Number(this.saleproduct.attributes.desc_min).toFixed(0) + ' %]'
                         }
                         
                     }
 
                     this.$emit('addItem', {
-                        saleProductId: this.item.id,
+                        saleProductId: this.saleproduct.id,
                         name: name,
                         precio: this.precio,
                         stock: 0, //this.stock,
                         cantidad: this.cantidad,
-                        image1: this.item.image1 ? this.url_asset + this.item.image1 : null,
-                        image2: this.item.image2 ? this.url_asset + this.item.image2 : null,
-                        image3: this.item.image3 ? this.url_asset + this.item.image3 : null,
+                        image1: this.saleproduct.attributes.image1 ? this.url_asset + this.saleproduct.attributes.image1 : null,
+                        image2: this.saleproduct.attributes.image2 ? this.url_asset + this.saleproduct.attributes.image2 : null,
+                        image3: this.saleproduct.attributes.image3 ? this.url_asset + this.saleproduct.attributes.image3 : null,
                         is_editing_cantidad: false,
                         is_editing_precio: false,
-                        is_stock_unitario_variable: Math.ceil(this.item.is_stock_unitario_variable, 0),
-                        stock_aproximado_unidad: this.item.stock_aproximado_unidad,
+                        is_stock_unitario_variable: Math.ceil(this.saleproduct.relationships.stockproduct.attributes.is_stock_unitario_variable, 0),
+                        stock_aproximado_unidad: this.saleproduct.relationships.stockproduct.attributes.stock_aproximado_unidad,
                         cantidad_total: null,
                         is_editing_cantidad_total: false,
-                        relacion_venta_stock: this.item.relacion_venta_stock
+                        relacion_venta_stock: this.saleproduct.attributes.relacion_venta_stock
 
                     })
                 }
@@ -249,6 +259,7 @@ import axios from 'axios'
                                             //image2: this.url_asset + this.item.image2,
                                             //image3: this.url_asset + this.item.image3,
                                             is_editing_cantidad: false,
+                                            barcode: saleproduct.attributes.barcode
                                         }
                                         saleproducts.push(var_sale)
                                         
@@ -261,6 +272,8 @@ import axios from 'axios'
                                     saleproducts: saleproducts,
                                     cantidad_combos: this.cantidad,
                                     is_editing_cantidades: false,
+                                    name_filter: '',
+                                    barcode_filter: '',
                                     is_complete () {
                                         let cant = 0
                                         for ( let saleproduct of this.saleproducts ) {
@@ -304,9 +317,40 @@ import axios from 'axios'
             }
             
         },
-        onload() {
+        async onload() {
+            this.saleproduct = null
+            if ( this.item.tipo == 'saleproduct' ) {
+                await axios.get('s/' + this.item.id + '/g')
+                    .then((resp) => {
+                        this.saleproduct = resp.data.data
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            }
+
             setTimeout(() => this.$refs.input_cantidad.$refs.input.focus(), 100); 
             
+        },
+
+        is_promo_sibling ( item ) {
+            if ( item.attributes.fecha_desc_desde && (new Date(item.attributes.fecha_desc_desde).getTime() <= new Date().getTime()) && (new Date(item.attributes.fecha_desc_hasta).getTime() >= new Date().getTime()) ) {
+                return true;
+            }
+            return false;
+        },
+        precio_sibling ( item ){
+            if ( this.is_promo_sibling ( item ) ) {
+                if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
+                    return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(item.attributes.precio_may, item.attributes.desc_may))
+                }
+                return this.globalHelperFixeDecimalMoney(this.globalHelerAplicaDescuento(item.attributes.precio_min, item.attributes.desc_min))    
+                }
+            if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
+                return this.globalHelperFixeDecimalMoney(item.attributes.precio_may)
+            }
+            return this.globalHelperFixeDecimalMoney(item.attributes.precio_min)             
+
         },
     }
   }

@@ -19,18 +19,18 @@
                 <v-col cols="12" sm="6">
                     <v-row class="">
                         <v-col class="pt-0">
-                            <v-card class="">
+                            <v-card class="pa-0">
                                 <v-img
                                     v-if="item.image1"                                    
                                     class="white--text align-end"
-                                    height="200px"
+                                    
                                     :src="url_asset + item.image1"
                                 >
                                 </v-img>
                                 <v-img
                                     v-else                                    
                                     class="white--text align-end"
-                                    height="200px"
+                                    
                                     :src="url_asset + 'images/image_default.jpg'"
                                 >
                                 </v-img>
@@ -196,6 +196,11 @@ import axios from 'axios'
                 if ( this.item.tipo == 'saleproduct' ) {
                     
                     let name = this.item.name
+
+                    if ( this.item.is_stock_unitario_variable ) {
+                        name = name + ' ( ' + this.item.stock_aproximado_unidad + ' aprox ) '
+                    }
+                    
                     if ( this.is_promo ) {
                         if ( this.saleActive.client != null && this.saleActive.client.tipo == 'MAYORISTA' ) {
                             name = name + ' [Promo - ' + Number(this.item.desc_may).toFixed(0) + ' %]'
@@ -249,6 +254,7 @@ import axios from 'axios'
                                             //image2: this.url_asset + this.item.image2,
                                             //image3: this.url_asset + this.item.image3,
                                             is_editing_cantidad: false,
+                                            barcode: saleproduct.attributes.barcode
                                         }
                                         saleproducts.push(var_sale)
                                         
@@ -261,6 +267,8 @@ import axios from 'axios'
                                     saleproducts: saleproducts,
                                     cantidad_combos: this.cantidad,
                                     is_editing_cantidades: false,
+                                    name_filter: '',
+                                    barcode_filter: '',
                                     is_complete () {
                                         let cant = 0
                                         for ( let saleproduct of this.saleproducts ) {

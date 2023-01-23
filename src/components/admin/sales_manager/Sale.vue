@@ -117,7 +117,7 @@
             :devolution="devolutionShowed"  
         />
         
-        {{ sale.relationships.creditnotes }}
+        
     
     </div>
 </template>

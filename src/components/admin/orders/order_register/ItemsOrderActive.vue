@@ -9,8 +9,7 @@
                     hide-details=""
                 ></v-checkbox> 
             </v-col>
-            <v-spacer></v-spacer>
-            
+            <v-spacer></v-spacer>           
             
             
         </v-row>
@@ -177,7 +176,7 @@
 
             
 
-            <td v-if="item.is_stock_unitario_variable" class="text-right"><v-badge content="Aprox" :value="Number(item.cantidad_total) == 0" color="red" dot> <span>{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.cantidad_total)) }}</span></v-badge></td>
+            <td v-if="item.is_stock_unitario_variable" class="text-right"><v-badge content="Aprox" :value="Number(item.cantidad_total) == 0" color="red" dot> <span>{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.relacion_venta_stock, item.cantidad_total)) }}</span></v-badge></td>
 
             <td v-else class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(item.precio, item.cantidad)) }}</td>
             <td class="pl-1 pr-1">

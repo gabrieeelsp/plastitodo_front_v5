@@ -46,12 +46,12 @@
                     <v-card-text>                       
                         <v-row class="mt-1">
                             <v-col sm="6">
-                                <v-row v-for="valor in valors_list.filter((i) => { return i.valor.attributes.name.startsWith('B')})" :key="'B'+valor.valor.id">
+                                <v-row v-for="valor in valors_list.filter((i) => { return i.valor.attributes.name.startsWith('B')}).sort((a, b) => b.valor.attributes.valor - a.valor.attributes.valor)" :key="'B'+valor.valor.id">
                                     <v-spacer></v-spacer>
-                                    <v-col sm="4" class="d-flex align-center justify-start">
+                                    <v-col sm="5" class="d-flex align-center justify-start">
                                         <span>{{ valor.valor.attributes.name }}</span>
                                     </v-col>
-                                    <v-col sm="2" class="pt-0 ">
+                                    <v-col sm="3" class="pt-0 ">
                                         <v-text-field                                                    
                                             class="right-text-input"                                               
                                             type="number"
@@ -65,12 +65,12 @@
                                 </v-row>
                             </v-col>
                             <v-col sm="6">
-                                <v-row v-for="valor in valors_list.filter((i) => { return i.valor.attributes.name.startsWith('M')})" :key="'M'+valor.valor.id">
+                                <v-row v-for="valor in valors_list.filter((i) => { return i.valor.attributes.name.startsWith('M')}).sort((a, b) => b.valor.attributes.valor - a.valor.attributes.valor)" :key="'M'+valor.valor.id">
                                     
                                     <v-col sm="4" class="d-flex align-center justify-start">
                                         <span>{{ valor.valor.attributes.name }}</span>
                                     </v-col>
-                                    <v-col sm="2" class="pt-0 ">
+                                    <v-col sm="3" class="pt-0 ">
                                         <v-text-field    
                                             class="right-text-input"                                               
                                             type="number"                                           
@@ -88,6 +88,7 @@
                 </v-card>
                 
             </v-col>
+
         </v-row>    
     </div>
 </template>

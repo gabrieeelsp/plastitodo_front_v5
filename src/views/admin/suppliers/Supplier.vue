@@ -11,6 +11,7 @@
                         <v-tabs>
                             <v-tab @click="tab_showed = 'resumen'">Resumen</v-tab>
                             <v-tab @click="tab_showed = 'purchaseproducts'">Productos Compra</v-tab>
+                            <v-tab @click="tab_showed = 'lista_precios'">Actualizar Lista</v-tab>
                         </v-tabs>
                         </div>
                     </v-card-title>
@@ -24,6 +25,10 @@
                             v-if="tab_showed == 'purchaseproducts'"
                             @volver="volver"
                             @reload_item="buscar"
+                        />
+                        <ListaPrecios
+                            v-if="tab_showed == 'lista_precios'"
+                            @volver="volver"
                         />
 
                     </v-card-text>
@@ -39,6 +44,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import Resumen from '@/components/admin/suppliers/supplier/Resumen'
 import Purchaseproducts from '@/components/admin/suppliers/supplier/Purchaseproducts'
+import ListaPrecios from '@/components/admin/suppliers/supplier/ListaPrecios'
 
 export default {
     created() {
@@ -59,7 +65,8 @@ export default {
     },
     components: {
         Resumen,
-        Purchaseproducts
+        Purchaseproducts,
+        ListaPrecios,
     },
     computed: {
         ...mapGetters({

@@ -97,7 +97,7 @@ export default {
 
         valorRules: [
             v => ( v && v > 0 ) || "Valor should be above 0",
-            v => ( v && v <= this.saldoTotalSale ) || "Valor should be above Total Venta",
+            //v => ( v && v <= this.saldoTotalSale ) || "Valor should be above Total Venta",
         ],
         errorValorMessages: '',
       }

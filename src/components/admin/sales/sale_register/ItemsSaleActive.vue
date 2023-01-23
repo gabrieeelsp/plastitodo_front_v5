@@ -159,7 +159,7 @@
 
             
 
-            <td v-if="item.is_stock_unitario_variable" class="text-right"><v-badge content="Aprox" :value="Number(item.cantidad_total) == 0" color="red" dot><span>{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.cantidad_total)) }}</span></v-badge></td>
+            <td v-if="item.is_stock_unitario_variable" class="text-right"><v-badge content="Aprox" :value="Number(item.cantidad_total) == 0" color="red" dot><span>{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotalStockUnitario(item.precio, item.cantidad, item.stock_aproximado_unidad, item.relacion_venta_stock, item.cantidad_total)) }}</span></v-badge></td>
 
             <td v-else class="text-right">{{ globalHelperFixeDecimalMoney(globalHelperCalculaSubTotal(item.precio, item.cantidad)) }}</td>
             <td class="pl-1 pr-1">
@@ -235,12 +235,15 @@
                         <td v-if="show_images" 
                             style="width: 110px;" 
                         ></td>
-                        <td><span class="ml-3" :class="item.is_complete() ? '' : 'red--text'"> {{ item.name }} [ {{ globalHelperFixeDecimalCantidad(item.cantidad * item.cantidad_combos) }} ]</span></td>
+                        <td class="d-flex justify-space-between align-center">
+                            <span class="ml-3" :class="item.is_complete() ? '' : 'red--text'"> {{ item.name }} [ {{ globalHelperFixeDecimalCantidad(item.cantidad * item.cantidad_combos) }} ]</span>
+                        </td>
                         <td style="width: 100px;"></td>
                         
                         <td style="width: 100px;"
                             class="text-right"
-                            ></td>
+                            >
+                            </td>
                         <td style="width: 100px;"></td>
                         <td style="width: 90px;" class="">
                             <v-btn small icon color="green" :disabled="saleActive.is_saved"
@@ -248,22 +251,42 @@
                             >
                                 <v-icon>mdi-swap-vertical</v-icon>
                             </v-btn>
-                        </td>
-                        
+                        </td>                        
                     </tr>
+                    <tr class="font-weight-medium" v-if="item.saleproducts.length > 3" >
+                        <td v-if="show_images" 
+                            style="width: 110px;" 
+                        ></td>
+                        <td class="d-flex justify-end align-center">
+                            <v-text-field dense v-model="item.barcode_filter" hide-details="" class="shrink mr-2" placeholder="Barcode..." @keypress="item.name_filter = ''" @keypress.enter="buscar_by_barcode ( item )" ></v-text-field>
+                            <v-text-field dense v-model="item.name_filter" hide-details="" class="shrink" placeholder="Nombre..." @keypress="item.barcode_filter = ''" @keypress.enter="buscar_by_name ( item )"></v-text-field>
+                        </td>
+                        <td style="width: 100px;"></td>
+                        
+                        <td style="width: 100px;"
+                            class="text-right"
+                            >
+                            </td>
+                        <td style="width: 100px;"></td>
+                        <td style="width: 90px;" class="">
+
+                        </td>                        
+                    </tr>
+                    
                 </tbody>
                 </template>
             </v-simple-table>
 
                     
 
-            <v-simple-table dense v-for="saleproduct in item.saleproducts" :key="saleproduct.id">
+            <v-simple-table dense v-for="saleproduct in item.saleproducts.filter((i) => { if ( item.barcode_filter != '' ) { return i.barcode && i.barcode.includes(item.barcode_filter) } return i.name.toLowerCase().includes(item.name_filter.toLowerCase() )  })" :key="saleproduct.id">
                 <template v-slot:default>
                 <tbody>
 
-                    <tr v-if="saleproduct.cantidad != 0" >
+                    <tr v-if="saleproduct.cantidad != 0" class="green--text" >
                         <td v-if="show_images" 
                             style="width: 110px;" 
+
                         >
                             <v-row class="">
                                 <v-col class="pl-0" >
@@ -296,7 +319,8 @@
                                 </v-col>
                             </v-row>
                         </td>
-                        <td><span class="ml-6">* {{ saleproduct.name }}</span></td>
+                        <td v-if="!saleproduct.barcode" class="d-flex align-center"><span class="ml-6">* {{ saleproduct.name }}</span><v-btn class="ml-2" color="red" x-small icon @click="saleproduct.cantidad = 0"><v-icon>mdi-delete</v-icon></v-btn></td>
+                        <td v-else  class="d-flex align-center"><span class="ml-6">* {{ saleproduct.name + '[ ' + saleproduct.barcode + ' ]' }}</span><v-btn class="ml-2" color="red" x-small icon @click="saleproduct.cantidad = 0"><v-icon>mdi-delete</v-icon></v-btn></td>
                         <td style="width: 100px;"></td>
                         <td v-if="saleproduct.is_editing_cantidad  && !saleActive.is_saved" style="width: 100px;">
                             <InputEditValue 
@@ -321,7 +345,7 @@
             </v-simple-table>
             <v-expand-transition>
             <div v-if="item.is_editing_cantidades  && !saleActive.is_saved">
-                <v-simple-table dense v-for="saleproduct in item.saleproducts" :key="saleproduct.id">
+                <v-simple-table dense v-for="saleproduct in item.saleproducts.filter((i) => { if ( item.barcode_filter != '' ) { return i.barcode && i.barcode.includes(item.barcode_filter) } return i.name.toLowerCase().includes(item.name_filter.toLowerCase() )  })" :key="saleproduct.id">
                     <template v-slot:default>
                     <tbody>
 
@@ -360,7 +384,9 @@
                                         </v-col>
                                     </v-row>
                                 </td>
-                            <td><span class="ml-6">* {{ saleproduct.name }}</span></td>
+                            
+                            <td v-if="!saleproduct.barcode"><span class="ml-6">* {{ saleproduct.name }}</span></td>
+                            <td v-else><span class="ml-6">* {{ saleproduct.name + ' [ ' + saleproduct.barcode + ' ]' }}</span></td>
                             <td style="width: 100px;"></td>
                             <td v-if="saleproduct.is_editing_cantidad" style="width: 100px;">
                                 <InputEditValue 
@@ -503,6 +529,26 @@ export default {
                 backgroundRepeat: "no-repeat",
                 
             };
+        },
+
+
+        buscar_by_barcode ( comboitem ) {
+            for ( let saleproduct of comboitem.saleproducts ) {
+                if ( saleproduct.barcode && saleproduct.barcode == comboitem.barcode_filter ) {
+                    saleproduct.cantidad = saleproduct.cantidad + 1
+                    comboitem.barcode_filter = ''
+                    return
+                }
+            }
+        },
+
+        buscar_by_name ( comboitem ) {
+            let saleproducts = comboitem.saleproducts.filter((i) => { return i.name.toLowerCase().includes(comboitem.name_filter.toLowerCase()) })
+            if ( saleproducts.length == 1 ) {
+                saleproducts[0].cantidad = saleproducts[0].cantidad + 1
+                comboitem.name_filter = ''
+                return
+            }
         },
 
     },

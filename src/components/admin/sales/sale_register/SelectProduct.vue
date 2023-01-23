@@ -71,7 +71,7 @@ export default {
             add_item: 'sale_manager/add_item',
             add_combo_item: 'sale_manager/add_combo_item',
         }),
-        selectProductModalSET (item) {
+        selectProductModalSET (item) { 
             this.itemSelected = item
             this.selectProductCantidadModalVisible = true
         },

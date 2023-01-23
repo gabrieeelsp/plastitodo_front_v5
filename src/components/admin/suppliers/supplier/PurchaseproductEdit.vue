@@ -84,6 +84,33 @@
                         ></v-checkbox>
                 </v-col>
             </v-row>
+
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Código</span>
+                </v-col>
+                <v-col cols="12" sm="2"  class=" pt-0 pb-0">
+                    <v-text-field 
+                        dense
+                        v-model="subitem_cache.attributes.codigo"                    
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+
+            <v-row>
+                <v-col cols="12" sm="4"  class="pt-2 pb-0 d-flex justify-sm-end">
+                    <span class="font-weight-bold black--text">Rel/Precio_Codigo</span>
+                </v-col>
+                <v-col cols="12" sm="2"  class=" pt-0 pb-0 d-flex">
+                    <v-text-field 
+                        reverse
+                        dense
+                        v-model="subitem_cache.attributes.rel_precio_codigo"
+                       
+                    ></v-text-field>
+                </v-col>
+
+            </v-row>
                 
             
         </v-card-text>
@@ -161,6 +188,8 @@ export default {
                         this.subitem.attributes.relacion_compra_stock = resp.data.data.attributes.relacion_compra_stock
                         this.subitem.attributes.name = this.subitem_cache.attributes.name
                         this.subitem.attributes.is_enable = this.subitem_cache.attributes.is_enable
+                        this.subitem.attributes.codigo = this.subitem_cache.attributes.codigo
+                        this.subitem.attributes.rel_precio_codigo = this.subitem_cache.attributes.rel_precio_codigo
 
                         this.dialog = false
                         

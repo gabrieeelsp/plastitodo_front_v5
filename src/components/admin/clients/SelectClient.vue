@@ -24,10 +24,12 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
   export default {
     mounted() {
-      if(this.client){
-        this.items = [this.client]
-        this.select = this.items[0]
-      }
+        if(this.client){
+            this.items = [this.client]
+            this.select = this.items[0]
+        }else {
+            this.select = null
+        }
     },
 
     data () {
@@ -57,9 +59,16 @@ import { mapGetters } from 'vuex'
             if(val.length > 0) {
                 val && val !== this.select && this.querySelections(val)
             }  
-          }
-                  
-      },
+          }                  
+        },
+        client() {
+            if(this.client){
+                this.items = [this.client]
+                this.select = this.items[0]
+            }else {
+                this.select = null
+            }
+        }
     },
     methods: {
         async querySelections (v) {

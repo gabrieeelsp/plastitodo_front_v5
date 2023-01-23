@@ -19,7 +19,8 @@ export default {
             let total = 0
             for ( let item of state.presupuestoActive.items) {
                 if( item.is_stock_unitario_variable ) {
-                    total = total + (item.precio * item.cantidad * Number(item.stock_aproximado_unidad))
+                    total = total + (item.precio * item.cantidad )
+                    //total = total + (item.precio * item.cantidad * Number(item.stock_aproximado_unidad))
                 }else {
                     total = total + (item.precio * item.cantidad)
                 }                
@@ -32,7 +33,14 @@ export default {
             return total.toFixed(10)
         },
 
-        
+        is_presupuestoActive_complete_total ( state ) {
+            for ( let item of state.presupuestoActive.items ) {
+                if ( item.is_stock_unitario_variable ) {
+                    return false
+                }
+            }
+            return true
+        },
 
     },
     mutations: {

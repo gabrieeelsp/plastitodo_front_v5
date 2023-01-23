@@ -123,7 +123,7 @@ export default {
 
                     comments: getters.subitem_cache.attributes.comments,
                 }
-    
+                console.log(getters.subitem_ids_select.saleproductgroup_id)
                 return axios.put(`saleproducts/${getters.subitem.id}`, {
                     data: {
                         id: getters.subitem.id,

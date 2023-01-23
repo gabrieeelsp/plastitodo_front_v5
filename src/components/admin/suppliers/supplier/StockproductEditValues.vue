@@ -21,10 +21,10 @@
         </v-btn>
       </template>
         <v-form @submit.prevent="submit" ref="form" v-model="valid" >
-      <v-card v-if="item_cache">
+      <v-card v-if="stockproduct">
         
         <v-card-title class="text-h6 grey lighten-2" >
-          <span>{{ item_cache.attributes.name }}</span>
+          <span>{{ stockproduct.name }}</span>
         </v-card-title>
 
         <v-card-text class="pt-3">
@@ -38,7 +38,7 @@
                             ref="costoTextField"
                             reverse
                             dense
-                            v-model="item_cache.attributes.costo"
+                            v-model="costo"
                             :rules="costoRules"
                             :error-messages="errorCostoMessages"
                             @keydown="errorCostoMessages = ''"
@@ -47,21 +47,22 @@
                     </v-col>
 
                 </v-row>
-                <v-row v-if="item_cache.relationships.stockproductgroup">
+
+                <v-row v-if="stockproductgroup">
                     <v-col cols="12" sm="5"  class="pt-2 pb-0 d-flex justify-sm-end">
                         <span class="font-weight-bold black--text">Grupo</span>
                     </v-col>
                     <v-col cols="12" sm="6"  class=" pt-0 pb-0 d-flex">
                         <v-text-field 
                             dense
-                            :value="item_cache.relationships.stockproductgroup.attributes.name"
+                            :value="stockproductgroup.name"
                             disabled
                         ></v-text-field>
                     </v-col>
 
 
                 </v-row> 
-                <v-row v-if="item_cache.relationships.stockproductgroup">
+                <v-row v-if="stockproductgroup">
                     <v-col cols="12" sm="5"  class="pt-0 pb-0 d-flex justify-sm-end">
                         
                     </v-col>
@@ -75,6 +76,7 @@
                             ></v-checkbox>
                     </v-col>
                 </v-row>
+                
             
         </v-card-text>
 
@@ -98,9 +100,10 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import axios from 'axios'
 export default {
     created () {
-    
+        
     },
 
     props: {
@@ -114,8 +117,11 @@ export default {
             is_updategroup: true,
             is_saving: false,
 
+            stockproductgroup: null,
+            costo: 1,
+
             costoRules: [
-                v => ( v && v.length > 0 ) || "Valor requerido",
+                //v => ( v && v.length > 0 ) || "Valor requerido",
                 v => ( v && Number(v) > 0 ) || "El valor debe ser mayor a 0",
             ],
             errorCostoMessages: '',  
@@ -123,15 +129,12 @@ export default {
     },
     computed: {
         ...mapGetters({
-            item_cache: 'stockproducts_manager/item_cache',
-            item: 'stockproducts_manager/item',
+
         }),
     },
     methods: {
         ...mapActions({
-            set_item: 'stockproducts_manager/set_item',
-            update_item_values: 'stockproducts_manager/update_item_values',
-            update_costo_items_group: 'stockproducts_manager/update_costo_items_group',
+
         }),
         validate () {
             this.$refs.form.validate()
@@ -141,47 +144,72 @@ export default {
             this.validate()
             if ( this.valid ) {
                 this.is_saving = true
-                if ( !this.item_cache.relationships.stockproductgroup ) {
+
+                let attributes = {
+                    costo: this.costo,
+                }
+
+                if ( !this.stockproductgroup ) {
                     this.is_updategroup = false
                 }
-                await this.update_item_values(this.is_updategroup)
-                    .then((resp) => {
-                        this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
-
-                        if ( this.is_updategroup && this.item_cache.relationships.stockproductgroup ) {
-                          this.update_costo_items_group({
-                            id: resp.data.data[0].relationships.stockproductgroup.id,
+            
+                await axios.put(`stockproducts/${this.stockproduct.stockproduct_id}/update_values`, {
+                    data: {
+                        id: this.stockproduct.stockproduct_id,
+                        update_group: this.is_updategroup,
+                        type: 'stockproducts',
+                        attributes: attributes,
+                    }
+                })
+                .then((resp) => {
+                    this.$toast.success('Los cambios se han guardado correctamente', { timeout: 3000 });
+                    if ( this.is_updategroup ) {
+                        this.$emit('update_items_group', {
                             costo: resp.data.data[0].attributes.costo,
-                            time_set_costo: resp.data.data[0].attributes.time_set_costo,
-                          })
-                        }else {
-                            this.item.attributes.costo = resp.data.data.attributes.costo
-                            this.item.attributes.time_set_costo = resp.data.data.attributes.time_set_costo
-                            this.item_cache.attributes.time_set_costo = resp.data.data.attributes.time_set_costo
-                        }
-                        
-                    })
-                    .catch((error) => {
-                        this.$toast.error('Se ha producido un error.', { timeout: 3000 });
-                        console.log(error)
-                    })
-                    .finally(() => {
-                        this.is_saving = false
-                        this.dialog = false
-                    })
+                            stockproductgroup_id: this.is_updategroup ? this.stockproductgroup.id : null
+                        })
+                    }else {
+                        this.$emit('update_item', {
+                            stockproduct_id: resp.data.data.id,
+                            costo: resp.data.data.attributes.costo,
+                            stockproductgroup_id: this.is_updategroup ? this.stockproductgroup.id : null
+                        })
+                    }
+                    
+                    
+                })
+                .catch((error) => {
+                    this.$toast.error('Se ha producido un error.', { timeout: 3000 });
+                    console.log(error)
+                })
+                .finally(() => {
+                    this.is_saving = false
+                    this.dialog = false
+                })
             }   
         },
 
         onload () {
-            this.set_item(this.stockproduct)
             setTimeout(() => {
                 this.setFocusName()
             }, 200)
+            this.costo = this.stockproduct.precio_actual
+
+            if ( this.stockproduct.stockproductgroup ) {
+                this.stockproductgroup = {
+                    id: this.stockproduct.stockproductgroup.id,
+                    name: this.stockproduct.stockproductgroup.name,
+                }
+            }
+
+            
             
         },
         setFocusName() {
             this.$refs.costoTextField.focus();
         },
+
+
        
     }
 

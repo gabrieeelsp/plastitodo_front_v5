@@ -23,9 +23,11 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
   export default {
     mounted() {
-      if(this.user){
+      if(this.user){ console.log(this.user)
         this.items = [this.user]
         this.select = this.items[0]
+      }else {
+        console.log('no')
       }
     },
 

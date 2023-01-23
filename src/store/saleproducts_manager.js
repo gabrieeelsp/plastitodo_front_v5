@@ -22,6 +22,8 @@ export default {
             page: 1,
             limit: 10,
             last_page: 1,
+
+            show_images: false,
         },
     },
     getters: {

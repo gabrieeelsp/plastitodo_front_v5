@@ -33,12 +33,12 @@
                         <SaleUser />
                     </v-col>
                 </v-row>
-                <v-row v-if="caja">
+                <v-row>
                     <v-col>
                         <SalePayments />
                     </v-col>
                 </v-row>
-                <v-row v-if="caja">
+                <v-row>
                     <v-col>
                         <SaleRefunds />
                     </v-col>
@@ -46,6 +46,7 @@
                 
             </v-col>
         </v-row>
+        
   </div>
 </template>
 

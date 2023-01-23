@@ -101,6 +101,11 @@
                                         <v-btn :loading="is_event_cancelar_entregado" small block @click="set_state_item('CANCELAR ENTREGADO')">Cancelar Entrega</v-btn>
                                     </v-col>
                                 </template>
+                                <template v-if="order.attributes.state == 'FACTURADO'">
+                                    <v-col>
+                                        <v-btn color="error" small block @click="set_state_item('CANCELAR')">Cancelar PEDIDO</v-btn>
+                                    </v-col>
+                                </template>
                             </v-row>
                             
                             
@@ -260,7 +265,7 @@ import OrderPDF from '@/components/admin/orders2/list/pdf/OrderPDF.vue'
             if ( this.order.attributes.fecha_entrega_acordada ) {
                 fecha_entrega_acordada = this.order.attributes.fecha_entrega_acordada.substring(8, 10) + '-' + this.order.attributes.fecha_entrega_acordada.substring(5, 7) + '-' + this.order.attributes.fecha_entrega_acordada.substring(0, 4)
             }
-
+            
             await this.save_item({
                 id: this.order.id, 
                 evento: evento,

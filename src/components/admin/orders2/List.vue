@@ -43,7 +43,7 @@
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-select
                     dense
-                    :items="['EDITANDO', 'FINALIZADO', 'CONFIRMADO', 'EN PREPARACION', 'PREPARADO', 'FACTURADO', 'EN DISTRIBUCION', 'ENTREGADO']"
+                    :items="['EDITANDO', 'FINALIZADO', 'CONFIRMADO', 'EN PREPARACION', 'PREPARADO', 'FACTURADO', 'EN DISTRIBUCION', 'ENTREGADO', 'CANCELADO']"
                     v-model="filters.state"
                     :menu-props="{ offsetY: true }"
                     hide-details=""

@@ -30,14 +30,14 @@
                 dense
                     v-model="filters.q"
                     label="Nombre"    
-                    @keyup.enter="$emit('getItems')"    
+                    @keyup.enter="getItems"    
                     hide-details=""                            
                 ></v-text-field>
             </v-col>
             
             <v-col cols="12" sm="1" class="d-flex align-center">
                 <v-btn small
-                    @click="$emit('getItems')"
+                    @click="getItems"
                 >Search</v-btn>
                 
             </v-col>
@@ -103,6 +103,7 @@
                             </v-btn>
                             <StockproductEditValues
                                 :stockproduct="item"
+                                
                             />
                         </td>
                         </tr>
@@ -186,6 +187,11 @@ export default {
             //this.set_list_meta_page(this.page)
             this.$emit('getItems')
         },
+        getItems() {
+            this.list_meta.page = 1
+            this.$emit('getItems')
+        },
+        
     }
 }
 </script>

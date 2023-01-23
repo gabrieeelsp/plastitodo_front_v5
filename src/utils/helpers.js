@@ -38,13 +38,15 @@ Vue.mixin({
             return Number(precio * cantidad).toFixed(10)            
         },
 
-        globalHelperCalculaSubTotalStockUnitario(precio, cantidad, stock_aproximado_unitario, cantidad_total) {
+        globalHelperCalculaSubTotalStockUnitario(precio, cantidad, stock_aproximado_unitario, relacion_venta_stock, cantidad_total) {
             
             if ( Number(cantidad_total) != 0 ) {
-                return Number(precio * cantidad_total).toFixed(10) 
+                return Number(( ( precio / stock_aproximado_unitario ) / relacion_venta_stock ) * cantidad_total).toFixed(10) 
                 
             }
-            return Number(precio * cantidad * stock_aproximado_unitario).toFixed(10)            
+            //console.log(relacion_venta_stock)
+            //return Number(precio * cantidad * stock_aproximado_unitario * relacion_venta_stock).toFixed(10)
+            return Number(precio * cantidad ).toFixed(10)
         },
 
         globalHelperCalculaSaldoSale (sale) {
@@ -91,6 +93,9 @@ Vue.mixin({
 
         globalHelperCalculaCosto(costo, relacion_venta_stock) {
             return Number(costo * relacion_venta_stock).toFixed(10)            
+        },
+        globalHelperCalculaCostoStockUnitario(costo, relacion_venta_stock, stock_aproximado_unitario) {
+            return Number(costo * relacion_venta_stock * stock_aproximado_unitario).toFixed(10)            
         },
 
         globalHelperCalculaPorcentaje(costo, precio) {
