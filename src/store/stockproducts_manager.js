@@ -23,6 +23,7 @@ export default {
         filters: {
             q: '',
             ivaaliquot_id: null,
+            supplier: null,
         },
         list_meta: {
             select_limit_items: [5, 10, 15, 20],
@@ -71,6 +72,13 @@ export default {
         orders (state) {
             return state.orders
         },
+        supplier_id ( state ) {
+            if (state.filters.supplier) {
+                return state.filters.supplier.id
+            }else {
+                return null
+            }
+        },
     },
     mutations: {
         SET_ITEMS (state, payload) {
@@ -96,9 +104,17 @@ export default {
         },
         SET_RELOAD_ITEMS (state, payload) {
             state.reload_items = payload
-        }
+        },
+
+        SET_SUPPLIER( state, payload) {
+            state.filters.supplier = payload
+        },
     },
     actions: {
+        set_supplier ( { commit }, payload) {
+            console.log(payload)
+            commit('SET_SUPPLIER', payload)
+        },
         set_subitem({ commit }, payload) {
             commit('SET_SUBITEM', payload)
             commit('SET_SUBITEM_CACHE', JSON.parse(JSON.stringify(payload)))            
@@ -251,13 +267,15 @@ export default {
                 data: data 
             })
         },
-        buscar_items({state}) {
+        
+        buscar_items({state, getters}) {
             return axios.get('/stockproducts', {
                 params: {
                     limit: state.list_meta.limit,
                     page: state.list_meta.page,
                     q: state.filters.q,
                     ivaaliquot_id: state.filters.ivaaliquot_id,
+                    supplier_id: getters.supplier_id,
                     order_time_set_costo: state.orders.time_set_costo,
                 }
             })

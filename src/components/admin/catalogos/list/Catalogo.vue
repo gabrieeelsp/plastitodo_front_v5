@@ -194,14 +194,15 @@ export default {
 
             let y = this.y_inicial + this.index_producto_vert * this.product_height + this.product_y_sep * this.index_producto_vert
             doc.setDrawColor('#b4c7dc')
-            doc.setFillColor('dfe9f4')
+            doc.setFillColor('#fadee1')
+            //doc.setFillColor('dfe9f4')
             doc.rect(x, y + this.product_height - this.caja_texto_producto_h, this.product_width, this.caja_texto_producto_h, 'F')
 
             doc.setFillColor(null)
             
             doc.setFontSize(9)
             doc.rect(x, y, this.product_width, this.product_height)
-            doc.text(saleproduct.attributes.name, x + this.product_width / 2, y + this.product_height - this.caja_texto_producto_h + 6, {align: 'center', maxWidth: this.product_width - 10 })         
+            doc.text(saleproduct.attributes.name, x + this.product_width / 2, y + this.product_height - this.caja_texto_producto_h + 6, {align: 'center', maxWidth: this.product_width - 3 })         
 
             doc.setTextColor('#729fcf')
             doc.setFontSize(14)
@@ -266,15 +267,15 @@ export default {
                 doc.rect(0, 0, width, height, 'F')
             }
 
-
-            doc.setFillColor('#729fcf')
+            doc.setFillColor('#d94d75')
+            //doc.setFillColor('#729fcf')
             doc.rect(0, 0, 210, 5, 'F')
 
             doc.setFont(this.fontFamily, 'bold')
             doc.rect(0, 285, 210, 12, 'F')
             doc.setTextColor('#FFFFFF')
             doc.setFontSize(13)
-            doc.text('INSTAGRAM: plastitodorosario - +54 341 591-7300', 105, 292, {align: 'center'})         
+            doc.text('@Plastitodorosario - WSP: +54 341 591-7300 - Baigorria 1306, Rosario', 105, 292, {align: 'center'})         
             doc.setFont(this.fontFamily, 'normal')
 
 

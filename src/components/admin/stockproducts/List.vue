@@ -11,6 +11,13 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="12" sm="2" class="d-flex align-center">
+                <SelectSupplier 
+                    label="Supplier"
+                    @setSupplier="setSupplier_local"
+                    :supplier="filters.supplier"
+                />
+            </v-col>
+            <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-select
                     dense
                     :items="ivaaliquots_select"
@@ -148,6 +155,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import StockproductEditValues from '@/components/admin/stockproducts/list/StockproductEditValues'
+import SelectSupplier from '@/components/admin/suppliers/SelectSupplier'
 export default {
 
     computed: {
@@ -162,11 +170,13 @@ export default {
         })
     },
     components: {
-        StockproductEditValues
+        StockproductEditValues,
+        SelectSupplier
     },
     methods: {
         ...mapActions({
-            set_item: 'stockproducts_manager/set_item'
+            set_item: 'stockproducts_manager/set_item',
+            set_supplier: 'stockproducts_manager/set_supplier',
         }),
         setItem (item) {
             this.set_item(item)
@@ -176,6 +186,10 @@ export default {
                     id: item.id
                 }
             })
+        },
+
+        setSupplier_local(id) {
+            this.set_supplier(id)
         },
 
         setLimit() {

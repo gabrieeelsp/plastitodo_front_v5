@@ -3,6 +3,9 @@
         
 
         <v-row class="">
+            <v-col cols="12" sm="2" class="d-flex align-center">
+                <Tag :tag="item"></Tag>
+            </v-col>
             <v-spacer></v-spacer>
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-select
@@ -122,7 +125,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-
+import Tag from '@/components/admin/tags/list/Tag.vue'
 export default {
     created() {
         
@@ -160,7 +163,7 @@ export default {
         }
     },
     components: {
-
+        Tag,
     },
     data () {
         return {

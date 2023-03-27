@@ -1,76 +1,18 @@
 <template>
+<div>
     
-        <v-dialog
-          v-model="dialog"
-          
-          max-width="500"
-        
-        >
-        <template v-slot:activator="{ on, attrs }">
-            <v-btn                
-                small
-                v-bind="attrs"
-                v-on="on"
-                icon
-                color="success"
-                >           
-                <v-icon>
-                    mdi-plus
-                </v-icon>            
-            </v-btn>
-        
-            
-        </template>
-        <v-card>
-            <v-card-title>
-                
-                
-            </v-card-title>
-            
-            <v-card-text >
-                <v-row>
-                    <v-col cols="12" sm="5"  class="d-flex justify-sm-end align-center">
-                        <span class="font-weight-bold black--text">Tag</span>
-                    </v-col>
-                    <v-col cols="12" sm="3"  class="d-flex align-center justify-start ml-2">
-                        <span>{{ tag.attributes.name }}</span>
-                    </v-col>
-                </v-row>
-
-                <v-row>
-                    <v-col cols="12" sm="5"  class="pt-2 pb-0 d-flex justify-sm-end">
-                        <span class="font-weight-bold black--text">Catálogo</span>
-                    </v-col>
-                    <v-col cols="12" sm="6"  class=" pt-0 pb-0 d-flex">                        
-                        <v-select
-                            class="select_ivaaliquot ml-2"
-                            dense
-                            :menu-props="{ offsetY: true }"
-                            :items="catalogos"
-                            v-model="catalogo"
-                            item-text="name"
-                            item-value="id"
-                        ></v-select>
-                    </v-col>
-                </v-row>
-
-                
-                
-            </v-card-text>  
-            <v-divider></v-divider>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                    <v-btn
-                        color="success"
-                        :loading="is_generando"
-                        @click="generar"
-                    >
-                        Generar
-                    </v-btn>
-                </v-card-actions>          
-        </v-card>
-        </v-dialog>
     
+    
+    <v-btn 
+        block 
+        @click="generar"
+        
+        text
+        color="red"
+    >
+        PDF
+    </v-btn>
+</div>
 </template>
 
 <script>
@@ -86,9 +28,8 @@ export default {
         return {
 
             dialog: false,
-
-            catalogos: ['Lista', 'Imagenes 1', 'Imagenes 2'],
-            catalogo: 'Lista',
+            filename: '',
+            
             is_generando: false,
 
             items: [],
@@ -145,7 +86,9 @@ export default {
                 this.getItems()        
             }else {
                 console.log('error')
-            }            
+            }  
+            
+            //console.log(this.familias)
 
             this.iniciar_pagina(doc, false)
 
@@ -167,9 +110,11 @@ export default {
                     this.print_familia(doc, familia)                    
                 }
             }
+            
             this.is_generando = false
             this.dialog = false
-            doc.output('dataurlnewwindow');
+            //doc.output('dataurlnewwindow', {filename: this.filename})
+            doc.save(this.filename)
 
         },
 
@@ -186,7 +131,7 @@ export default {
             this.index_producto_linea = 0
             this.index_producto_vert = 0
 
-            console.log(familia.attributes)
+            
 
             var img = new Image()
             if ( familia.attributes.image ) {
@@ -208,7 +153,8 @@ export default {
             doc.rect(0, 200, 210, 4, 'F')
 
             doc.setTextColor(null)
-            doc.text(familia.attributes.name, 10, 93)
+            //doc.text(familia.attributes.name, 10, 93, {align: 'center', maxWidth: doc.internal.pageSize.getWidth() - 10 })
+            doc.text(familia.attributes.name, doc.internal.pageSize.getWidth() / 2, 93, {align: 'center', maxWidth: doc.internal.pageSize.getWidth() - 10 })
 
             this.add_pagina(doc, false)
             
@@ -222,7 +168,6 @@ export default {
             
             for ( let saleproduct of grupo.relationships.saleproducts ) {  
                 this.print_producto(doc, saleproduct)
-                    
                 if ( this.index_producto_linea == (this.cant_product_linea - 1 ) ) {
                     this.index_producto_linea = 0
                 
@@ -257,7 +202,7 @@ export default {
             
             doc.setFontSize(9)
             doc.rect(x, y, this.product_width, this.product_height)
-            doc.text(saleproduct.attributes.name, x + this.product_width / 2, y + this.product_height - this.caja_texto_producto_h + 6, {align: 'center', maxWidth: this.product_width - 10 })         
+            doc.text(saleproduct.attributes.name, x + this.product_width / 2, y + this.product_height - this.caja_texto_producto_h + 6, {align: 'center', maxWidth: this.product_width - 3 })         
 
             doc.setTextColor('#729fcf')
             doc.setFontSize(14)
@@ -291,7 +236,7 @@ export default {
 
                 var imgLogoSinStock = new Image()
                 imgLogoSinStock.src = this.logo_sin_stock
-                doc.addImage(imgLogoSinStock, 'PNG', x, y, 30, 30)
+                //doc.addImage(imgLogoSinStock, 'PNG', x, y, 30, 30)
             }
 
             // promocion
@@ -330,7 +275,7 @@ export default {
             doc.rect(0, 285, 210, 12, 'F')
             doc.setTextColor('#FFFFFF')
             doc.setFontSize(13)
-            doc.text('www.plastitodo.com.ar - ventas@plastitodo.com.ar - +54 341 5 000306', 105, 292, {align: 'center'})         
+            doc.text('INSTAGRAM: plastitodorosario - +54 341 591-7300', 105, 292, {align: 'center'})         
             doc.setFont(this.fontFamily, 'normal')
 
 
@@ -377,14 +322,25 @@ export default {
                     return i.relationships.saleproducts[0].relationships.stockproduct.relationships.familia.id == key
                 })
             }
+            
 
         },
 
         async buscar () {
             await this.buscar_item(this.tag.id)
                 .then((resp) => {
-                    this.saleproducts = resp.data.data.relationships.saleproducts                  
+                    console.log(resp.data.data)
+                    let date = new Date()
+                    let fecha = date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear();
+                    this.filename = 'Catalogo_' + resp.data.data.attributes.name.replaceAll(' ', '_') + '_' + fecha + '.pdf'
+                    this.saleproducts = resp.data.data.relationships.saleproducts                 
+                    this.saleproducts.sort(function(a, b){
+                        if(a.attributes.name < b.attributes.name) { return -1; }
+                        if(a.attributes.name > b.attributes.name) { return 1; }
+                        return 0;
+                    })
 
+                    
                 })
                 .catch((error) => {
                     console.log(error)

@@ -35,7 +35,7 @@ export default {
             is_generandoReporte: false,
 
             fontFamily: 'times',
-            cant_lineas_page: 20,
+            cant_lineas_page: 28,
             line_height: 7,
             line_start: 84,
             cant_paginas: 0,
@@ -149,9 +149,23 @@ export default {
 
             doc.setFontSize(10)
             doc.text('Nombre: ' + this.purchaseorder.relationships.supplier.attributes.name, 10, 54)
-            doc.text('Dirección: ' + this.purchaseorder.relationships.supplier.attributes.direccion, 10, 59)
-            doc.text('Teléfono: ' + this.purchaseorder.relationships.supplier.attributes.telefono, 10, 64)
-            doc.text('Email: ' + this.purchaseorder.relationships.supplier.attributes.email, 10, 69)
+            if ( this.purchaseorder.relationships.supplier.attributes.direccion ) {
+                doc.text('Dirección: ' + this.purchaseorder.relationships.supplier.attributes.direccion, 10, 59)
+            } else {
+                doc.text('Dirección: ', 10, 59)
+            }
+            
+            if ( this.purchaseorder.relationships.supplier.attributes.telefono ) {
+                doc.text('Teléfono: ' + this.purchaseorder.relationships.supplier.attributes.telefono, 10, 64)
+            } else {
+                doc.text('Teléfono: ', 10, 64)
+            }
+
+            if ( this.purchaseorder.relationships.supplier.attributes.telefono ) {
+                doc.text('Email: ' + this.purchaseorder.relationships.supplier.attributes.email, 10, 69)
+            } else {
+                doc.text('Email: ', 10, 69)
+            }
 
 
             doc.setFillColor('#919191');            
@@ -165,8 +179,19 @@ export default {
             doc.setFontSize(10)
             if ( this.purchaseorder.relationships.sucursal ) {
                 doc.text('Sucursal: ' + this.purchaseorder.relationships.sucursal.attributes.name, 107, 54)
-                doc.text('Dirección: ' + this.purchaseorder.relationships.sucursal.attributes.direccion, 107, 59)
-                doc.text('Teléfono: ' + this.purchaseorder.relationships.sucursal.attributes.telefono, 107, 64)
+                if ( this.purchaseorder.relationships.sucursal.attributes.direccion ) {
+                    doc.text('Dirección: ' + this.purchaseorder.relationships.sucursal.attributes.direccion, 107, 59)
+                } else {
+                    doc.text('Dirección: ', 107, 59)
+                }
+
+                if ( this.purchaseorder.relationships.sucursal.attributes.telefono ) {
+                    doc.text('Teléfono: ' + this.purchaseorder.relationships.sucursal.attributes.telefono, 107, 64)
+                } else {
+                    doc.text('Teléfono: ', 107, 64)
+                }
+                
+                
             }else {
                 doc.text('Sucursal: ' , 107, 54)
                 doc.text('Dirección: ' , 107, 59)

@@ -62,9 +62,7 @@
                             >
                                 <v-icon>mdi-eye</v-icon>
                             </v-btn>
-                            <Catalogo 
-                                :tag="item"
-                            />
+                            
                         </td>
                         </tr>
                     </tbody>
@@ -107,7 +105,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import Catalogo from '@/components/admin/tags/list/Catalogo'
 export default {
 
     computed: {
@@ -119,7 +116,7 @@ export default {
         })
     },
     components: {
-        Catalogo
+        
     },
     methods: {
         ...mapActions({
