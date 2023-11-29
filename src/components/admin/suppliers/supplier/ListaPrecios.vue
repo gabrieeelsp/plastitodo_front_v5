@@ -7,7 +7,15 @@
             <v-spacer></v-spacer>
             <v-col cols="12" sm="3" class="d-flex  align-center">
                 <v-text-field solo v-model="json_str"></v-text-field>
+
                 <v-btn small class="ml-2" @click="add_lista">Upload</v-btn>
+            </v-col>
+            <v-col cols="12" sm="3">
+                <v-file-input
+                    v-model="file"
+                    label="File input"
+                    @change="handleChangeInput"
+                ></v-file-input>
             </v-col>
         </v-row>
 
@@ -182,7 +190,8 @@ export default {
             },
 
             items: [],
-            json_str: null,
+            json_str: 'null66',
+            file: null,
         }
     },
     methods: {
@@ -200,6 +209,23 @@ export default {
 
         reload_item () {
             this.$emit('reload_item')
+        },
+
+        async handleChangeInput ( ) {
+            if ( this.file ) {
+                const reader = new FileReader();
+                reader.readAsText(this.file);
+                this.json_str = await new Promise((resolve, reject) => {
+                    reader.onload = () => {
+                        resolve(reader.result)
+                    }
+                    reader.onerror = (e) => {
+                        reject(e)
+                    }
+                })  
+            }
+            
+            
         },
 
         add_lista ( ) {
