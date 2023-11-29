@@ -66,12 +66,25 @@
                     <span class="font-weight-bold black--text">Bacode</span>
                 </v-col>
                 <v-col cols="12" sm="2"  class=" pt-0 pb-0 d-flex">
-                    <v-text-field 
-                        v-if="!item_cache.attributes.barcode"
-                        dense
-                        v-model="barcode"
-                        @keydown.enter.prevent=""
-                    ></v-text-field>
+                    <template v-if="!item_cache.attributes.barcode">
+                        <v-text-field 
+                        
+                            dense
+                            v-model="barcode"
+                            @keydown.enter.prevent=""
+                        ></v-text-field>
+                        <v-btn
+                        class="mt-1"
+                            color="warning"
+                            :disabled="user.role == 'VENDEDOR'"
+                            text
+                            @click="generarBarcode"
+                            x-small
+                            >
+                            Generar
+                        </v-btn>
+                    </template>
+                    
                     <template v-else>
                         <VueBarcode
                             :height="50"
@@ -275,6 +288,41 @@ export default {
         },
         validate () {
             this.$refs.form.validate()
+        },
+
+        generarBarcode () {
+            const number = this.getRandomBarcodeNumber();
+           
+            this.barcode = this.getBarcodeFromNumber(number)
+        },
+
+        getRandomBarcodeNumber () {
+            const number = this.generateRandomInteger(100000000000, 999999999999)
+            return number;
+        },
+
+        getBarcodeFromNumber (number) {
+            let suma = 0;
+
+            for ( let i = 0; i <= 11; i++ ) {
+                if ( i % 2 === 0 ) {
+                    suma = suma + Number(number.toString()[i]);
+                } else {
+                    suma = suma + Number(number.toString()[i]) * 3;
+                }
+            }
+
+            let index = 0;
+            while ( (suma + index) % 10 !== 0 ) {
+                index = index + 1;
+            }
+            return number.toString()+index;
+            
+            
+        },
+
+        generateRandomInteger(min, max) {
+            return Math.floor(min + Math.random()*(max - min + 1))
         },
 
         async submit () {
