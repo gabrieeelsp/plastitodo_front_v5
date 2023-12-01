@@ -6,17 +6,16 @@
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="12" sm="3" class="d-flex  align-center">
-                <v-text-field solo v-model="json_str"></v-text-field>
-
-                <v-btn small class="ml-2" @click="add_lista">Upload</v-btn>
-            </v-col>
-            <v-col cols="12" sm="3">
                 <v-file-input
                     v-model="file"
                     label="File input"
                     @change="handleChangeInput"
+                    accept=".json"
                 ></v-file-input>
+
+                <v-btn small class="ml-2" @click="add_lista">Upload</v-btn>
             </v-col>
+
         </v-row>
 
         <v-row class="">
@@ -236,7 +235,7 @@ export default {
 
             this.items = []
 
-            console.log(this.item.relationships.purchaseproducts)
+            //console.log(this.item.relationships.purchaseproducts)
             
             for ( let i of this.item.relationships.purchaseproducts.filter( (i) => { return i.attributes.codigo }) ) {
                 let json_data = this.get_json_data_from_codigo ( i.attributes.codigo )
