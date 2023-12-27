@@ -65,9 +65,9 @@ Vue.use(Photoswipe)
 require('@/store/subscriber')
 
 //axios.defaults.baseURL = 'http://192.168.0.109:8000/api/v1'
-//axios.defaults.baseURL = 'http://localhost:8000/api/v1'
+axios.defaults.baseURL = 'http://localhost:8000/api/v1'
 //axios.defaults.baseURL = 'https://api.plastitodo.com.ar/api/v1'
-axios.defaults.baseURL = 'https://plastitodo.online:8443/api/v1'
+//axios.defaults.baseURL = 'https://plastitodo.online:8443/api/v1'
 
 Vue.config.productionTip = false
 
