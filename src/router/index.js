@@ -11,7 +11,27 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: Home,
+    beforeEnter: (to, from, next) => {
+      if(!store.getters['auth/authenticated']){
+        return next({
+          name: 'login'
+        })
+      }
+      if(!store.getters['auth/is_empleado']){
+        return next({
+          name: 'home'
+        })
+      }
+      if (store.getters['sucursals_manager/is_sucursal_selected']){
+        
+        return next({
+          name: 'dashboard'
+        })
+      }
+      
+      next()
+    }
   },
   {
     path: '/auth/login',
