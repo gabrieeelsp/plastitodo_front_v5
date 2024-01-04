@@ -4,7 +4,6 @@ import VueRouter from 'vue-router'
 
 import Home from '../views/Home.vue'
 import Admin from '../views/admin/Admin.vue'
-import Dashboard from '../views/admin/Dashboard.vue'
 
 Vue.use(VueRouter)
 
@@ -79,7 +78,7 @@ const routes = [
       {
         path: '',
         name: 'dashboard',
-        component: Dashboard
+        component: () => import(/* webpackChunkName: "dashboard" */ '../views/admin/Dashboard.vue'),
       },
       {
         path: 'sales/manager',
