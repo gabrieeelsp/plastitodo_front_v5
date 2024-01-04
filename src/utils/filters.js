@@ -13,6 +13,14 @@ Vue.filter("money_string", num => {
     //return Intl.NumberFormat('en-US').format(num) 
 })
 
+Vue.filter("money_string_arg", num => {
+    return num.toLocaleString('es-ar', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 2
+    })
+})
+
 Vue.filter("punto_venta_string", num => {
     let dollarUS =  Intl.NumberFormat("en-US", {
         useGrouping: false,
