@@ -1,15 +1,16 @@
 <template>
-    <div>
-        <v-card>
+    
+        <v-card  height="100%" >
             <v-card-title>
                 <span>Ranking Vendedores</span>
             </v-card-title>
             <v-divider></v-divider>
-            <v-card-text>
+            <v-card-text style="height: 30vh;">
+                
                 <Bar :data="chartData" :options="chartOptions" />
             </v-card-text>
         </v-card>
-    </div>
+    
 </template>
 
 <script>
@@ -60,10 +61,11 @@ export default {
                         bottom: 0
                     }
                 },
-                //responsive: true,
-                barThickness: 30,
-                barPercentage: 0.9,
-                categoryPercentage: 0.2,
+                maintainAspectRatio: false,
+                responsive: true,
+                barThickness: 40,
+                // barPercentage: 0.9,
+                // categoryPercentage: 0.2,
             }
         }
     }

@@ -21,7 +21,7 @@
                                         hide-details=""
                                         label="Sucursal"
                                         clearable
-                                        
+                                        @change="handleChangeSucursal"
                                         :disabled="this.user.role !== 'ADMINISTRADOR'"
                                     >
                                     </v-select>
@@ -51,13 +51,13 @@
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-col cols="12" lg="4">
+                            <v-col cols="12" lg="3">
                                 <ChartVentaPorTipoCliente 
                                     :venta_total_mayorista="data.venta_total_mayorista"
                                     :venta_total_minorista="data.venta_total_minorista"
                                 />
                             </v-col>
-                            <v-col cols="12" lg="8">
+                            <v-col cols="12" lg="9">
                                 <ChartRankingVendedores 
                                     :users="data.users"
                                 />
@@ -113,10 +113,13 @@ export default {
             this.range = range;
             this.search();
         }, 
+        handleChangeSucursal() {
+            this.search();
+        },
         search () {
             this.data = null;
-
-            axios.get(`/dashboard/ventas_dia?range=${this.range}`)
+            const url = `/dashboard/ventas_dia?range=${this.range}${this.sucursal_id !== null ? '&sucursal_id=' + this.sucursal_id : '' } `
+            axios.get(url)
                 .then((resp) => {
                     this.data = resp.data.dashboard;
                 })

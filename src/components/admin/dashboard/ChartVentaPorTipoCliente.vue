@@ -5,7 +5,7 @@
                 <span>Ventas por Tipo de cliente</span>
             </v-card-title>
             <v-divider></v-divider>
-            <v-card-text>
+            <v-card-text  style="height: 30vh;" class="d-flex justify-center">
                 <Doughnut :data="chartData" :options="chartOptions" />
             </v-card-text>
         </v-card>

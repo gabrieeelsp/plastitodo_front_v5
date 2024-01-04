@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-row>
-            <v-col cols="12" lg="3">
+            <v-col cols="12" lg="6">
                 <v-card color="blue darken-1" dark>
                     <v-card-title>
                         <span >Venta Total</span>
@@ -11,7 +11,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="12" lg="3">
+            <v-col cols="12" lg="6">
                 <v-card color="green darken-1" dark>
                     <v-card-title>
                         <span >Facturacion </span> <span class="ml-2"> ( %{{ porc_facturacion }} )</span>
@@ -21,26 +21,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="12" lg="3">
-                <v-card color="purple darken-1" dark>
-                    <v-card-title>
-                        <span >???</span>
-                    </v-card-title>
-                    <v-card-text class="d-flex justify-end">
-                        <span class="text-h5">{{ 0 | money_string_arg }}</span>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col cols="12" lg="3">
-                <v-card color="red darken-1" dark>
-                    <v-card-title>
-                        <span >??? </span>
-                    </v-card-title>
-                    <v-card-text class="d-flex justify-end">
-                        <span class="text-h5">{{ 0 | money_string_arg }}</span>
-                    </v-card-text>
-                </v-card>
-            </v-col>
+            
         </v-row>
         
     </div>
