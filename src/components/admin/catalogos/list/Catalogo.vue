@@ -7,10 +7,10 @@
         block 
         @click="generar"
         
-        text
-        color="red"
+        :loading='is_generando'
+        color="primary"
     >
-        PDF
+        {{ btn_text }}
     </v-btn>
 </div>
 </template>
@@ -20,13 +20,19 @@
 import { mapGetters, mapActions } from 'vuex'
 import jsPDF from 'jspdf'
 export default {
-
+    created() {
+        if ( this.title ) {
+            this.btn_text = this.title;
+        }
+    },
     props:{
-        catalogo: Object
+        catalogo: Object,
+        title: String,
     },
     data () {
         return {
 
+            btn_text: 'Catalogo PDF',
             dialog: false,
             filename: '',
             
