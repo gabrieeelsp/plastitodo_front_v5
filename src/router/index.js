@@ -9,6 +9,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/catalogo',
+    name: 'show_catalogo',
+    component: () => import(/* webpackChunkName: "show_catalogo" */ '../views/public/catalogos/Catalogo.vue')
+  },
+  {
     path: '/',
     name: 'home',
     component: Home,

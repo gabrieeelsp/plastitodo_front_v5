@@ -6,6 +6,11 @@
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <Catalogo :catalogo="item"></Catalogo>
             </v-col>
+            <v-col cols="12" sm="2" class="d-flex align-center">
+                <a :href="'https://plastitodo.com.ar/catalogo?key=' + item.attributes.key" target="_blank">
+                  link
+                </a>
+            </v-col>
             <v-spacer></v-spacer>
             <v-col cols="12" sm="2" class="d-flex align-center">
                 <v-select

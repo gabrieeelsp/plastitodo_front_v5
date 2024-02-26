@@ -131,6 +131,9 @@ export default {
         buscar_item(_, id) {
             return axios.get(`/catalogos/${id}`)
         },
+        buscar_item_by_key(_, key) {
+            return axios.get(`/get_catalogo_by_key/${key}`)
+        },
 
         set_items({ commit }, payload) {
             commit('SET_ITEMS', payload)
