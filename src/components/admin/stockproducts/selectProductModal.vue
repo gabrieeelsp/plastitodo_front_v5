@@ -93,6 +93,7 @@
                                                 class="white--text align-end mt-1 mb-1"
                                                 height="100px"
                                                 width="100px"
+                                                
                                                 :src="url_asset + item.image"
                                             >
                                             </v-img>
