@@ -41,9 +41,9 @@ export default new Vuex.Store({
     state: {
         init_error: null,
         show_init_admin: null,
-        //url_asset: "http://localhost:8000/",
-        url_asset: "https://plastitodo.online:8443/",
-
+        // url_asset: "http://localhost:8000/",
+        // url_asset: "https://plastitodo.online:8443/",
+        url_asset: "https://plastitodo-prod.backhub.net.ar/",
         empresa: null,
     },
     getters: {

@@ -243,7 +243,8 @@
     
                     var imgLogoSinStock = new Image()
                     imgLogoSinStock.src = this.logo_sin_stock
-                    //doc.addImage(imgLogoSinStock, 'PNG', x, y, 30, 30)
+                    
+                    doc.addImage(imgLogoSinStock, 'PNG', x, y, 30, 30)
                 }
     
                 // promocion
