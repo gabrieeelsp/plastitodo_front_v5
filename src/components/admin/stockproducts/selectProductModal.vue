@@ -89,11 +89,11 @@
                                     <v-col class="pl-0" >
                                         <v-card class="">
                                             <v-img
-                                                v-if="item.image1"
+                                                v-if="item.image"
                                                 class="white--text align-end mt-1 mb-1"
                                                 height="100px"
                                                 width="100px"
-                                                :src="url_asset + item.image1"
+                                                :src="url_asset + item.image"
                                             >
                                             </v-img>
                                             <v-img
@@ -144,7 +144,7 @@ export default {
     data () {
         return {
 
-            url_asset: "http://localhost:8000/",
+            // url_asset: "http://localhost:8000/",
             show_images: false,
 
             dialog: false,
@@ -155,7 +155,7 @@ export default {
     },
     computed: {
       ...mapGetters({
-
+        url_asset: 'url_asset',
       })
     },
 
