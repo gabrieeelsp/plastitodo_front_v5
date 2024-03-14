@@ -23,7 +23,7 @@
             <v-card-title class="text-h5 grey lighten-2">
                 {{ purchaseorderitem.relationships.purchaseproduct.attributes.name }}
             </v-card-title>
-            <v-form @submit.prevent="accept" ref="form" v-model="valid" >
+            <v-form @submit.prevent="accept" ref="form" v-model="valid" id="updatePurchaseItemForm" >
                 <v-card-text>
                 
 
@@ -86,8 +86,10 @@
                 color="primary"
                 text
                 @click="dialog = false"
+                type="submit"
+                form="updatePurchaseItemForm"
             >
-                I accept
+                Aceptar
             </v-btn>
             </v-card-actions>
         </v-card>
