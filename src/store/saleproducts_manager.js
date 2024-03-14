@@ -16,6 +16,7 @@ export default {
             q: '',
             ivaaliquot_id: null,
             is_promo: null,
+            is_enable: true,
         },
         list_meta: {
             select_limit_items: [5, 10, 15, 20],
@@ -74,6 +75,7 @@ export default {
                     page: state.list_meta.page,
                     q: state.filters.q,
                     is_promo: state.filters.is_promo,
+                    is_enable: state.filters.is_enable,
                 }
             })
         },
