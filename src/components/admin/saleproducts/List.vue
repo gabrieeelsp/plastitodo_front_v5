@@ -16,6 +16,21 @@
                     :items="[{name: 'Si', value: true}, {name: 'No', value: false}]"
                     item-text="name"
                     item-value="value"
+                    v-model="filters.is_enable"
+                    :menu-props="{ offsetY: true }"
+                    hide-details=""
+                    label="Habilitado"
+                    clearable
+                    @input="list_meta.page = 1"  
+                >
+                </v-select>
+            </v-col>
+            <v-col cols="12" sm="2" class="d-flex align-center">
+                <v-select
+                    dense
+                    :items="[{name: 'Si', value: true}, {name: 'No', value: false}]"
+                    item-text="name"
+                    item-value="value"
                     v-model="filters.is_promo"
                     :menu-props="{ offsetY: true }"
                     hide-details=""
@@ -138,8 +153,8 @@
                             </v-row>
                         </td>
                         <td>{{ item.id }}</td>
-                        <td >{{ item.attributes.name }}</td>
-
+                        <td v-if="item.attributes.is_enable" >{{ item.attributes.name }}</td>
+                        <td v-else class="text--disabled">{{ item.attributes.name }}</td>
                         
                         
                         
