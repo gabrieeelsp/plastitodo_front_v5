@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex/types/helpers';
+import { mapGetters } from 'vuex';
 
 export default {
     props: {
