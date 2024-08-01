@@ -98,6 +98,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex/types/helpers';
+
 export default {
     props: {
         purchaseorderitem: Object,
@@ -106,7 +108,7 @@ export default {
     data () {
         return {
             dialog: false,
-            url_asset: "http://localhost:8000/",
+            // url_asset: "http://localhost:8000/",
 
             valid: true,
             cantidad: null,
@@ -116,6 +118,11 @@ export default {
             errorCantidadMessages: '',
         }
     },
+    computed: {
+            ...mapGetters({
+                url_asset: 'url_asset',
+            })
+        },
     methods: {
         onload() {
             this.cantidad = this.purchaseorderitem.attributes.cantidad
