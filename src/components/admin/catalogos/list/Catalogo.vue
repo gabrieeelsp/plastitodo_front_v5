@@ -238,13 +238,13 @@
     
                 // Sin Stock
     
-                if ( saleproduct.relationships.stockproduct.attributes.stock <= 0 ) {                    
+                // if ( saleproduct.relationships.stockproduct.attributes.stock <= 0 ) {                    
     
-                    var imgLogoSinStock = new Image()
-                    imgLogoSinStock.src = this.logo_sin_stock
+                //     var imgLogoSinStock = new Image()
+                //     imgLogoSinStock.src = this.logo_sin_stock
                     
-                    // doc.addImage(imgLogoSinStock, 'PNG', x, y, 30, 30)
-                }
+                //     // doc.addImage(imgLogoSinStock, 'PNG', x, y, 30, 30)
+                // }
     
                 // promocion
                 if ( this.is_promo(saleproduct) ) {                

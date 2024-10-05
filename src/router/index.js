@@ -201,6 +201,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "tag" */ '../views/admin/tags/Tag.vue')
       },
       {
+        path: 'sales_catalogos',
+        name: 'sales_catalogos',
+        component: () => import(/* webpackChunkName: "sales_catalogos" */ '../views/admin/sales_catalogos/Sales_catalogos.vue')
+      },
+      {
         path: 'catalogos',
         name: 'catalogos',
         component: () => import(/* webpackChunkName: "catalogos" */ '../views/admin/catalogos/Catalogos.vue')
