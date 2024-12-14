@@ -238,14 +238,13 @@
     
                 // Sin Stock
     
-                if ( saleproduct.relationships.stockproduct.attributes.stock <= 0 ) {
-                    
+                // if ( saleproduct.relationships.stockproduct.attributes.stock <= 0 ) {                    
     
-                    var imgLogoSinStock = new Image()
-                    imgLogoSinStock.src = this.logo_sin_stock
+                //     var imgLogoSinStock = new Image()
+                //     imgLogoSinStock.src = this.logo_sin_stock
                     
-                    doc.addImage(imgLogoSinStock, 'PNG', x, y, 30, 30)
-                }
+                //     // doc.addImage(imgLogoSinStock, 'PNG', x, y, 30, 30)
+                // }
     
                 // promocion
                 if ( this.is_promo(saleproduct) ) {                
@@ -338,7 +337,7 @@
                 await this.buscar_item(this.catalogo.id)
                     .then((resp) => {
                         let date = new Date()
-                        let fecha = date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear();
+                        let fecha = date.getDate() + "-" + ( 1 + date.getMonth()) + "-" + date.getFullYear();
                         this.filename = 'Catalogo_' + resp.data.data.attributes.name.replaceAll(' ', '_') + '_' + fecha + '.pdf'
                         this.saleproducts = resp.data.data.relationships.saleproducts                 
                         this.saleproducts.sort(function(a, b){

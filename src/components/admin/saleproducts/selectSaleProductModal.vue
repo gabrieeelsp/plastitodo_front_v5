@@ -161,7 +161,7 @@ export default {
     data () {
         return {
 
-            url_asset: "http://localhost:8000/",
+            // url_asset: "http://localhost:8000/",
             show_images: false,
 
             dialog: false,
@@ -171,9 +171,9 @@ export default {
         }
     },
     computed: {
-      ...mapGetters({
-            
-      })
+        ...mapGetters({
+            url_asset: 'url_asset',
+        })
     },
 
     methods: {
