@@ -186,7 +186,7 @@
                 ['Grupos Productos Venta', '/admin/saleproductgroups', false, this.user.role == 'VENDEDOR' || this.user.role == 'RESPONSABLE SUCURSAL' ? false : true],
                 ['Productos Combo', '/admin/combos', false, this.user.role == 'VENDEDOR' ? false : true],
                 ['Gestión de Clientes', '/admin/clients', false, this.user.role == 'VENDEDOR' ? false : true],
-                ['Catálogos', '/admin/sales_catalogos', false, this.user.role == 'VENDEDOR' ? false : true],
+                ['Catálogos', '/admin/sales_catalogos', false, true],
 
             ]
         },
