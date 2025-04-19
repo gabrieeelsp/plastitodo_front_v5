@@ -70,7 +70,7 @@ export default {
 
             var doc = new jsPDF();
             
-
+            
             this.emitir_comprobante(doc)
 
             this.is_generandoReporte = false
@@ -277,7 +277,7 @@ export default {
 
             doc.setFontSize(11)
 
-            let client_h = 40
+            let client_h = 38
             if ( this.order.client.tipo_persona == 'FISICA' ) {
                 doc.text('Cliente:  ' + this.order.client.name + ' ' + this.order.client.surname, 8, client_h)
             }else {
@@ -302,6 +302,12 @@ export default {
             doc.text(this.$luxon(this.order.created_at, { output: "dd-MM-yyyy" }), 202, client_h + 5, { align: 'right', })
 
             doc.text('Entrega:  ', 130, client_h + 10, { align: 'left', })
+
+            doc.text('Cant Bultos:  ' , 130, client_h + 15)
+
+            if ( this.order.cant_bultos != null ) {
+                doc.text(Number(this.order.cant_bultos).toString() , 197, client_h + 15, { align: 'right', })
+            }
 
             if ( !this.order.is_delivery ) {
                 doc.text( 'Retiro', 171, client_h + 10, { align: 'right', })
