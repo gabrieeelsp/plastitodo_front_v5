@@ -73,7 +73,18 @@
                                 <v-spacer></v-spacer>
                                 <OrderPDF
                                     v-if="orderActive.state != 'EDITANDO'"
+                                    title="guardar pdf"
+                                    :save="true"
                                     :order="orderActive"
+                                    color="green"
+                                    class="mr-auto"
+                                    :disabled="is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
+                                />
+                                <OrderPDF
+                                    v-if="orderActive.state != 'EDITANDO'"
+                                    title="ver pdf"
+                                    :order="orderActive"
+                                    color="blue"
                                     class="mr-auto"
                                     :disabled="is_event_guardar || is_event_finalizar || is_event_editar || is_event_confirmar || is_event_iniciar_preparacion || is_event_cancelar_preparacion || is_event_finalizar_preparacion || is_event_facturar || is_event_check"
                                 />
