@@ -1,16 +1,13 @@
 <template>
 <div>
-    
-    
-    
     <v-btn 
         block 
         @click="generateReport"
         :loading="is_generandoReporte"
         text
-        color="red"
+        :color="color"
     >
-        PDF
+        {{ btn_text }}
     </v-btn>
 </div>
 </template>
@@ -20,8 +17,16 @@ import { mapGetters } from 'vuex'
 import jsPDF from 'jspdf'
 
 export default {
+    created() {
+        if ( this.title ) {
+            this.btn_text = this.title;
+        }
+    },
     props: {
         order: Object,
+        title: String,
+        color: String,
+        save: Boolean,
     },
     components: {
         
@@ -36,6 +41,7 @@ export default {
     },
     data() {
         return {
+            btn_text: 'PDFe',
             is_generandoReporte: false,
 
             fontFamily: 'helvetica',
@@ -70,11 +76,24 @@ export default {
 
             var doc = new jsPDF();
             
-
+            
             this.emitir_comprobante(doc)
 
             this.is_generandoReporte = false
-            doc.output('dataurlnewwindow');
+
+            if (this.save) {
+                let date = new Date()
+                let fecha = date.getDate() + "-" + ( 1 + date.getMonth()) + "-" + date.getFullYear();
+                const filename = 
+                    'Pedido_' + 
+                    this.order.client.name + '-' + 
+                    this.order.client.surname + '-' +
+                    fecha +
+                    '.pdf';
+                doc.save(filename)
+            } else {
+                doc.output('dataurlnewwindow');
+            }
         },
         emitir_comprobante(doc ) {
 
@@ -277,7 +296,7 @@ export default {
 
             doc.setFontSize(11)
 
-            let client_h = 40
+            let client_h = 38
             if ( this.order.client.tipo_persona == 'FISICA' ) {
                 doc.text('Cliente:  ' + this.order.client.name + ' ' + this.order.client.surname, 8, client_h)
             }else {
@@ -302,6 +321,12 @@ export default {
             doc.text(this.$luxon(this.order.created_at, { output: "dd-MM-yyyy" }), 202, client_h + 5, { align: 'right', })
 
             doc.text('Entrega:  ', 130, client_h + 10, { align: 'left', })
+
+            doc.text('Cant Bultos:  ' , 130, client_h + 15)
+
+            if ( this.order.cant_bultos != null ) {
+                doc.text(Number(this.order.cant_bultos).toString() , 197, client_h + 15, { align: 'right', })
+            }
 
             if ( !this.order.is_delivery ) {
                 doc.text( 'Retiro', 171, client_h + 10, { align: 'right', })
