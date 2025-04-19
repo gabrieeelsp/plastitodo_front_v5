@@ -1,16 +1,13 @@
 <template>
 <div>
-    
-    
-    
     <v-btn 
         block 
         @click="generateReport"
         :loading="is_generandoReporte"
         text
-        color="red"
+        :color="color"
     >
-        PDF
+        {{ btn_text }}
     </v-btn>
 </div>
 </template>
@@ -20,8 +17,16 @@ import { mapGetters } from 'vuex'
 import jsPDF from 'jspdf'
 
 export default {
+    created() {
+        if ( this.title ) {
+            this.btn_text = this.title;
+        }
+    },
     props: {
         order: Object,
+        title: String,
+        color: String,
+        save: Boolean,
     },
     components: {
         
@@ -36,6 +41,7 @@ export default {
     },
     data() {
         return {
+            btn_text: 'PDFe',
             is_generandoReporte: false,
 
             fontFamily: 'helvetica',
@@ -74,7 +80,20 @@ export default {
             this.emitir_comprobante(doc)
 
             this.is_generandoReporte = false
-            doc.output('dataurlnewwindow');
+
+            if (this.save) {
+                let date = new Date()
+                let fecha = date.getDate() + "-" + ( 1 + date.getMonth()) + "-" + date.getFullYear();
+                const filename = 
+                    'Pedido_' + 
+                    this.order.client.name + '-' + 
+                    this.order.client.surname + '-' +
+                    fecha +
+                    '.pdf';
+                doc.save(filename)
+            } else {
+                doc.output('dataurlnewwindow');
+            }
         },
         emitir_comprobante(doc ) {
 
